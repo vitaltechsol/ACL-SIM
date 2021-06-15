@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,14 +26,9 @@ namespace LoadForceSim
         // Our main ProSim connection
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
-
-        enum season
-        {
-            asdf,
-            wer
-        }
-
- 
+        static string portName = "COM3";
+        static SerialPort port;
+        int baud = 96000;
 
         public Form1()
         {
@@ -39,7 +36,21 @@ namespace LoadForceSim
             // Register to receive connect and disconnect events
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
+
+            if (SerialPort.GetPortNames().Count() >= 0)
+            {
+                foreach (string p in SerialPort.GetPortNames())
+                {
+                    Debug.WriteLine(p);
+                }
+            }
+
+            BeginSerial(baud, portName);
+            port.Open();
         }
+
+        static void BeginSerial(int baud, string name) => port = new SerialPort(name, baud);
+
 
         private void connectButton_Click(object sender, EventArgs e)
         {
@@ -58,6 +69,7 @@ namespace LoadForceSim
         void connection_onDisconnect()
         {
             Invoke(new MethodInvoker(updateStatusLabel));
+            port.Close();
         }
 
         // When we connect to ProSim737 system, update the status label and start filling the table
@@ -176,6 +188,7 @@ namespace LoadForceSim
     {
 
         public const string SPOLER_LEFT = "aircraft.flightControls.spoilerLeft";
+        public const string SPOLER_RIGHT = "aircraft.flightControls.spoilerRight";
         public const string B_PITCH_CMD = "system.gates.B_PITCH_CMD";
         public const string THRUST_1 = "aircraft.engines.1.thrust";
         public const string PITCH = "aircraft.pitch";
