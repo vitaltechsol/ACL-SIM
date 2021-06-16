@@ -41,13 +41,17 @@ namespace LoadForceSim
             this.dataTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-
             this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
-
             this.fillTableWorker = new System.ComponentModel.BackgroundWorker();
+            this.btnGoTo = new System.Windows.Forms.Button();
+            this.txtbxPitch = new System.Windows.Forms.TextBox();
+            this.btnCenterOut = new System.Windows.Forms.Button();
+            this.txtbxRoll = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -108,7 +112,7 @@ namespace LoadForceSim
             this.dataRefView.ReadOnly = true;
             this.dataRefView.RowHeadersVisible = false;
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataRefView.Size = new System.Drawing.Size(719, 257);
+            this.dataRefView.Size = new System.Drawing.Size(719, 210);
             this.dataRefView.TabIndex = 5;
             // 
             // nameDataGridViewTextBoxColumn
@@ -161,15 +165,79 @@ namespace LoadForceSim
             this.value.Name = "value";
             this.value.ReadOnly = true;
             // 
+            // valueConverted
+            // 
+            this.valueConverted.Name = "valueConverted";
+            // 
             // fillTableWorker
             // 
             this.fillTableWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.fillTableWorker_DoWork);
+            // 
+            // btnGoTo
+            // 
+            this.btnGoTo.Location = new System.Drawing.Point(168, 313);
+            this.btnGoTo.Name = "btnGoTo";
+            this.btnGoTo.Size = new System.Drawing.Size(75, 23);
+            this.btnGoTo.TabIndex = 8;
+            this.btnGoTo.Text = "Move";
+            this.btnGoTo.UseVisualStyleBackColor = true;
+            this.btnGoTo.Click += new System.EventHandler(this.btnGoTo_Click);
+            // 
+            // txtbxPitch
+            // 
+            this.txtbxPitch.Location = new System.Drawing.Point(26, 313);
+            this.txtbxPitch.Name = "txtbxPitch";
+            this.txtbxPitch.Size = new System.Drawing.Size(65, 20);
+            this.txtbxPitch.TabIndex = 7;
+            this.txtbxPitch.Text = "0";
+            // 
+            // btnCenterOut
+            // 
+            this.btnCenterOut.Location = new System.Drawing.Point(269, 313);
+            this.btnCenterOut.Name = "btnCenterOut";
+            this.btnCenterOut.Size = new System.Drawing.Size(75, 23);
+            this.btnCenterOut.TabIndex = 9;
+            this.btnCenterOut.Text = "Self Center";
+            this.btnCenterOut.UseVisualStyleBackColor = true;
+            this.btnCenterOut.Click += new System.EventHandler(this.btnCenterOut_Click);
+            // 
+            // txtbxRoll
+            // 
+            this.txtbxRoll.Location = new System.Drawing.Point(97, 313);
+            this.txtbxRoll.Name = "txtbxRoll";
+            this.txtbxRoll.Size = new System.Drawing.Size(65, 20);
+            this.txtbxRoll.TabIndex = 10;
+            this.txtbxRoll.Text = "0";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(23, 297);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(31, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Pitch";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(96, 296);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(25, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Roll";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(772, 492);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.txtbxRoll);
+            this.Controls.Add(this.btnCenterOut);
+            this.Controls.Add(this.btnGoTo);
+            this.Controls.Add(this.txtbxPitch);
             this.Controls.Add(this.dataRefView);
             this.Controls.Add(this.connectionStatusLabel);
             this.Controls.Add(this.connectButton);
@@ -201,8 +269,12 @@ namespace LoadForceSim
         private System.Windows.Forms.DataGridViewTextBoxColumn valueConverted;
         private System.ComponentModel.BackgroundWorker fillTableWorker;
         private System.Windows.Forms.BindingSource dataRefTableItemBindingSource;
-
-
+        private System.Windows.Forms.Button btnGoTo;
+        private System.Windows.Forms.TextBox txtbxPitch;
+        private System.Windows.Forms.Button btnCenterOut;
+        private System.Windows.Forms.TextBox txtbxRoll;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 

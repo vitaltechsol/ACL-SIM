@@ -32,6 +32,8 @@ namespace LoadForceSim
         int baud = 115200;
         bool isRollCMD = false;
         bool isPitchCMD = false;
+        int offsetX = 7000;
+        int offsetY = 500;
 
         public Form1()
         {
@@ -120,14 +122,6 @@ namespace LoadForceSim
 
             DataRef dataRef = new DataRef("", 100, connection);
 
-
-            // Use the ordered list to add items to the table
-            //foreach (DataRefDescription description in descriptions.OrderBy(d => d.Name))
-            //{
-            //    this.add_data_ref(description);
-            //}
-
-
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
 
@@ -137,7 +131,7 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.PITCH);
             this.add_data_ref(DayaRefNames.THRUST_1);
 
-            //  "simulator.jetway.toggle";
+            //  "simulator.ajetway.toggle";
 
 
         }
@@ -186,9 +180,8 @@ namespace LoadForceSim
                             {
                                 if (isRollCMD == true)
                                 {
-                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * 7000;
-                                    string arduLine = "<X_POS, 0, " + item.ValueConverted + ">";
-                                    port.Write(arduLine);
+                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * offsetX;
+                                    moveToX(item.ValueConverted);
                                 }
                                 break;
 
@@ -197,9 +190,9 @@ namespace LoadForceSim
                             {
                                 if (isPitchCMD == true)
                                 {
-                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * 500;
-                                    string arduLine = "<Y_POS, 0, " + item.ValueConverted + ">";
-                                    port.Write(arduLine);
+                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * offsetY;
+                                    moveToY(item.ValueConverted);
+
                                 }
                                 break;
 
@@ -210,8 +203,7 @@ namespace LoadForceSim
                                 if (isRollCMD == true)
                                 {
                                     // Reset Position
-                                    string arduLine = "<X_POS, 0, 0>";
-                                    port.Write(arduLine);
+                                    moveToX(0);
                                 }
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
                                 Debug.WriteLine("updated isPitchCMD "  + isRollCMD);
@@ -223,8 +215,7 @@ namespace LoadForceSim
                                 if (isPitchCMD == true)
                                 {
                                     // Reset Position
-                                    string arduLine = "<Y_POS, 0, 0>";
-                                    port.Write(arduLine);
+                                    moveToY(0);
                                 }
                                 isPitchCMD = Convert.ToBoolean(dataRef.value);
                                 Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
@@ -261,6 +252,32 @@ namespace LoadForceSim
             }
         }
 
+       // Roll
+        private void moveToX(double value)
+        {
+            string arduLine = "<X_POS, 0, " + value + ">";
+            port.Write(arduLine);
+        }
+
+        // Pitch
+        private void moveToY(double value)
+        {
+            string arduLine = "<Y_POS, 0, " + value + ">";
+            port.Write(arduLine);
+        }
+
+
+        private void btnCenterOut_Click(object sender, EventArgs e)
+        {
+            moveToX(0);
+            moveToY(0);
+        }
+
+        private void btnGoTo_Click(object sender, EventArgs e)
+        {
+            moveToX(Convert.ToDouble(txtbxRoll.Text));
+            moveToY(Convert.ToDouble(txtbxPitch.Text));
+        }
     }
 
     // The data object that is used for the DataRef table
