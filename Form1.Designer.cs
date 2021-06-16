@@ -40,9 +40,13 @@ namespace LoadForceSim
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+
             this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
+
             this.fillTableWorker = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
@@ -73,7 +77,7 @@ namespace LoadForceSim
             this.hostnameInput.Name = "hostnameInput";
             this.hostnameInput.Size = new System.Drawing.Size(233, 20);
             this.hostnameInput.TabIndex = 3;
-            this.hostnameInput.Text = "localhost";
+            this.hostnameInput.Text = "192.168.86.140";
             // 
             // connectionStatusLabel
             // 
@@ -96,7 +100,8 @@ namespace LoadForceSim
             this.nameDataGridViewTextBoxColumn,
             this.descriptionDataGridViewTextBoxColumn,
             this.dataTypeDataGridViewTextBoxColumn,
-            this.valueDataGridViewTextBoxColumn});
+            this.valueDataGridViewTextBoxColumn,
+            this.valueConvertedDataGridViewTextBoxColumn});
             this.dataRefView.DataSource = this.dataRefTableItemBindingSource;
             this.dataRefView.Location = new System.Drawing.Point(26, 72);
             this.dataRefView.Name = "dataRefView";
@@ -133,6 +138,13 @@ namespace LoadForceSim
             this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
             this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
             this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueConvertedDataGridViewTextBoxColumn
+            // 
+            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
+            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // dataRefTableItemBindingSource
             // 
@@ -183,8 +195,10 @@ namespace LoadForceSim
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataTypeDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn name;
         private System.Windows.Forms.DataGridViewTextBoxColumn value;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueConverted;
         private System.ComponentModel.BackgroundWorker fillTableWorker;
         private System.Windows.Forms.BindingSource dataRefTableItemBindingSource;
 

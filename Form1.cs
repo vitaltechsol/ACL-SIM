@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ProSimSDK;
@@ -28,7 +29,9 @@ namespace LoadForceSim
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
         static SerialPort port;
-        int baud = 96000;
+        int baud = 115200;
+        bool isRollCMD = false;
+        bool isPitchCMD = false;
 
         public Form1()
         {
@@ -47,6 +50,22 @@ namespace LoadForceSim
 
             BeginSerial(baud, portName);
             port.Open();
+            //port.Write("<Y_POS, 0, 7500>");
+            //port.Write("<Y_POS, 0, -7500>");
+            //port.Write("<Y_POS, 0, 0>");
+            //Thread.Sleep(200);
+            //port.Write("<X_POS, 0, -6500>");
+            //port.Write("<X_POS, 0, 6500>");
+            //port.Write("<X_POS, 0, 0>");
+
+
+
+            //while (true)
+            //{
+            //    string a = port.ReadExisting();
+            //    Debug.WriteLine(a);
+            //    Thread.Sleep(200);
+            //}
         }
 
         static void BeginSerial(int baud, string name) => port = new SerialPort(name, baud);
@@ -109,12 +128,16 @@ namespace LoadForceSim
             //}
 
 
-            this.add_data_ref(DayaRefNames.SPOLER_LEFT);
-            this.add_data_ref(DayaRefNames.B_PITCH_CMD);
+            this.add_data_ref(DayaRefNames.AILERON_LEFT);
+            this.add_data_ref(DayaRefNames.AILERON_RIGHT);
+
+            this.add_data_ref(DayaRefNames.ROLL_CMD);
+            this.add_data_ref(DayaRefNames.PITCH_CMD);
+
             this.add_data_ref(DayaRefNames.PITCH);
             this.add_data_ref(DayaRefNames.THRUST_1);
 
-          //  "simulator.jetway.toggle";
+            //  "simulator.jetway.toggle";
 
 
         }
@@ -131,7 +154,7 @@ namespace LoadForceSim
                 dataRef.onDataChange += dataRef_onDataChange;
 
                 // Create a DataRefTableItem, so it can be displayed in the table
-                DataRefTableItem item = new DataRefTableItem() { dataRef = dataRef, Description = "", DataType ="" };
+                DataRefTableItem item = new DataRefTableItem() { dataRef = dataRef, Description = "", DataType = "" };
                 lock (dataRefs)
                     dataRefs[dataRefName] = item;
 
@@ -156,6 +179,73 @@ namespace LoadForceSim
                 try
                 {
                     item.Value = dataRef.value.ToString();
+                    switch (name)
+                    {
+
+                        case DayaRefNames.AILERON_LEFT:
+                            {
+                                if (isRollCMD == true)
+                                {
+                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * 7000;
+                                    string arduLine = "<X_POS, 0, " + item.ValueConverted + ">";
+                                    port.Write(arduLine);
+                                }
+                                break;
+
+                            }
+                        case DayaRefNames.PITCH:
+                            {
+                                if (isPitchCMD == true)
+                                {
+                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * 500;
+                                    string arduLine = "<Y_POS, 0, " + item.ValueConverted + ">";
+                                    port.Write(arduLine);
+                                }
+                                break;
+
+                            }
+
+                        case DayaRefNames.ROLL_CMD:
+                            {
+                                if (isRollCMD == true)
+                                {
+                                    // Reset Position
+                                    string arduLine = "<X_POS, 0, 0>";
+                                    port.Write(arduLine);
+                                }
+                                isRollCMD = Convert.ToBoolean(dataRef.value);
+                                Debug.WriteLine("updated isPitchCMD "  + isRollCMD);
+                                break;
+                            }
+
+                        case DayaRefNames.PITCH_CMD:
+                            {
+                                if (isPitchCMD == true)
+                                {
+                                    // Reset Position
+                                    string arduLine = "<Y_POS, 0, 0>";
+                                    port.Write(arduLine);
+                                }
+                                isPitchCMD = Convert.ToBoolean(dataRef.value);
+                                Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
+                                break;
+                            }
+
+                    }
+
+                    //if (name == DayaRefNames.AILERON_LEFT && isRollCMD == true)
+                    //{
+                    //    item.ValueConverted = Convert.ToDouble(dataRef.value) * 7000;
+                    //    string arduLine = "<X_POS, 0, " + item.ValueConverted + "> ";
+                    //    port.Write(arduLine);
+                    //}
+
+                    //if (name == DayaRefNames.PITCH && isPitchCMD == true)
+                    //{
+                    //    item.ValueConverted = Convert.ToDouble(dataRef.value) * 500;
+                    //    string arduLine = "<Y_POS, 0, " + item.ValueConverted + "> ";
+                    //    port.Write(arduLine);
+                    //}
                 }
                 catch
                 {
@@ -163,7 +253,8 @@ namespace LoadForceSim
                 }
 
                 // Signal the DataRefTable to update the row, so the new value is displayed
-                Invoke(new MethodInvoker(delegate () {
+                Invoke(new MethodInvoker(delegate ()
+                {
                     if (!IsDisposed)
                         dataRefTableItemBindingSource.ResetItem(item.index);
                 }));
@@ -181,18 +272,20 @@ namespace LoadForceSim
         public String Description { get; set; }
         public String DataType { get; set; }
         public String Value { get; set; }
+        public double ValueConverted { get; set; }
+
 
     }
 
     public static class DayaRefNames
     {
+        public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
+        public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
+        public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
+        public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
 
-        public const string SPOLER_LEFT = "aircraft.flightControls.spoilerLeft";
-        public const string SPOLER_RIGHT = "aircraft.flightControls.spoilerRight";
-        public const string B_PITCH_CMD = "system.gates.B_PITCH_CMD";
         public const string THRUST_1 = "aircraft.engines.1.thrust";
         public const string PITCH = "aircraft.pitch";
-
 
     }
 
