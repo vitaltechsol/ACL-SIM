@@ -11,13 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ProSimSDK;
-
-
-// aircraft.flightControls.spoilerLeft
-// aircraft.flightControls.spoilerRight
-// system.gates.B_PITCH_CMD
-
-
+using Timer = System.Timers.Timer;
 
 namespace LoadForceSim
 {
@@ -25,6 +19,8 @@ namespace LoadForceSim
     public partial class Form1 : Form
     {
         // Our main ProSim connection
+        // Y is pitch
+        // X is roll
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
@@ -32,8 +28,23 @@ namespace LoadForceSim
         int baud = 115200;
         bool isRollCMD = false;
         bool isPitchCMD = false;
+        bool isHydAvail = false;
+        bool isElecHydPump1On = false;
+        bool isElecHydPump2On = false;
+
+
         int offsetX = 7000;
         int offsetY = 500;
+        int hydOffPitchPosition = -9500;
+        int maxX = 4000;
+        int maxY = 8000;
+        int minX = -4000;
+        int minY = -12000;
+        Timer timerX;
+        static bool sendDataX = false;
+        Timer timerY;
+        static bool sendDataY = false;
+
 
         public Form1()
         {
@@ -41,6 +52,17 @@ namespace LoadForceSim
             // Register to receive connect and disconnect events
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
+            timerX = new Timer();
+            timerX.Interval = 100;
+            timerX.Start();
+            timerX.Elapsed += sendDataOK_X;
+            timerX.AutoReset = true;
+            timerY = new Timer();
+            timerY.Interval = 100;
+            timerY.Start();
+            timerY.Elapsed += sendDataOK_Y;
+            timerY.AutoReset = true;
+
 
             if (SerialPort.GetPortNames().Count() >= 0)
             {
@@ -52,23 +74,20 @@ namespace LoadForceSim
 
             BeginSerial(baud, portName);
             port.Open();
-            //port.Write("<Y_POS, 0, 7500>");
-            //port.Write("<Y_POS, 0, -7500>");
-            //port.Write("<Y_POS, 0, 0>");
-            //Thread.Sleep(200);
-            //port.Write("<X_POS, 0, -6500>");
-            //port.Write("<X_POS, 0, 6500>");
-            //port.Write("<X_POS, 0, 0>");
-
-
-
-            //while (true)
-            //{
-            //    string a = port.ReadExisting();
-            //    Debug.WriteLine(a);
-            //    Thread.Sleep(200);
-            //}
+           
         }
+
+
+        private void sendDataOK_X(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            sendDataX = true;
+        }
+
+        private void sendDataOK_Y(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            sendDataY = true;
+        }
+
 
         static void BeginSerial(int baud, string name) => port = new SerialPort(name, baud);
 
@@ -125,11 +144,22 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
 
+            this.add_data_ref(DayaRefNames.PITCH);
+
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
-            this.add_data_ref(DayaRefNames.PITCH);
-            this.add_data_ref(DayaRefNames.THRUST_1);
+            this.add_data_ref(DayaRefNames.PITCH_CMD);
+
+            this.add_data_ref(DayaRefNames.PITCH_CMD);
+            this.add_data_ref(DayaRefNames.PITCH_CMD);
+
+
+            this.add_data_ref(DayaRefNames.HYD_AVIAL);
+            this.add_data_ref(DayaRefNames.HYD_PRESS);
+
+            this.add_data_ref(DayaRefNames.S_OH_ELEC_HYD_PUMP_1);
+            this.add_data_ref(DayaRefNames.S_OH_ELEC_HYD_PUMP_2);
 
             //  "simulator.ajetway.toggle";
 
@@ -178,21 +208,28 @@ namespace LoadForceSim
 
                         case DayaRefNames.AILERON_LEFT:
                             {
-                                if (isRollCMD == true)
+                                if (isRollCMD == true && sendDataX == true)
                                 {
-                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * offsetX;
-                                    moveToX(item.ValueConverted);
+                                    double xValue = Math.Round(Convert.ToDouble(dataRef.value) * offsetX);
+                                    // Skip sudden jumps to 0
+                                    if (xValue != 0)
+                                    {
+                                        item.ValueConverted = xValue;
+                                        moveToX(xValue);
+                                        sendDataX = false;
+                                    }
+                                       
                                 }
                                 break;
 
                             }
                         case DayaRefNames.PITCH:
                             {
-                                if (isPitchCMD == true)
+                                if (isPitchCMD == true  && sendDataY == true)
                                 {
-                                    item.ValueConverted = Convert.ToDouble(dataRef.value) * offsetY;
+                                    item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) * offsetY);
                                     moveToY(item.ValueConverted);
-
+                                    sendDataY = false;
                                 }
                                 break;
 
@@ -222,21 +259,48 @@ namespace LoadForceSim
                                 break;
                             }
 
+                        case DayaRefNames.S_OH_ELEC_HYD_PUMP_1:
+                            {
+                              
+                                isElecHydPump1On = Convert.ToBoolean(dataRef.value);
+                                Debug.WriteLine("updated isElecHydPump1On " + isElecHydPump1On);
+                                if (isElecHydPump1On == false && isElecHydPump2On == false)
+                                {
+                                    // When hydraulics are off move to max pitch
+                                    moveToY(hydOffPitchPosition);
+                                } else
+                                {
+                                    // reset position
+                                    speedPitch(80000);
+                                    moveToY(0);
+                                }
+
+                                break;
+                            }
+
+                        case DayaRefNames.S_OH_ELEC_HYD_PUMP_2:
+                            {
+
+                                isElecHydPump2On = Convert.ToBoolean(dataRef.value);
+                                Debug.WriteLine("updated isElecHydPump2On " + isElecHydPump2On);
+                                if (isElecHydPump1On == false && isElecHydPump2On == false)
+                                {
+                                    // When hydraulics are off move to max pitch
+                                    moveToY(hydOffPitchPosition);
+                                }
+                                else
+                                {
+                                    // reset position
+                                    moveToY(0);
+                                }
+
+                                break;
+                            }
+
+
                     }
 
-                    //if (name == DayaRefNames.AILERON_LEFT && isRollCMD == true)
-                    //{
-                    //    item.ValueConverted = Convert.ToDouble(dataRef.value) * 7000;
-                    //    string arduLine = "<X_POS, 0, " + item.ValueConverted + "> ";
-                    //    port.Write(arduLine);
-                    //}
 
-                    //if (name == DayaRefNames.PITCH && isPitchCMD == true)
-                    //{
-                    //    item.ValueConverted = Convert.ToDouble(dataRef.value) * 500;
-                    //    string arduLine = "<Y_POS, 0, " + item.ValueConverted + "> ";
-                    //    port.Write(arduLine);
-                    //}
                 }
                 catch
                 {
@@ -255,15 +319,33 @@ namespace LoadForceSim
        // Roll
         private void moveToX(double value)
         {
-            string arduLine = "<X_POS, 0, " + value + ">";
-            port.Write(arduLine);
+            if (value > minX && value < maxX)
+            {
+                string arduLine = "<X_POS, 0, " + value + ">";
+                port.Write(arduLine);
+            }
         }
 
         // Pitch
         private void moveToY(double value)
         {
-            string arduLine = "<Y_POS, 0, " + value + ">";
+            if (value > minY && value < maxY)
+            {
+                string arduLine = "<Y_POS, 0, " + value + ">";
+                port.Write(arduLine);
+            }
+            
+        }
+
+        // Pitch Speed
+        private void speedPitch(double value)
+        {
+     
+            string arduLine = "<PITCH_SPEED, 0, " + value + ">";
             port.Write(arduLine);
+            Debug.WriteLine("updated pitch speed " + value);
+
+
         }
 
 
@@ -271,6 +353,8 @@ namespace LoadForceSim
         {
             moveToX(0);
             moveToY(0);
+            txtbxRoll.Text = "0";
+            txtbxPitch.Text = "0";
         }
 
         private void btnGoTo_Click(object sender, EventArgs e)
@@ -301,7 +385,17 @@ namespace LoadForceSim
         public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
 
+        public const string HYD_PRESS = "aircraft.hidraulics.sysA.pressure";
+        public const string HYD_AVIAL = "system.gates.B_HYDRAULICS_AVAILABLE";
+        public const string S_OH_ELEC_HYD_PUMP_1 = "system.switches.S_OH_ELEC_HYD_PUMP_1";
+        public const string S_OH_ELEC_HYD_PUMP_2 = "system.switches.S_OH_ELEC_HYD_PUMP_2";
+
+
+
+
+
         public const string THRUST_1 = "aircraft.engines.1.thrust";
+
         public const string PITCH = "aircraft.pitch";
 
     }
