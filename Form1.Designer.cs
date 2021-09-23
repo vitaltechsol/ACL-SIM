@@ -52,13 +52,14 @@ namespace LoadForceSim
             this.txtbxRoll = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.chkAutoConnect = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(456, 27);
+            this.connectButton.Location = new System.Drawing.Point(426, 27);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(75, 23);
             this.connectButton.TabIndex = 5;
@@ -77,16 +78,15 @@ namespace LoadForceSim
             // 
             // hostnameInput
             // 
-            this.hostnameInput.Location = new System.Drawing.Point(204, 29);
+            this.hostnameInput.Location = new System.Drawing.Point(187, 29);
             this.hostnameInput.Name = "hostnameInput";
             this.hostnameInput.Size = new System.Drawing.Size(233, 20);
             this.hostnameInput.TabIndex = 3;
-            this.hostnameInput.Text = "192.168.86.140";
             // 
             // connectionStatusLabel
             // 
             this.connectionStatusLabel.AutoSize = true;
-            this.connectionStatusLabel.Location = new System.Drawing.Point(549, 32);
+            this.connectionStatusLabel.Location = new System.Drawing.Point(23, 45);
             this.connectionStatusLabel.Name = "connectionStatusLabel";
             this.connectionStatusLabel.Size = new System.Drawing.Size(16, 13);
             this.connectionStatusLabel.TabIndex = 6;
@@ -227,11 +227,22 @@ namespace LoadForceSim
             this.label3.TabIndex = 12;
             this.label3.Text = "Roll";
             // 
+            // chkAutoConnect
+            // 
+            this.chkAutoConnect.AutoSize = true;
+            this.chkAutoConnect.Location = new System.Drawing.Point(507, 31);
+            this.chkAutoConnect.Name = "chkAutoConnect";
+            this.chkAutoConnect.Size = new System.Drawing.Size(90, 17);
+            this.chkAutoConnect.TabIndex = 13;
+            this.chkAutoConnect.Text = "Auto-connect";
+            this.chkAutoConnect.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(772, 492);
+            this.Controls.Add(this.chkAutoConnect);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtbxRoll);
@@ -244,7 +255,7 @@ namespace LoadForceSim
             this.Controls.Add(this.label1);
             this.Controls.Add(this.hostnameInput);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Load Form Sim";
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
@@ -275,6 +286,7 @@ namespace LoadForceSim
         private System.Windows.Forms.TextBox txtbxRoll;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox chkAutoConnect;
     }
 }
 

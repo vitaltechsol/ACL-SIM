@@ -74,7 +74,15 @@ namespace LoadForceSim
 
             BeginSerial(baud, portName);
             port.Open();
-           
+
+            SetAppSettings();
+
+
+        }
+
+        private void SetAppSettings()
+        {
+            hostnameInput.Text = Properties.Settings.Default.ProSimIP;
         }
 
 
@@ -94,6 +102,11 @@ namespace LoadForceSim
 
         private void connectButton_Click(object sender, EventArgs e)
         {
+            // Save
+            Properties.Settings.Default.ProSimIP = hostnameInput.Text;
+            Properties.Settings.Default.Save();
+
+
             try
             {
                 connection.Connect(hostnameInput.Text);
