@@ -75,14 +75,22 @@ namespace LoadForceSim
             BeginSerial(baud, portName);
             port.Open();
 
+        }
+
+        private void Form1_Shown(Object sender, EventArgs e)
+        {
             SetAppSettings();
-
-
         }
 
         private void SetAppSettings()
         {
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
+            chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
+
+            if (Properties.Settings.Default.AutoConnect)
+            {
+                connectToProSim();
+            }
         }
 
 
@@ -105,8 +113,12 @@ namespace LoadForceSim
             // Save
             Properties.Settings.Default.ProSimIP = hostnameInput.Text;
             Properties.Settings.Default.Save();
+            connectToProSim();
+        }
 
 
+        void connectToProSim()
+        {
             try
             {
                 connection.Connect(hostnameInput.Text);
@@ -114,9 +126,9 @@ namespace LoadForceSim
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error connecting to ProSim737 System: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                updateStatusLabel();
+               // MessageBox.Show("Error connecting to ProSim737 System: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
 
         void connection_onDisconnect()
@@ -374,6 +386,14 @@ namespace LoadForceSim
         {
             moveToX(Convert.ToDouble(txtbxRoll.Text));
             moveToY(Convert.ToDouble(txtbxPitch.Text));
+        }
+
+        private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
+        {
+            //Save Setting
+            Properties.Settings.Default.AutoConnect = chkAutoConnect.Checked;
+            Properties.Settings.Default.Save();
+
         }
     }
 

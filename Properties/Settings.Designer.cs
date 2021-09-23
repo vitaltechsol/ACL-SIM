@@ -25,7 +25,7 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.0")]
         public string ProSimIP {
             get {
                 return ((string)(this["ProSimIP"]));
@@ -56,6 +56,18 @@ namespace LoadForceSim.Properties {
             }
             set {
                 this["MaxRol"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoConnect {
+            get {
+                return ((bool)(this["AutoConnect"]));
+            }
+            set {
+                this["AutoConnect"] = value;
             }
         }
     }
