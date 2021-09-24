@@ -53,6 +53,8 @@ namespace LoadForceSim
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.chkAutoConnect = new System.Windows.Forms.CheckBox();
+            this.txbxPitchTorque = new System.Windows.Forms.TextBox();
+            this.btnUpdateTorque = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -238,11 +240,30 @@ namespace LoadForceSim
             this.chkAutoConnect.UseVisualStyleBackColor = true;
             this.chkAutoConnect.CheckedChanged += new System.EventHandler(this.chkAutoConnect_CheckedChanged);
             // 
+            // txbxPitchTorque
+            // 
+            this.txbxPitchTorque.Location = new System.Drawing.Point(94, 357);
+            this.txbxPitchTorque.Name = "txbxPitchTorque";
+            this.txbxPitchTorque.Size = new System.Drawing.Size(68, 20);
+            this.txbxPitchTorque.TabIndex = 14;
+            // 
+            // btnUpdateTorque
+            // 
+            this.btnUpdateTorque.Location = new System.Drawing.Point(168, 355);
+            this.btnUpdateTorque.Name = "btnUpdateTorque";
+            this.btnUpdateTorque.Size = new System.Drawing.Size(111, 23);
+            this.btnUpdateTorque.TabIndex = 15;
+            this.btnUpdateTorque.Text = "Update Torque";
+            this.btnUpdateTorque.UseVisualStyleBackColor = true;
+            this.btnUpdateTorque.Click += new System.EventHandler(this.btnUpdateTorque_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(772, 492);
+            this.Controls.Add(this.btnUpdateTorque);
+            this.Controls.Add(this.txbxPitchTorque);
             this.Controls.Add(this.chkAutoConnect);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -289,6 +310,8 @@ namespace LoadForceSim
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkAutoConnect;
+        private System.Windows.Forms.TextBox txbxPitchTorque;
+        private System.Windows.Forms.Button btnUpdateTorque;
     }
 }
 

@@ -24,6 +24,9 @@ namespace LoadForceSim
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
+        static int torqueRollLow = 15;
+        static int torqueRollHigh = 40;
+
         static SerialPort port;
         int baud = 115200;
         bool isRollCMD = false;
@@ -44,6 +47,7 @@ namespace LoadForceSim
         static bool sendDataX = false;
         Timer timerY;
         static bool sendDataY = false;
+        TorqueControl torqueRoll = new TorqueControl("COM4");
 
 
         public Form1()
@@ -64,13 +68,13 @@ namespace LoadForceSim
             timerY.AutoReset = true;
 
 
-            if (SerialPort.GetPortNames().Count() >= 0)
-            {
-                foreach (string p in SerialPort.GetPortNames())
-                {
-                    Debug.WriteLine(p);
-                }
-            }
+            //if (SerialPort.GetPortNames().Count() >= 0)
+            //{
+            //    foreach (string p in SerialPort.GetPortNames())
+            //    {
+            //        Debug.WriteLine(p);
+            //    }
+            //}
 
             BeginSerial(baud, portName);
             port.Open();
@@ -292,12 +296,14 @@ namespace LoadForceSim
                                 if (isElecHydPump1On == false && isElecHydPump2On == false)
                                 {
                                     // When hydraulics are off move to max pitch
+                                    torqueRoll.SetTorque(torqueRollHigh);
                                     moveToY(hydOffPitchPosition);
                                 } else
                                 {
                                     // reset position
                                     speedPitch(80000);
                                     moveToY(0);
+                                    torqueRoll.SetTorque(torqueRollLow);
                                 }
 
                                 break;
@@ -311,11 +317,13 @@ namespace LoadForceSim
                                 if (isElecHydPump1On == false && isElecHydPump2On == false)
                                 {
                                     // When hydraulics are off move to max pitch
+                                    torqueRoll.SetTorque(torqueRollHigh);
                                     moveToY(hydOffPitchPosition);
                                 }
                                 else
                                 {
                                     // reset position
+                                    torqueRoll.SetTorque(torqueRollLow);
                                     moveToY(0);
                                 }
 
@@ -394,6 +402,11 @@ namespace LoadForceSim
             Properties.Settings.Default.AutoConnect = chkAutoConnect.Checked;
             Properties.Settings.Default.Save();
 
+        }
+
+        private void btnUpdateTorque_Click(object sender, EventArgs e)
+        {
+             torqueRoll.SetTorque(Int32.Parse(txbxPitchTorque.Text));
         }
     }
 

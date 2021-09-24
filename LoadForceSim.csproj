@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EasyModbus, Version=5.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\EasyModbusTCP.5.6.0\lib\net40\EasyModbus.dll</HintPath>
+    </Reference>
     <Reference Include="ProSimSDK">
       <HintPath>.\ProSimSDK.dll</HintPath>
     </Reference>
@@ -57,6 +60,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TorqueControl.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -69,6 +73,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\DataRefTableItem.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
