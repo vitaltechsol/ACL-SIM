@@ -270,6 +270,12 @@ namespace LoadForceSim
                                 {
                                     // Reset Position
                                     moveToX(0);
+                                    torqueRoll.SetTorque(torqueRollLow);
+                                }
+                                else
+                                {
+                                    // TODO: use value also depending on hyds system
+                                    torqueRoll.SetTorque(torqueRollHigh);
                                 }
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
                                 Debug.WriteLine("updated isPitchCMD "  + isRollCMD);
@@ -323,8 +329,8 @@ namespace LoadForceSim
                                 else
                                 {
                                     // reset position
-                                    torqueRoll.SetTorque(torqueRollLow);
                                     moveToY(0);
+                                    torqueRoll.SetTorque(torqueRollLow);
                                 }
 
                                 break;
