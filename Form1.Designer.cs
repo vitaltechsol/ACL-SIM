@@ -88,7 +88,7 @@ namespace LoadForceSim
             // connectionStatusLabel
             // 
             this.connectionStatusLabel.AutoSize = true;
-            this.connectionStatusLabel.Location = new System.Drawing.Point(23, 45);
+            this.connectionStatusLabel.Location = new System.Drawing.Point(23, 56);
             this.connectionStatusLabel.Name = "connectionStatusLabel";
             this.connectionStatusLabel.Size = new System.Drawing.Size(16, 13);
             this.connectionStatusLabel.TabIndex = 6;
@@ -109,12 +109,12 @@ namespace LoadForceSim
             this.valueDataGridViewTextBoxColumn,
             this.valueConvertedDataGridViewTextBoxColumn});
             this.dataRefView.DataSource = this.dataRefTableItemBindingSource;
-            this.dataRefView.Location = new System.Drawing.Point(26, 72);
+            this.dataRefView.Location = new System.Drawing.Point(26, 85);
             this.dataRefView.Name = "dataRefView";
             this.dataRefView.ReadOnly = true;
             this.dataRefView.RowHeadersVisible = false;
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataRefView.Size = new System.Drawing.Size(719, 210);
+            this.dataRefView.Size = new System.Drawing.Size(719, 197);
             this.dataRefView.TabIndex = 5;
             // 
             // nameDataGridViewTextBoxColumn

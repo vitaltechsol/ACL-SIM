@@ -24,18 +24,18 @@ namespace LoadForceSim
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
-        static int torqueRollLow = 15;
+        static int torqueRollLow = 18;
         static int torqueRollHigh = 40;
+
+        static int torquePitchLow = 30;
+        static int torquePitchHigh = 55;
 
         static SerialPort port;
         int baud = 115200;
         bool isRollCMD = false;
         bool isPitchCMD = false;
         bool isHydAvail = false;
-        bool isElecHydPump1On = false;
-        bool isElecHydPump2On = false;
-
-
+       
         int offsetX = 7000;
         int offsetY = 500;
         int hydOffPitchPosition = -9500;
@@ -47,7 +47,9 @@ namespace LoadForceSim
         static bool sendDataX = false;
         Timer timerY;
         static bool sendDataY = false;
-        TorqueControl torqueRoll = new TorqueControl("COM4");
+        TorqueControl torquePitch = new TorqueControl("COM4", 1);
+        TorqueControl torqueRoll = new TorqueControl("COM4", 2);
+
 
 
         public Form1()
@@ -184,7 +186,7 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
 
-            this.add_data_ref(DayaRefNames.HYD_AVIAL);
+            this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
 
             this.add_data_ref(DayaRefNames.S_OH_ELEC_HYD_PUMP_1);
@@ -294,15 +296,15 @@ namespace LoadForceSim
                                 break;
                             }
 
-                        case DayaRefNames.S_OH_ELEC_HYD_PUMP_1:
+                        case DayaRefNames.HYDRAULICS_AVAILABLE:
                             {
-                              
-                                isElecHydPump1On = Convert.ToBoolean(dataRef.value);
-                                Debug.WriteLine("updated isElecHydPump1On " + isElecHydPump1On);
-                                if (isElecHydPump1On == false && isElecHydPump2On == false)
+                                isHydAvail = Convert.ToBoolean(dataRef.value);
+                                Debug.WriteLine("updated isHydAvail " + isHydAvail);
+                                if (!isHydAvail)
                                 {
                                     // When hydraulics are off move to max pitch
                                     torqueRoll.SetTorque(torqueRollHigh);
+                                    torquePitch.SetTorque(torquePitchHigh);
                                     moveToY(hydOffPitchPosition);
                                 } else
                                 {
@@ -310,32 +312,12 @@ namespace LoadForceSim
                                     speedPitch(80000);
                                     moveToY(0);
                                     torqueRoll.SetTorque(torqueRollLow);
+                                    torquePitch.SetTorque(torquePitchLow);
+
                                 }
 
                                 break;
                             }
-
-                        case DayaRefNames.S_OH_ELEC_HYD_PUMP_2:
-                            {
-
-                                isElecHydPump2On = Convert.ToBoolean(dataRef.value);
-                                Debug.WriteLine("updated isElecHydPump2On " + isElecHydPump2On);
-                                if (isElecHydPump1On == false && isElecHydPump2On == false)
-                                {
-                                    // When hydraulics are off move to max pitch
-                                    torqueRoll.SetTorque(torqueRollHigh);
-                                    moveToY(hydOffPitchPosition);
-                                }
-                                else
-                                {
-                                    // reset position
-                                    moveToY(0);
-                                    torqueRoll.SetTorque(torqueRollLow);
-                                }
-
-                                break;
-                            }
-
 
                     }
 
@@ -438,7 +420,7 @@ namespace LoadForceSim
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
 
         public const string HYD_PRESS = "aircraft.hidraulics.sysA.pressure";
-        public const string HYD_AVIAL = "system.gates.B_HYDRAULICS_AVAILABLE";
+        public const string HYDRAULICS_AVAILABLE = "system.gates.B_HYDRAULICS_AVAILABLE";
         public const string S_OH_ELEC_HYD_PUMP_1 = "system.switches.S_OH_ELEC_HYD_PUMP_1";
         public const string S_OH_ELEC_HYD_PUMP_2 = "system.switches.S_OH_ELEC_HYD_PUMP_2";
 

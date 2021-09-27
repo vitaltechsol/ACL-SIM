@@ -8,12 +8,12 @@ namespace LoadForceSim
     {
         ModbusClient mbc;
 
-        public TorqueControl(string port)
+        public TorqueControl(string port, byte driverID)
         {
             mbc = new ModbusClient(port)
             {
-                UnitIdentifier = 2,
-                StopBits = StopBits.Two,
+                UnitIdentifier = driverID,
+                StopBits = StopBits.One,
                 Parity = Parity.None
             };
         }
