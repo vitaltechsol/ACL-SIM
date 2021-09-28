@@ -52,6 +52,8 @@ namespace LoadForceSim
         TorqueControl torquePitch = new TorqueControl("COM4", 1);
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
 
+        int lastRollMoved = -1;
+
         public Form1()
         {
             InitializeComponent();
@@ -188,10 +190,10 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
 
-
             this.add_data_ref(DayaRefNames.AILERON_IN_CPTN);
 
-            
+          //  this.add_data_ref(DayaRefNames.MCP_AP_DISENGAGE);
+
 
             //  "simulator.ajetway.toggle";
 
@@ -337,6 +339,30 @@ namespace LoadForceSim
                                 break;
                             }
 
+                        case DayaRefNames.AILERON_IN_CPTN:
+                            {
+                                if (sendDataX == true) //isRollCMD == true && 
+                                {
+                                    int value = Convert.ToInt32(dataRef.value);
+                                    double diff1 = value - lastRollMoved;
+                                    double diff2 = lastRollMoved - value;
+
+                                    // Disconnect auto pilot
+                                    if ((diff1 > 100 || diff2 > 100) && lastRollMoved != -1)
+                                    {
+                                        item.ValueConverted = diff1;
+                                        // Disconnect
+                                        DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
+                                        apdisg.value = 1;
+                                    }
+
+                                    lastRollMoved = value;
+                                    sendDataX = false;
+
+                                }
+                                break;
+                            }
+
                     }
 
 
@@ -460,6 +486,8 @@ namespace LoadForceSim
         public const string THRUST_2 = "aircraft.engines.2.thrust";
 
         public const string PITCH = "aircraft.pitch";
+
+        public const string MCP_AP_DISENGAGE = "system.switches.S_MCP_AP_DISENGAGE";
 
     }
 
