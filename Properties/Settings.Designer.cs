@@ -70,5 +70,29 @@ namespace LoadForceSim.Properties {
                 this["AutoConnect"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int APDisconnetRollThreshold {
+            get {
+                return ((int)(this["APDisconnetRollThreshold"]));
+            }
+            set {
+                this["APDisconnetRollThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int APDisconnetPitchThreshold {
+            get {
+                return ((int)(this["APDisconnetPitchThreshold"]));
+            }
+            set {
+                this["APDisconnetPitchThreshold"] = value;
+            }
+        }
     }
 }

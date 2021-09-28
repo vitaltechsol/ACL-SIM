@@ -52,7 +52,13 @@ namespace LoadForceSim
         TorqueControl torquePitch = new TorqueControl("COM4", 1);
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
 
+        SpeedControl speedPitch = new SpeedControl()
+
         int lastRollMoved = -1;
+        int lastPitchMoved = -1;
+        int apDisconnetRollThreshold;
+        int apDisconnetPitchThreshold;
+
 
         public Form1()
         {
@@ -99,6 +105,10 @@ namespace LoadForceSim
             {
                 connectToProSim();
             }
+
+
+            apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
+            apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
         }
 
 
@@ -339,16 +349,17 @@ namespace LoadForceSim
                                 break;
                             }
 
+
                         case DayaRefNames.AILERON_IN_CPTN:
                             {
-                                if (sendDataX == true) //isRollCMD == true && 
+                                if (sendDataX == true && isRollCMD == true) 
                                 {
                                     int value = Convert.ToInt32(dataRef.value);
                                     double diff1 = value - lastRollMoved;
                                     double diff2 = lastRollMoved - value;
 
                                     // Disconnect auto pilot
-                                    if ((diff1 > 100 || diff2 > 100) && lastRollMoved != -1)
+                                    if ((diff1 > apDisconnetRollThreshold || diff2 > apDisconnetRollThreshold) && lastRollMoved != -1)
                                     {
                                         item.ValueConverted = diff1;
                                         // Disconnect
@@ -358,6 +369,30 @@ namespace LoadForceSim
 
                                     lastRollMoved = value;
                                     sendDataX = false;
+
+                                }
+                                break;
+                            }
+
+                        case DayaRefNames.ELEVATOR_IN_CPTN:
+                            {
+                                if (sendDataY == true && isPitchCMD == true)
+                                {
+                                    int value = Convert.ToInt32(dataRef.value);
+                                    double diff1 = value - lastPitchMoved;
+                                    double diff2 = lastPitchMoved - value;
+
+                                    // Disconnect auto pilot
+                                    if ((diff1 > apDisconnetPitchThreshold || diff2 > apDisconnetPitchThreshold) && lastPitchMoved != -1)
+                                    {
+                                        item.ValueConverted = diff1;
+                                        // Disconnect
+                                        DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
+                                        apdisg.value = 1;
+                                    }
+
+                                    lastPitchMoved = value;
+                                    sendDataY = false;
 
                                 }
                                 break;
@@ -454,6 +489,19 @@ namespace LoadForceSim
             torqueRoll.SetTorque(torqueRollLow);
             torquePitch.SetTorque(torquePitchLow);
         }
+
+        private void btnSpeedTest_Click(object sender, EventArgs e)
+        {
+            if (txbPitchSpeedTest.Text != "")
+            {
+                torqueRoll.SetTorque(Int32.Parse(txbPitchSpeedTest.Text));
+            }
+
+            if (txbRollSpeedTest.Text != "")
+            {
+                torquePitch.SetTorque(Int32.Parse(txbRollSpeedTest.Text));
+            }
+        }
     }
 ;
     // The data object that is used for the DataRef table
@@ -476,6 +524,8 @@ namespace LoadForceSim
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
         public const string AILERON_IN_CPTN = "system.analog.A_FC_AILERON_CAPT";
+        public const string ELEVATOR_IN_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
+
         public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
 

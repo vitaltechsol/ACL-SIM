@@ -36,6 +36,11 @@ namespace LoadForceSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,22 +53,25 @@ namespace LoadForceSim
             this.label3 = new System.Windows.Forms.Label();
             this.chkAutoConnect = new System.Windows.Forms.CheckBox();
             this.txbRollTorque = new System.Windows.Forms.TextBox();
-            this.btnUpdateTorque = new System.Windows.Forms.Button();
+            this.btnTorqueTest = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabStatus = new System.Windows.Forms.TabPage();
+            this.tabConfig = new System.Windows.Forms.TabPage();
             this.tabTest = new System.Windows.Forms.TabPage();
+            this.btnSpeedTestDefault = new System.Windows.Forms.Button();
+            this.txbPitchSpeedTest = new System.Windows.Forms.TextBox();
+            this.txbRollSpeedTest = new System.Windows.Forms.TextBox();
+            this.btnSpeedTest = new System.Windows.Forms.Button();
             this.btnTorqueDefault = new System.Windows.Forms.Button();
             this.txbPitchTorque = new System.Windows.Forms.TextBox();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.tabTest.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
@@ -123,163 +131,6 @@ namespace LoadForceSim
             this.dataRefView.Size = new System.Drawing.Size(728, 267);
             this.dataRefView.TabIndex = 5;
             // 
-            // name
-            // 
-            this.name.Name = "name";
-            // 
-            // value
-            // 
-            this.value.Name = "value";
-            this.value.ReadOnly = true;
-            // 
-            // valueConverted
-            // 
-            this.valueConverted.Name = "valueConverted";
-            // 
-            // fillTableWorker
-            // 
-            this.fillTableWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.fillTableWorker_DoWork);
-            // 
-            // btnGoTo
-            // 
-            this.btnGoTo.Location = new System.Drawing.Point(190, 42);
-            this.btnGoTo.Name = "btnGoTo";
-            this.btnGoTo.Size = new System.Drawing.Size(111, 23);
-            this.btnGoTo.TabIndex = 8;
-            this.btnGoTo.Text = "Move";
-            this.btnGoTo.UseVisualStyleBackColor = true;
-            this.btnGoTo.Click += new System.EventHandler(this.btnGoTo_Click);
-            // 
-            // txtbxPitch
-            // 
-            this.txtbxPitch.Location = new System.Drawing.Point(17, 42);
-            this.txtbxPitch.Name = "txtbxPitch";
-            this.txtbxPitch.Size = new System.Drawing.Size(65, 20);
-            this.txtbxPitch.TabIndex = 7;
-            this.txtbxPitch.Text = "0";
-            // 
-            // btnCenterOut
-            // 
-            this.btnCenterOut.Location = new System.Drawing.Point(331, 42);
-            this.btnCenterOut.Name = "btnCenterOut";
-            this.btnCenterOut.Size = new System.Drawing.Size(75, 23);
-            this.btnCenterOut.TabIndex = 9;
-            this.btnCenterOut.Text = "Self Center";
-            this.btnCenterOut.UseVisualStyleBackColor = true;
-            this.btnCenterOut.Click += new System.EventHandler(this.btnCenterOut_Click);
-            // 
-            // txtbxRoll
-            // 
-            this.txtbxRoll.Location = new System.Drawing.Point(102, 42);
-            this.txtbxRoll.Name = "txtbxRoll";
-            this.txtbxRoll.Size = new System.Drawing.Size(65, 20);
-            this.txtbxRoll.TabIndex = 10;
-            this.txtbxRoll.Text = "0";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(14, 17);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(31, 13);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Pitch";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(99, 17);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(25, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Roll";
-            // 
-            // chkAutoConnect
-            // 
-            this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(414, 31);
-            this.chkAutoConnect.Name = "chkAutoConnect";
-            this.chkAutoConnect.Size = new System.Drawing.Size(90, 17);
-            this.chkAutoConnect.TabIndex = 13;
-            this.chkAutoConnect.Text = "Auto-connect";
-            this.chkAutoConnect.UseVisualStyleBackColor = true;
-            this.chkAutoConnect.CheckedChanged += new System.EventHandler(this.chkAutoConnect_CheckedChanged);
-            // 
-            // txbRollTorque
-            // 
-            this.txbRollTorque.Location = new System.Drawing.Point(102, 83);
-            this.txbRollTorque.Name = "txbRollTorque";
-            this.txbRollTorque.Size = new System.Drawing.Size(65, 20);
-            this.txbRollTorque.TabIndex = 14;
-            // 
-            // btnUpdateTorque
-            // 
-            this.btnUpdateTorque.Location = new System.Drawing.Point(190, 83);
-            this.btnUpdateTorque.Name = "btnUpdateTorque";
-            this.btnUpdateTorque.Size = new System.Drawing.Size(111, 23);
-            this.btnUpdateTorque.TabIndex = 15;
-            this.btnUpdateTorque.Text = "Update Torque";
-            this.btnUpdateTorque.UseVisualStyleBackColor = true;
-            this.btnUpdateTorque.Click += new System.EventHandler(this.btnUpdateTorque_Click);
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabStatus);
-            this.tabControl1.Controls.Add(this.tabTest);
-            this.tabControl1.Location = new System.Drawing.Point(16, 84);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(748, 316);
-            this.tabControl1.TabIndex = 17;
-            // 
-            // tabStatus
-            // 
-            this.tabStatus.Controls.Add(this.dataRefView);
-            this.tabStatus.Location = new System.Drawing.Point(4, 22);
-            this.tabStatus.Name = "tabStatus";
-            this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStatus.Size = new System.Drawing.Size(740, 290);
-            this.tabStatus.TabIndex = 0;
-            this.tabStatus.Text = "Status";
-            this.tabStatus.UseVisualStyleBackColor = true;
-            // 
-            // tabTest
-            // 
-            this.tabTest.Controls.Add(this.btnTorqueDefault);
-            this.tabTest.Controls.Add(this.txbPitchTorque);
-            this.tabTest.Controls.Add(this.txtbxPitch);
-            this.tabTest.Controls.Add(this.txbRollTorque);
-            this.tabTest.Controls.Add(this.btnUpdateTorque);
-            this.tabTest.Controls.Add(this.label2);
-            this.tabTest.Controls.Add(this.btnGoTo);
-            this.tabTest.Controls.Add(this.txtbxRoll);
-            this.tabTest.Controls.Add(this.btnCenterOut);
-            this.tabTest.Controls.Add(this.label3);
-            this.tabTest.Location = new System.Drawing.Point(4, 22);
-            this.tabTest.Name = "tabTest";
-            this.tabTest.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTest.Size = new System.Drawing.Size(740, 251);
-            this.tabTest.TabIndex = 1;
-            this.tabTest.Text = "Testing";
-            this.tabTest.UseVisualStyleBackColor = true;
-            // 
-            // btnTorqueDefault
-            // 
-            this.btnTorqueDefault.Location = new System.Drawing.Point(331, 83);
-            this.btnTorqueDefault.Name = "btnTorqueDefault";
-            this.btnTorqueDefault.Size = new System.Drawing.Size(75, 23);
-            this.btnTorqueDefault.TabIndex = 17;
-            this.btnTorqueDefault.Text = "Defaults";
-            this.btnTorqueDefault.UseVisualStyleBackColor = true;
-            this.btnTorqueDefault.Click += new System.EventHandler(this.btnTorqueDefault_Click);
-            // 
-            // txbPitchTorque
-            // 
-            this.txbPitchTorque.Location = new System.Drawing.Point(17, 83);
-            this.txbPitchTorque.Name = "txbPitchTorque";
-            this.txbPitchTorque.Size = new System.Drawing.Size(65, 20);
-            this.txbPitchTorque.TabIndex = 16;
-            // 
             // nameDataGridViewTextBoxColumn
             // 
             this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
@@ -314,11 +165,249 @@ namespace LoadForceSim
             this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
             this.dataRefTableItemBindingSource.Filter = "";
             // 
+            // name
+            // 
+            this.name.Name = "name";
+            // 
+            // value
+            // 
+            this.value.Name = "value";
+            this.value.ReadOnly = true;
+            // 
+            // valueConverted
+            // 
+            this.valueConverted.Name = "valueConverted";
+            // 
+            // fillTableWorker
+            // 
+            this.fillTableWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.fillTableWorker_DoWork);
+            // 
+            // btnGoTo
+            // 
+            this.btnGoTo.Location = new System.Drawing.Point(308, 49);
+            this.btnGoTo.Name = "btnGoTo";
+            this.btnGoTo.Size = new System.Drawing.Size(111, 23);
+            this.btnGoTo.TabIndex = 8;
+            this.btnGoTo.Text = "Move";
+            this.btnGoTo.UseVisualStyleBackColor = true;
+            this.btnGoTo.Click += new System.EventHandler(this.btnGoTo_Click);
+            // 
+            // txtbxPitch
+            // 
+            this.txtbxPitch.Location = new System.Drawing.Point(135, 50);
+            this.txtbxPitch.Name = "txtbxPitch";
+            this.txtbxPitch.Size = new System.Drawing.Size(65, 20);
+            this.txtbxPitch.TabIndex = 7;
+            this.txtbxPitch.Text = "0";
+            // 
+            // btnCenterOut
+            // 
+            this.btnCenterOut.Location = new System.Drawing.Point(449, 49);
+            this.btnCenterOut.Name = "btnCenterOut";
+            this.btnCenterOut.Size = new System.Drawing.Size(75, 23);
+            this.btnCenterOut.TabIndex = 9;
+            this.btnCenterOut.Text = "Self Center";
+            this.btnCenterOut.UseVisualStyleBackColor = true;
+            this.btnCenterOut.Click += new System.EventHandler(this.btnCenterOut_Click);
+            // 
+            // txtbxRoll
+            // 
+            this.txtbxRoll.Location = new System.Drawing.Point(220, 50);
+            this.txtbxRoll.Name = "txtbxRoll";
+            this.txtbxRoll.Size = new System.Drawing.Size(65, 20);
+            this.txtbxRoll.TabIndex = 10;
+            this.txtbxRoll.Text = "0";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(133, 25);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(31, 13);
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Pitch";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(218, 25);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(25, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Roll";
+            // 
+            // chkAutoConnect
+            // 
+            this.chkAutoConnect.AutoSize = true;
+            this.chkAutoConnect.Location = new System.Drawing.Point(414, 31);
+            this.chkAutoConnect.Name = "chkAutoConnect";
+            this.chkAutoConnect.Size = new System.Drawing.Size(90, 17);
+            this.chkAutoConnect.TabIndex = 13;
+            this.chkAutoConnect.Text = "Auto-connect";
+            this.chkAutoConnect.UseVisualStyleBackColor = true;
+            this.chkAutoConnect.CheckedChanged += new System.EventHandler(this.chkAutoConnect_CheckedChanged);
+            // 
+            // txbRollTorque
+            // 
+            this.txbRollTorque.Location = new System.Drawing.Point(220, 87);
+            this.txbRollTorque.Name = "txbRollTorque";
+            this.txbRollTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbRollTorque.TabIndex = 14;
+            // 
+            // btnTorqueTest
+            // 
+            this.btnTorqueTest.Location = new System.Drawing.Point(308, 87);
+            this.btnTorqueTest.Name = "btnTorqueTest";
+            this.btnTorqueTest.Size = new System.Drawing.Size(111, 23);
+            this.btnTorqueTest.TabIndex = 15;
+            this.btnTorqueTest.Text = "Update Torque";
+            this.btnTorqueTest.UseVisualStyleBackColor = true;
+            this.btnTorqueTest.Click += new System.EventHandler(this.btnUpdateTorque_Click);
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabStatus);
+            this.tabControl1.Controls.Add(this.tabConfig);
+            this.tabControl1.Controls.Add(this.tabTest);
+            this.tabControl1.Location = new System.Drawing.Point(16, 84);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(748, 316);
+            this.tabControl1.TabIndex = 17;
+            // 
+            // tabStatus
+            // 
+            this.tabStatus.Controls.Add(this.dataRefView);
+            this.tabStatus.Location = new System.Drawing.Point(4, 22);
+            this.tabStatus.Name = "tabStatus";
+            this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
+            this.tabStatus.Size = new System.Drawing.Size(740, 290);
+            this.tabStatus.TabIndex = 0;
+            this.tabStatus.Text = "Status";
+            this.tabStatus.UseVisualStyleBackColor = true;
+            // 
+            // tabConfig
+            // 
+            this.tabConfig.Location = new System.Drawing.Point(4, 22);
+            this.tabConfig.Name = "tabConfig";
+            this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
+            this.tabConfig.Size = new System.Drawing.Size(740, 290);
+            this.tabConfig.TabIndex = 2;
+            this.tabConfig.Text = "Config";
+            this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // tabTest
+            // 
+            this.tabTest.Controls.Add(this.label6);
+            this.tabTest.Controls.Add(this.label5);
+            this.tabTest.Controls.Add(this.label4);
+            this.tabTest.Controls.Add(this.btnSpeedTestDefault);
+            this.tabTest.Controls.Add(this.txbPitchSpeedTest);
+            this.tabTest.Controls.Add(this.txbRollSpeedTest);
+            this.tabTest.Controls.Add(this.btnSpeedTest);
+            this.tabTest.Controls.Add(this.btnTorqueDefault);
+            this.tabTest.Controls.Add(this.txbPitchTorque);
+            this.tabTest.Controls.Add(this.txtbxPitch);
+            this.tabTest.Controls.Add(this.txbRollTorque);
+            this.tabTest.Controls.Add(this.btnTorqueTest);
+            this.tabTest.Controls.Add(this.label2);
+            this.tabTest.Controls.Add(this.btnGoTo);
+            this.tabTest.Controls.Add(this.txtbxRoll);
+            this.tabTest.Controls.Add(this.btnCenterOut);
+            this.tabTest.Controls.Add(this.label3);
+            this.tabTest.Location = new System.Drawing.Point(4, 22);
+            this.tabTest.Name = "tabTest";
+            this.tabTest.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTest.Size = new System.Drawing.Size(740, 290);
+            this.tabTest.TabIndex = 1;
+            this.tabTest.Text = "Testing";
+            this.tabTest.UseVisualStyleBackColor = true;
+            // 
+            // btnSpeedTestDefault
+            // 
+            this.btnSpeedTestDefault.Location = new System.Drawing.Point(449, 124);
+            this.btnSpeedTestDefault.Name = "btnSpeedTestDefault";
+            this.btnSpeedTestDefault.Size = new System.Drawing.Size(75, 23);
+            this.btnSpeedTestDefault.TabIndex = 21;
+            this.btnSpeedTestDefault.Text = "Defaults";
+            this.btnSpeedTestDefault.UseVisualStyleBackColor = true;
+            // 
+            // txbPitchSpeedTest
+            // 
+            this.txbPitchSpeedTest.Location = new System.Drawing.Point(135, 125);
+            this.txbPitchSpeedTest.Name = "txbPitchSpeedTest";
+            this.txbPitchSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbPitchSpeedTest.TabIndex = 20;
+            // 
+            // txbRollSpeedTest
+            // 
+            this.txbRollSpeedTest.Location = new System.Drawing.Point(220, 125);
+            this.txbRollSpeedTest.Name = "txbRollSpeedTest";
+            this.txbRollSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbRollSpeedTest.TabIndex = 18;
+            // 
+            // btnSpeedTest
+            // 
+            this.btnSpeedTest.Location = new System.Drawing.Point(308, 124);
+            this.btnSpeedTest.Name = "btnSpeedTest";
+            this.btnSpeedTest.Size = new System.Drawing.Size(111, 23);
+            this.btnSpeedTest.TabIndex = 19;
+            this.btnSpeedTest.Text = "Test";
+            this.btnSpeedTest.UseVisualStyleBackColor = true;
+            this.btnSpeedTest.Click += new System.EventHandler(this.btnSpeedTest_Click);
+            // 
+            // btnTorqueDefault
+            // 
+            this.btnTorqueDefault.Location = new System.Drawing.Point(449, 87);
+            this.btnTorqueDefault.Name = "btnTorqueDefault";
+            this.btnTorqueDefault.Size = new System.Drawing.Size(75, 23);
+            this.btnTorqueDefault.TabIndex = 17;
+            this.btnTorqueDefault.Text = "Defaults";
+            this.btnTorqueDefault.UseVisualStyleBackColor = true;
+            this.btnTorqueDefault.Click += new System.EventHandler(this.btnTorqueDefault_Click);
+            // 
+            // txbPitchTorque
+            // 
+            this.txbPitchTorque.Location = new System.Drawing.Point(135, 87);
+            this.txbPitchTorque.Name = "txbPitchTorque";
+            this.txbPitchTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbPitchTorque.TabIndex = 16;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(85, 54);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 13);
+            this.label4.TabIndex = 22;
+            this.label4.Text = "Position";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(88, 90);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(41, 13);
+            this.label5.TabIndex = 23;
+            this.label5.Text = "Torque";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(44, 129);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(85, 13);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "Rebound Speed";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(772, 492);
+            this.ClientSize = new System.Drawing.Size(776, 492);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.chkAutoConnect);
             this.Controls.Add(this.connectionStatusLabel);
@@ -329,11 +418,11 @@ namespace LoadForceSim
             this.Text = "Load Form Sim";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -359,7 +448,7 @@ namespace LoadForceSim
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkAutoConnect;
         private System.Windows.Forms.TextBox txbRollTorque;
-        private System.Windows.Forms.Button btnUpdateTorque;
+        private System.Windows.Forms.Button btnTorqueTest;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabStatus;
         private System.Windows.Forms.TabPage tabTest;
@@ -369,6 +458,14 @@ namespace LoadForceSim
         private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
         private System.Windows.Forms.TextBox txbPitchTorque;
         private System.Windows.Forms.Button btnTorqueDefault;
+        private System.Windows.Forms.TabPage tabConfig;
+        private System.Windows.Forms.Button btnSpeedTestDefault;
+        private System.Windows.Forms.TextBox txbPitchSpeedTest;
+        private System.Windows.Forms.TextBox txbRollSpeedTest;
+        private System.Windows.Forms.Button btnSpeedTest;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
     }
 }
 
