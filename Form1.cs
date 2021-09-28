@@ -26,6 +26,8 @@ namespace LoadForceSim
         static string portName = "COM3";
         static int torqueRollLow = 18;
         static int torqueRollHigh = 40;
+        static int additionalPitchFwd = 0;
+        int fwdThrustTorque = 700;
 
         static int torquePitchLow = 30;
         static int torquePitchHigh = 55;
@@ -49,8 +51,6 @@ namespace LoadForceSim
         static bool sendDataY = false;
         TorqueControl torquePitch = new TorqueControl("COM4", 1);
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
-
-
 
         public Form1()
         {
@@ -182,15 +182,16 @@ namespace LoadForceSim
 
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
-            this.add_data_ref(DayaRefNames.PITCH_CMD);
-            this.add_data_ref(DayaRefNames.PITCH_CMD);
-
+            this.add_data_ref(DayaRefNames.THRUST_1);
+            this.add_data_ref(DayaRefNames.THRUST_2);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
 
-            this.add_data_ref(DayaRefNames.S_OH_ELEC_HYD_PUMP_1);
-            this.add_data_ref(DayaRefNames.S_OH_ELEC_HYD_PUMP_2);
+
+            this.add_data_ref(DayaRefNames.AILERON_IN_CPTN);
+
+            
 
             //  "simulator.ajetway.toggle";
 
@@ -250,6 +251,23 @@ namespace LoadForceSim
                                         sendDataX = false;
                                     }
                                        
+                                }
+                                break;
+
+                            }
+
+                        case DayaRefNames.THRUST_1:
+                            {
+                                if (sendDataY == true)
+                                {
+                                    item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / fwdThrustTorque);
+                                    if (additionalPitchFwd != item.ValueConverted)
+                                    {
+                                        additionalPitchFwd = Convert.ToInt32(item.ValueConverted);
+                                        torquePitch.SetTorqueCCW(torquePitchLow + additionalPitchFwd);
+
+                                    }
+                                    sendDataY = false;
                                 }
                                 break;
 
@@ -412,23 +430,20 @@ namespace LoadForceSim
 
     }
 
+
     public static class DayaRefNames
     {
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
+        public const string AILERON_IN_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
 
         public const string HYD_PRESS = "aircraft.hidraulics.sysA.pressure";
         public const string HYDRAULICS_AVAILABLE = "system.gates.B_HYDRAULICS_AVAILABLE";
-        public const string S_OH_ELEC_HYD_PUMP_1 = "system.switches.S_OH_ELEC_HYD_PUMP_1";
-        public const string S_OH_ELEC_HYD_PUMP_2 = "system.switches.S_OH_ELEC_HYD_PUMP_2";
-
-
-
-
 
         public const string THRUST_1 = "aircraft.engines.1.thrust";
+        public const string THRUST_2 = "aircraft.engines.2.thrust";
 
         public const string PITCH = "aircraft.pitch";
 

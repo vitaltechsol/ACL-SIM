@@ -33,6 +33,34 @@ namespace LoadForceSim
                 mbc.Disconnect();
             }
         }
+
+        public void SetTorqueCW(int value)
+        {
+            try
+            {
+                mbc.Connect();
+                mbc.WriteSingleRegister(8, value);
+                mbc.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                mbc.Disconnect();
+            }
+        }
+
+        public void SetTorqueCCW(int value)
+        {
+            try
+            {
+                mbc.Connect();
+                mbc.WriteSingleRegister(9, value * -1);
+                mbc.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                mbc.Disconnect();
+            }
+        }
     }
 
 
