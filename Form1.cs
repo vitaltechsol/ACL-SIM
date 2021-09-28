@@ -411,11 +411,25 @@ namespace LoadForceSim
         }
 
         private void btnUpdateTorque_Click(object sender, EventArgs e)
+        {   
+            if (txbRollTorque.Text != "")
+            {
+                torqueRoll.SetTorque(Int32.Parse(txbRollTorque.Text));
+            }
+
+            if (txbPitchTorque.Text != "")
+            {
+                torquePitch.SetTorque(Int32.Parse(txbPitchTorque.Text));
+            }
+        }
+
+        private void btnTorqueDefault_Click(object sender, EventArgs e)
         {
-             torqueRoll.SetTorque(Int32.Parse(txbxPitchTorque.Text));
+            torqueRoll.SetTorque(torqueRollLow);
+            torquePitch.SetTorque(torquePitchLow);
         }
     }
-
+;
     // The data object that is used for the DataRef table
     class DataRefTableItem
     {
