@@ -45,6 +45,7 @@ namespace LoadForceSim
         int maxY = 8000;
         int minX = -4000;
         int minY = -12000;
+        string mbusPort = "COM4";
         Timer timerX;
         static bool sendDataX = false;
         Timer timerY;
@@ -52,7 +53,9 @@ namespace LoadForceSim
         TorqueControl torquePitch = new TorqueControl("COM4", 1);
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
 
-        SpeedControl speedPitch = new SpeedControl()
+        SpeedControl speedPitch = new SpeedControl("COM4", 1);
+        SpeedControl speedRoll = new SpeedControl("COM4", 1);
+
 
         int lastRollMoved = -1;
         int lastPitchMoved = -1;
@@ -339,7 +342,7 @@ namespace LoadForceSim
                                 } else
                                 {
                                     // reset position
-                                    speedPitch(80000);
+                                    changeSpeedPitch(80000);
                                     moveToY(0);
                                     torqueRoll.SetTorque(torqueRollLow);
                                     torquePitch.SetTorque(torquePitchLow);
@@ -438,7 +441,7 @@ namespace LoadForceSim
         }
 
         // Pitch Speed
-        private void speedPitch(double value)
+        private void changeSpeedPitch(double value)
         {
      
             string arduLine = "<PITCH_SPEED, 0, " + value + ">";
@@ -494,12 +497,12 @@ namespace LoadForceSim
         {
             if (txbPitchSpeedTest.Text != "")
             {
-                torqueRoll.SetTorque(Int32.Parse(txbPitchSpeedTest.Text));
+                speedPitch.SetSpeed(Int32.Parse(txbPitchSpeedTest.Text));
             }
 
             if (txbRollSpeedTest.Text != "")
             {
-                torquePitch.SetTorque(Int32.Parse(txbRollSpeedTest.Text));
+                speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
             }
         }
     }
