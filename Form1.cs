@@ -207,12 +207,6 @@ namespace LoadForceSim
 
             this.add_data_ref(DayaRefNames.MCP_AP_DISENGAGE);
 
-
-
-
-            //  "simulator.ajetway.toggle";
-
-
         }
 
         private void add_data_ref(string dataRefName)
@@ -314,7 +308,7 @@ namespace LoadForceSim
                                 }
                                 else
                                 {
-                                    torqueRoll.SetTorque(torqueRollHigh);
+                                   torqueRoll.SetTorque(torqueRollHigh);
                                 }
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
                                 Debug.WriteLine("updated isPitchCMD "  + isRollCMD);
@@ -329,12 +323,12 @@ namespace LoadForceSim
                                     moveToY(0);
                                     if (isHydAvail)
                                     {
-                                        torquePitch.SetTorque(torquePitchLow);
+                                       torquePitch.SetTorque(torquePitchLow);
                                     }
                                 }
                                 else
                                 {
-                                    torquePitch.SetTorque(torquePitchHigh);
+                                  torquePitch.SetTorque(torquePitchHigh);
                                 }
 
                                 isPitchCMD = Convert.ToBoolean(dataRef.value);
@@ -345,18 +339,29 @@ namespace LoadForceSim
                         case DayaRefNames.HYDRAULICS_AVAILABLE:
                             {
                                 isHydAvail = Convert.ToBoolean(dataRef.value);
+                                DataRefTableItem airSpeed = dataRefs[DayaRefNames.SPEED_IAS];
+
                                 Debug.WriteLine("updated isHydAvail " + isHydAvail);
                                 if (!isHydAvail)
                                 {
                                     // When hydraulics are off move to max pitch
                                     torqueRoll.SetTorque(torqueRollHigh);
                                     torquePitch.SetTorque(torquePitchHigh);
-                                    moveToY(hydOffPitchPosition);
+
+                                    // move if on ground
+                                    if (Convert.ToInt32(airSpeed.Value) < 10)
+                                    {
+                                        moveToY(hydOffPitchPosition);
+                                    }
                                 } else
                                 {
                                     // reset position
                                     changeSpeedPitch(80000);
-                                    moveToY(0);
+                                    // move if on ground
+                                    if (Convert.ToInt32(airSpeed.Value) < 10)
+                                    {
+                                        moveToY(0);
+                                    }
                                     torqueRoll.SetTorque(torqueRollLow);
                                     torquePitch.SetTorque(torquePitchLow);
 

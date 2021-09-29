@@ -1,5 +1,6 @@
 ﻿using EasyModbus;
 using System;
+using System.Diagnostics;
 using System.IO.Ports;
 
 namespace LoadForceSim
@@ -27,10 +28,14 @@ namespace LoadForceSim
                 mbc.WriteSingleRegister(8, value);
                 mbc.WriteSingleRegister(9, value * -1);
                 mbc.Disconnect();
+                Debug.WriteLine("updated torques " + value);
+
             }
             catch (Exception ex)
             {
                 mbc.Disconnect();
+                Debug.WriteLine("failed update torques " + ex.Message);
+
             }
         }
 
@@ -41,10 +46,12 @@ namespace LoadForceSim
                 mbc.Connect();
                 mbc.WriteSingleRegister(8, value);
                 mbc.Disconnect();
+                Debug.WriteLine("updated torque CW " + value);
             }
             catch (Exception ex)
             {
                 mbc.Disconnect();
+                Debug.WriteLine("failed update torque CW " + ex.Message);
             }
         }
 
@@ -55,10 +62,14 @@ namespace LoadForceSim
                 mbc.Connect();
                 mbc.WriteSingleRegister(9, value * -1);
                 mbc.Disconnect();
+                Debug.WriteLine("updated torque CCW " + value);
+
             }
             catch (Exception ex)
             {
                 mbc.Disconnect();
+                Debug.WriteLine("failed update torque CCW " + ex.Message);
+
             }
         }
     }
