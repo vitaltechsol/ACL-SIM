@@ -25,7 +25,7 @@ namespace LoadForceSim
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
         static int torqueRollLow = 18;
-        static int torqueRollHigh = 40;
+        static int torqueRollHigh = 50;
         static int additionalPitchFwd = 0;
         int fwdThrustTorque = 700;
 
@@ -54,7 +54,7 @@ namespace LoadForceSim
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
 
         SpeedControl speedPitch = new SpeedControl("COM4", 1);
-        SpeedControl speedRoll = new SpeedControl("COM4", 1);
+        SpeedControl speedRoll = new SpeedControl("COM4", 2);
 
 
         int lastRollMoved = -1;
@@ -70,7 +70,7 @@ namespace LoadForceSim
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
             timerX = new Timer();
-            timerX.Interval = 100;
+            timerX.Interval = 1300;
             timerX.Start();
             timerX.Elapsed += sendDataOK_X;
             timerX.AutoReset = true;
@@ -199,13 +199,17 @@ namespace LoadForceSim
 
             this.add_data_ref(DayaRefNames.THRUST_1);
             this.add_data_ref(DayaRefNames.THRUST_2);
+            this.add_data_ref(DayaRefNames.SPEED_IAS);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
 
             this.add_data_ref(DayaRefNames.AILERON_IN_CPTN);
+            this.add_data_ref(DayaRefNames.ELEVATOR_IN_CPTN);
 
-          //  this.add_data_ref(DayaRefNames.MCP_AP_DISENGAGE);
+            this.add_data_ref(DayaRefNames.MCP_AP_DISENGAGE);
+
+
 
 
             //  "simulator.ajetway.toggle";
@@ -305,11 +309,13 @@ namespace LoadForceSim
                                 {
                                     // Reset Position
                                     moveToX(0);
-                                    torqueRoll.SetTorque(torqueRollLow);
+                                    if (isHydAvail)
+                                    {
+                                        torqueRoll.SetTorque(torqueRollLow);
+                                    }
                                 }
                                 else
                                 {
-                                    // TODO: use value also depending on hyds system
                                     torqueRoll.SetTorque(torqueRollHigh);
                                 }
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
@@ -323,7 +329,16 @@ namespace LoadForceSim
                                 {
                                     // Reset Position
                                     moveToY(0);
+                                    if (isHydAvail)
+                                    {
+                                        torquePitch.SetTorque(torquePitchLow);
+                                    }
                                 }
+                                else
+                                {
+                                    torquePitch.SetTorque(torquePitchHigh);
+                                }
+
                                 isPitchCMD = Convert.ToBoolean(dataRef.value);
                                 Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
                                 break;
@@ -505,6 +520,11 @@ namespace LoadForceSim
                 speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
             }
         }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 ;
     // The data object that is used for the DataRef table
@@ -537,6 +557,8 @@ namespace LoadForceSim
 
         public const string THRUST_1 = "aircraft.engines.1.thrust";
         public const string THRUST_2 = "aircraft.engines.2.thrust";
+
+        public const string SPEED_IAS = "aircraft.speed.ias";
 
         public const string PITCH = "aircraft.pitch";
 

@@ -37,25 +37,25 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int MaxPitch {
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int MaxPitchPos {
             get {
-                return ((int)(this["MaxPitch"]));
+                return ((int)(this["MaxPitchPos"]));
             }
             set {
-                this["MaxPitch"] = value;
+                this["MaxPitchPos"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int MaxRol {
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int MaxRollPos {
             get {
-                return ((int)(this["MaxRol"]));
+                return ((int)(this["MaxRollPos"]));
             }
             set {
-                this["MaxRol"] = value;
+                this["MaxRollPos"] = value;
             }
         }
         
@@ -92,6 +92,30 @@ namespace LoadForceSim.Properties {
             }
             set {
                 this["APDisconnetPitchThreshold"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
+        public string MinPitchPos {
+            get {
+                return ((string)(this["MinPitchPos"]));
+            }
+            set {
+                this["MinPitchPos"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
+        public string MinRollPos {
+            get {
+                return ((string)(this["MinRollPos"]));
+            }
+            set {
+                this["MinRollPos"] = value;
             }
         }
     }

@@ -5,11 +5,11 @@
     <Setting Name="ProSimIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.0</Value>
     </Setting>
-    <Setting Name="MaxPitch" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="MaxPitchPos" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
     </Setting>
-    <Setting Name="MaxRol" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="MaxRollPos" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="AutoConnect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -19,6 +19,12 @@
     </Setting>
     <Setting Name="APDisconnetPitchThreshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="MinPitchPos" Type="System.String" Scope="User">
+      <Value Profile="(Default)">-2000</Value>
+    </Setting>
+    <Setting Name="MinRollPos" Type="System.String" Scope="User">
+      <Value Profile="(Default)">-2000</Value>
     </Setting>
   </Settings>
 </SettingsFile>
