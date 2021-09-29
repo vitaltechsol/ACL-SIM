@@ -85,7 +85,7 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
         public int APDisconnetPitchThreshold {
             get {
                 return ((int)(this["APDisconnetPitchThreshold"]));

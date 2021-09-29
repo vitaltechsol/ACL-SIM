@@ -18,7 +18,7 @@
       <Value Profile="(Default)">100</Value>
     </Setting>
     <Setting Name="APDisconnetPitchThreshold" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
+      <Value Profile="(Default)">60</Value>
     </Setting>
     <Setting Name="MinPitchPos" Type="System.String" Scope="User">
       <Value Profile="(Default)">-2000</Value>

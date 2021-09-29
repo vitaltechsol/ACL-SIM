@@ -70,7 +70,7 @@ namespace LoadForceSim
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
             timerX = new Timer();
-            timerX.Interval = 1300;
+            timerX.Interval = 100;
             timerX.Start();
             timerX.Elapsed += sendDataOK_X;
             timerX.AutoReset = true;
@@ -195,11 +195,9 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
-            this.add_data_ref(DayaRefNames.PITCH_CMD);
-
             this.add_data_ref(DayaRefNames.THRUST_1);
-            this.add_data_ref(DayaRefNames.THRUST_2);
-            this.add_data_ref(DayaRefNames.SPEED_IAS);
+           //  this.add_data_ref(DayaRefNames.THRUST_2);
+         //   this.add_data_ref(DayaRefNames.SPEED_IAS);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
@@ -370,40 +368,43 @@ namespace LoadForceSim
 
                         case DayaRefNames.AILERON_IN_CPTN:
                             {
-                                if (sendDataX == true && isRollCMD == true) 
+                                item.ValueConverted = lastRollMoved;
+
+                                if (isRollCMD == true) 
                                 {
                                     int value = Convert.ToInt32(dataRef.value);
                                     double diff1 = value - lastRollMoved;
                                     double diff2 = lastRollMoved - value;
 
+                                    item.ValueConverted = diff1;
+
                                     // Disconnect auto pilot
                                     if ((diff1 > apDisconnetRollThreshold || diff2 > apDisconnetRollThreshold) && lastRollMoved != -1)
                                     {
-                                        item.ValueConverted = diff1;
+                                        item.ValueConverted = diff1 * 1000;
                                         // Disconnect
                                         DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
                                         apdisg.value = 1;
                                     }
-
                                     lastRollMoved = value;
-                                    sendDataX = false;
-
                                 }
+
                                 break;
                             }
 
                         case DayaRefNames.ELEVATOR_IN_CPTN:
                             {
-                                if (sendDataY == true && isPitchCMD == true)
+                                if (isPitchCMD == true)
                                 {
                                     int value = Convert.ToInt32(dataRef.value);
                                     double diff1 = value - lastPitchMoved;
                                     double diff2 = lastPitchMoved - value;
+                                    item.ValueConverted = diff1;
 
                                     // Disconnect auto pilot
                                     if ((diff1 > apDisconnetPitchThreshold || diff2 > apDisconnetPitchThreshold) && lastPitchMoved != -1)
                                     {
-                                        item.ValueConverted = diff1;
+                                        item.ValueConverted = diff1 * 1000;
                                         // Disconnect
                                         DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
                                         apdisg.value = 1;
