@@ -25,7 +25,7 @@ namespace LoadForceSim
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
         static int torqueRollLow = 18;
-        static int torqueRollHigh = 50;
+        static int torqueRollHigh = 65;
         static int additionalPitchFwd = 0;
         int fwdThrustTorque = 700;
 
@@ -196,8 +196,8 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
             this.add_data_ref(DayaRefNames.THRUST_1);
-           //  this.add_data_ref(DayaRefNames.THRUST_2);
-         //   this.add_data_ref(DayaRefNames.SPEED_IAS);
+            this.add_data_ref(DayaRefNames.THRUST_2);
+            this.add_data_ref(DayaRefNames.SPEED_IAS);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
@@ -349,7 +349,8 @@ namespace LoadForceSim
                                     torquePitch.SetTorque(torquePitchHigh);
 
                                     // move if on ground
-                                    if (Convert.ToInt32(airSpeed.Value) < 10)
+                                    double airSpeedValue = Convert.ToDouble(airSpeed.Value);
+                                    if (airSpeedValue < 30)
                                     {
                                         moveToY(hydOffPitchPosition);
                                     }
@@ -358,7 +359,7 @@ namespace LoadForceSim
                                     // reset position
                                     changeSpeedPitch(80000);
                                     // move if on ground
-                                    if (Convert.ToInt32(airSpeed.Value) < 10)
+                                    if (Convert.ToDouble(airSpeed.Value) < 30)
                                     {
                                         moveToY(0);
                                     }
@@ -426,8 +427,9 @@ namespace LoadForceSim
 
 
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Debug.WriteLine("failed to update sim var " + ex.Message);
 
                 }
 
