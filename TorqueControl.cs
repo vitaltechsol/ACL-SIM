@@ -8,6 +8,11 @@ namespace LoadForceSim
     internal class TorqueControl
     {
         ModbusClient mbc;
+        public event EventHandler OnUpdateStatusCW;
+        public event EventHandler OnUpdateStatusCCW;
+
+        public int StatusTextCW { get; private set; }
+        public int StatusTextCCW { get; private set; }
 
         public TorqueControl(string port, byte driverID)
         {
@@ -19,7 +24,30 @@ namespace LoadForceSim
             };
         }
 
-        
+        void UpdateStatusCW(int text)
+        {
+            StatusTextCW = text;
+
+            EventHandler handler = OnUpdateStatusCW;
+
+            if (handler != null)
+            {
+                handler(null, EventArgs.Empty);
+            }
+        }
+        void UpdateStatusCCW(int text)
+        {
+            StatusTextCCW = text;
+
+            EventHandler handler = OnUpdateStatusCCW;
+
+            if (handler != null)
+            {
+                handler(null, EventArgs.Empty);
+            }
+        }
+
+
         public void SetTorque(int value )
         {
             try
@@ -28,13 +56,15 @@ namespace LoadForceSim
                 mbc.WriteSingleRegister(8, value);
                 mbc.WriteSingleRegister(9, value * -1);
                 mbc.Disconnect();
+                UpdateStatusCW(value);
+                UpdateStatusCCW(value);
                 Debug.WriteLine("updated torques " + value);
 
             }
             catch (Exception ex)
             {
                 mbc.Disconnect();
-                Debug.WriteLine("failed update torques " + ex.Message);
+                Debug.WriteLine("ERROR: failed update torques " + ex.Message);
 
             }
         }
@@ -46,12 +76,13 @@ namespace LoadForceSim
                 mbc.Connect();
                 mbc.WriteSingleRegister(8, value);
                 mbc.Disconnect();
+                UpdateStatusCW(value);
                 Debug.WriteLine("updated torque CW " + value);
             }
             catch (Exception ex)
             {
                 mbc.Disconnect();
-                Debug.WriteLine("failed update torque CW " + ex.Message);
+                Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
             }
         }
 
@@ -62,13 +93,14 @@ namespace LoadForceSim
                 mbc.Connect();
                 mbc.WriteSingleRegister(9, value * -1);
                 mbc.Disconnect();
+                UpdateStatusCCW(value);
                 Debug.WriteLine("updated torque CCW " + value);
 
             }
             catch (Exception ex)
             {
                 mbc.Disconnect();
-                Debug.WriteLine("failed update torque CCW " + ex.Message);
+                Debug.WriteLine("ERROR: failed update torque CCW " + ex.Message);
 
             }
         }

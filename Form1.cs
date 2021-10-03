@@ -26,8 +26,14 @@ namespace LoadForceSim
         static string portName = "COM3";
         static int torqueRollLow = 18;
         static int torqueRollHigh = 65;
-        static int additionalPitchFwd = 0;
-        int fwdThrustTorque = 700;
+        static int additionalThrustTorqueFwd = 0;
+        static int additionalThrustTorqueBack = 0;
+        static int additionalAirSpeedTorqueFwd = 0;
+        static int additionalAirSpeedTorqueBack = 0;
+
+
+        int fwdThrustTorqueFactor = 700;
+        int airSpeedTorqueFactor = 100;
 
         static int torquePitchLow = 30;
         static int torquePitchHigh = 55;
@@ -37,7 +43,7 @@ namespace LoadForceSim
         bool isRollCMD = false;
         bool isPitchCMD = false;
         bool isHydAvail = false;
-       
+
         int offsetX = 7000;
         int offsetY = 500;
         int hydOffPitchPosition = -9500;
@@ -66,6 +72,11 @@ namespace LoadForceSim
         public Form1()
         {
             InitializeComponent();
+
+            // Add event to update the torque status
+            torquePitch.OnUpdateStatusCCW += (sender1, e1) => UpdateTorquePitchLabelBack(torquePitch.StatusTextCCW);
+            torquePitch.OnUpdateStatusCW += (sender1, e1) => UpdateTorquePitchLabelFwd(torquePitch.StatusTextCCW);
+
             // Register to receive connect and disconnect events
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
@@ -80,7 +91,6 @@ namespace LoadForceSim
             timerY.Elapsed += sendDataOK_Y;
             timerY.AutoReset = true;
 
-
             //if (SerialPort.GetPortNames().Count() >= 0)
             //{
             //    foreach (string p in SerialPort.GetPortNames())
@@ -91,7 +101,6 @@ namespace LoadForceSim
 
             BeginSerial(baud, portName);
             port.Open();
-
         }
 
         private void Form1_Shown(Object sender, EventArgs e)
@@ -108,7 +117,6 @@ namespace LoadForceSim
             {
                 connectToProSim();
             }
-
 
             apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
             apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
@@ -148,7 +156,7 @@ namespace LoadForceSim
             catch (Exception ex)
             {
                 updateStatusLabel();
-               // MessageBox.Show("Error connecting to ProSim737 System: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // MessageBox.Show("Error connecting to ProSim737 System: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -191,12 +199,14 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
 
             this.add_data_ref(DayaRefNames.PITCH);
+            this.add_data_ref(DayaRefNames.TRIM_ELEVATOR);
+
 
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
             this.add_data_ref(DayaRefNames.THRUST_1);
-            this.add_data_ref(DayaRefNames.THRUST_2);
+            // this.add_data_ref(DayaRefNames.THRUST_2);
             this.add_data_ref(DayaRefNames.SPEED_IAS);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
@@ -230,6 +240,8 @@ namespace LoadForceSim
             }
         }
 
+      
+
         void dataRef_onDataChange(DataRef dataRef)
         {
             if (IsDisposed)
@@ -261,31 +273,70 @@ namespace LoadForceSim
                                         moveToX(xValue);
                                         sendDataX = false;
                                     }
-                                       
+
                                 }
                                 break;
 
                             }
 
+                        case DayaRefNames.TRIM_ELEVATOR:
+                            {
+                              //  if ( sendDataY== true)
+                             //   {
+                                    double yValue = Math.Round(Convert.ToDouble(dataRef.value) * 150000);
+                                    // Skip sudden jumps to 0
+                                    if (yValue != 0)
+                                    {
+                                        item.ValueConverted = yValue;
+                                        moveToY(yValue);
+                                    //   sendDataY = false;
+                                    }
+
+                                }
+                                break;
+
+                          //  }             
+
                         case DayaRefNames.THRUST_1:
                             {
-                                if (sendDataY == true)
-                                {
-                                    item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / fwdThrustTorque);
-                                    if (additionalPitchFwd != item.ValueConverted)
-                                    {
-                                        additionalPitchFwd = Convert.ToInt32(item.ValueConverted);
-                                        torquePitch.SetTorqueCCW(torquePitchLow + additionalPitchFwd);
+                                //if (sendDataY == true)
 
-                                    }
-                                    sendDataY = false;
+                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / fwdThrustTorqueFactor);
+                                if (additionalThrustTorqueFwd != item.ValueConverted)
+                                {
+                                    additionalThrustTorqueFwd = Convert.ToInt32(item.ValueConverted);
+                                    torquePitch.SetTorqueCCW(torquePitchLow + additionalThrustTorqueFwd + additionalAirSpeedTorqueFwd);
+
+
+                                    additionalThrustTorqueBack = Convert.ToInt32(item.ValueConverted);
+                                    torquePitch.SetTorqueCW(torquePitchLow - additionalThrustTorqueBack - additionalAirSpeedTorqueBack);
                                 }
+                                // sendDataY = false;
+                                // }
+                                break;
+
+                            }
+                        case DayaRefNames.SPEED_IAS:
+                            {
+                                //if (sendDataY == true)
+
+                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / airSpeedTorqueFactor);
+                                if (additionalAirSpeedTorqueFwd != item.ValueConverted)
+                                {
+                                    additionalAirSpeedTorqueFwd = Convert.ToInt32(item.ValueConverted);
+                                    torquePitch.SetTorqueCCW(torquePitchLow + additionalThrustTorqueFwd + additionalAirSpeedTorqueFwd);
+
+                                    additionalAirSpeedTorqueBack = Convert.ToInt32(item.ValueConverted);
+                                    torquePitch.SetTorqueCW(torquePitchLow - additionalThrustTorqueBack - additionalAirSpeedTorqueBack);
+                                }
+                                // sendDataY = false;
+                                // }
                                 break;
 
                             }
                         case DayaRefNames.PITCH:
                             {
-                                if (isPitchCMD == true  && sendDataY == true)
+                                if (isPitchCMD == true && sendDataY == true)
                                 {
                                     item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) * offsetY);
                                     moveToY(item.ValueConverted);
@@ -308,10 +359,10 @@ namespace LoadForceSim
                                 }
                                 else
                                 {
-                                   torqueRoll.SetTorque(torqueRollHigh);
+                                    torqueRoll.SetTorque(torqueRollHigh);
                                 }
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
-                                Debug.WriteLine("updated isPitchCMD "  + isRollCMD);
+                                Debug.WriteLine("updated isPitchCMD " + isRollCMD);
                                 break;
                             }
 
@@ -323,12 +374,12 @@ namespace LoadForceSim
                                     moveToY(0);
                                     if (isHydAvail)
                                     {
-                                       torquePitch.SetTorque(torquePitchLow);
+                                        torquePitch.SetTorque(torquePitchLow);
                                     }
                                 }
                                 else
                                 {
-                                  torquePitch.SetTorque(torquePitchHigh);
+                                    torquePitch.SetTorque(torquePitchHigh);
                                 }
 
                                 isPitchCMD = Convert.ToBoolean(dataRef.value);
@@ -354,7 +405,8 @@ namespace LoadForceSim
                                     {
                                         moveToY(hydOffPitchPosition);
                                     }
-                                } else
+                                }
+                                else
                                 {
                                     // reset position
                                     changeSpeedPitch(80000);
@@ -376,7 +428,7 @@ namespace LoadForceSim
                             {
                                 item.ValueConverted = lastRollMoved;
 
-                                if (isRollCMD == true) 
+                                if (isRollCMD == true)
                                 {
                                     int value = Convert.ToInt32(dataRef.value);
                                     double diff1 = value - lastRollMoved;
@@ -442,7 +494,7 @@ namespace LoadForceSim
             }
         }
 
-       // Roll
+        // Roll
         private void moveToX(double value)
         {
             if (value > minX && value < maxX)
@@ -460,13 +512,13 @@ namespace LoadForceSim
                 string arduLine = "<Y_POS, 0, " + value + ">";
                 port.Write(arduLine);
             }
-            
+
         }
 
         // Pitch Speed
         private void changeSpeedPitch(double value)
         {
-     
+
             string arduLine = "<PITCH_SPEED, 0, " + value + ">";
             port.Write(arduLine);
             Debug.WriteLine("updated pitch speed " + value);
@@ -474,6 +526,16 @@ namespace LoadForceSim
 
         }
 
+        private void UpdateTorquePitchLabelBack(int value)
+        {
+            Invoke(new MethodInvoker(delegate () { lblTorquePitchBack.Text = value.ToString(); }));
+        }
+
+        private void UpdateTorquePitchLabelFwd(int value)
+        {
+            Invoke(new MethodInvoker(delegate () { lblTorquePitchFwd.Text = value.ToString(); }));
+
+        }
 
         private void btnCenterOut_Click(object sender, EventArgs e)
         {
@@ -498,7 +560,7 @@ namespace LoadForceSim
         }
 
         private void btnUpdateTorque_Click(object sender, EventArgs e)
-        {   
+        {
             if (txbRollTorque.Text != "")
             {
                 torqueRoll.SetTorque(Int32.Parse(txbRollTorque.Text));
@@ -528,13 +590,8 @@ namespace LoadForceSim
                 speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
             }
         }
-
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
     }
-;
+
     // The data object that is used for the DataRef table
     class DataRefTableItem
     {
@@ -554,6 +611,8 @@ namespace LoadForceSim
     {
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
+        public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
+
         public const string AILERON_IN_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string ELEVATOR_IN_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
 
@@ -571,6 +630,8 @@ namespace LoadForceSim
         public const string PITCH = "aircraft.pitch";
 
         public const string MCP_AP_DISENGAGE = "system.switches.S_MCP_AP_DISENGAGE";
+
+
 
     }
 

@@ -53,6 +53,12 @@ namespace LoadForceSim
             this.tabStatus = new System.Windows.Forms.TabPage();
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.tabTest = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtMinPitchPos = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.txtMinRoll = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.btnSaveServoConfigs = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -62,17 +68,13 @@ namespace LoadForceSim
             this.btnSpeedTest = new System.Windows.Forms.Button();
             this.btnTorqueDefault = new System.Windows.Forms.Button();
             this.txbPitchTorque = new System.Windows.Forms.TextBox();
-            this.btnSaveServoConfigs = new System.Windows.Forms.Button();
+            this.lblTorquePitchFwd = new System.Windows.Forms.Label();
+            this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.label7 = new System.Windows.Forms.Label();
-            this.txtMinPitchPos = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.txtMinRoll = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
@@ -301,6 +303,59 @@ namespace LoadForceSim
             this.tabTest.Text = "Servo Config";
             this.tabTest.UseVisualStyleBackColor = true;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(62, 83);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(64, 13);
+            this.label7.TabIndex = 30;
+            this.label7.Text = "Min Position";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // txtMinPitchPos
+            // 
+            this.txtMinPitchPos.Location = new System.Drawing.Point(142, 78);
+            this.txtMinPitchPos.Name = "txtMinPitchPos";
+            this.txtMinPitchPos.Size = new System.Drawing.Size(65, 20);
+            this.txtMinPitchPos.TabIndex = 26;
+            this.txtMinPitchPos.Text = "0";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(298, 78);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(60, 23);
+            this.button1.TabIndex = 27;
+            this.button1.Text = "Move";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // txtMinRoll
+            // 
+            this.txtMinRoll.Location = new System.Drawing.Point(220, 79);
+            this.txtMinRoll.Name = "txtMinRoll";
+            this.txtMinRoll.Size = new System.Drawing.Size(65, 20);
+            this.txtMinRoll.TabIndex = 29;
+            this.txtMinRoll.Text = "0";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(371, 78);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 28;
+            this.button2.Text = "Center ";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // btnSaveServoConfigs
+            // 
+            this.btnSaveServoConfigs.Location = new System.Drawing.Point(648, 15);
+            this.btnSaveServoConfigs.Name = "btnSaveServoConfigs";
+            this.btnSaveServoConfigs.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveServoConfigs.TabIndex = 25;
+            this.btnSaveServoConfigs.Text = "Save";
+            this.btnSaveServoConfigs.UseVisualStyleBackColor = true;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -320,7 +375,6 @@ namespace LoadForceSim
             this.label5.TabIndex = 23;
             this.label5.Text = "Torque Lowest";
             this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label4
             // 
@@ -382,14 +436,23 @@ namespace LoadForceSim
             this.txbPitchTorque.Size = new System.Drawing.Size(65, 20);
             this.txbPitchTorque.TabIndex = 16;
             // 
-            // btnSaveServoConfigs
+            // lblTorquePitchFwd
             // 
-            this.btnSaveServoConfigs.Location = new System.Drawing.Point(648, 15);
-            this.btnSaveServoConfigs.Name = "btnSaveServoConfigs";
-            this.btnSaveServoConfigs.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveServoConfigs.TabIndex = 25;
-            this.btnSaveServoConfigs.Text = "Save";
-            this.btnSaveServoConfigs.UseVisualStyleBackColor = true;
+            this.lblTorquePitchFwd.AutoSize = true;
+            this.lblTorquePitchFwd.Location = new System.Drawing.Point(529, 35);
+            this.lblTorquePitchFwd.Name = "lblTorquePitchFwd";
+            this.lblTorquePitchFwd.Size = new System.Drawing.Size(31, 13);
+            this.lblTorquePitchFwd.TabIndex = 18;
+            this.lblTorquePitchFwd.Text = "Pitch";
+            // 
+            // lblTorquePitchBack
+            // 
+            this.lblTorquePitchBack.AutoSize = true;
+            this.lblTorquePitchBack.Location = new System.Drawing.Point(576, 36);
+            this.lblTorquePitchBack.Name = "lblTorquePitchBack";
+            this.lblTorquePitchBack.Size = new System.Drawing.Size(31, 13);
+            this.lblTorquePitchBack.TabIndex = 19;
+            this.lblTorquePitchBack.Text = "Pitch";
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -425,55 +488,13 @@ namespace LoadForceSim
             this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
             this.dataRefTableItemBindingSource.Filter = "";
             // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(62, 83);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(64, 13);
-            this.label7.TabIndex = 30;
-            this.label7.Text = "Min Position";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // txtMinPitchPos
-            // 
-            this.txtMinPitchPos.Location = new System.Drawing.Point(142, 78);
-            this.txtMinPitchPos.Name = "txtMinPitchPos";
-            this.txtMinPitchPos.Size = new System.Drawing.Size(65, 20);
-            this.txtMinPitchPos.TabIndex = 26;
-            this.txtMinPitchPos.Text = "0";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(298, 78);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(60, 23);
-            this.button1.TabIndex = 27;
-            this.button1.Text = "Move";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // txtMinRoll
-            // 
-            this.txtMinRoll.Location = new System.Drawing.Point(220, 79);
-            this.txtMinRoll.Name = "txtMinRoll";
-            this.txtMinRoll.Size = new System.Drawing.Size(65, 20);
-            this.txtMinRoll.TabIndex = 29;
-            this.txtMinRoll.Text = "0";
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(371, 78);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 28;
-            this.button2.Text = "Center ";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(776, 492);
+            this.Controls.Add(this.lblTorquePitchBack);
+            this.Controls.Add(this.lblTorquePitchFwd);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.chkAutoConnect);
             this.Controls.Add(this.connectionStatusLabel);
@@ -538,6 +559,8 @@ namespace LoadForceSim
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox txtMinRoll;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label lblTorquePitchFwd;
+        private System.Windows.Forms.Label lblTorquePitchBack;
     }
 }
 

@@ -6,9 +6,9 @@ namespace LoadForceSim
 {
     internal class SpeedControl
     {
-        ModbusClient mbc;
+        ModbusClient mbc; 
 
-        public SpeedControl(string port, byte driverID)
+       public SpeedControl(string port, byte driverID)
         {
             mbc = new ModbusClient(port)
             {
