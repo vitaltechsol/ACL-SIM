@@ -12,6 +12,7 @@ namespace LoadForceSim
         {
             mbc = new ModbusClient(port)
             {
+                Baudrate = 115200,
                 UnitIdentifier = driverID,
                 StopBits = StopBits.One,
                 Parity = Parity.None

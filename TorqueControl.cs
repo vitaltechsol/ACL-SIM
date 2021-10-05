@@ -18,15 +18,16 @@ namespace LoadForceSim
         {
             mbc = new ModbusClient(port)
             {
+                Baudrate = 115200,
                 UnitIdentifier = driverID,
                 StopBits = StopBits.One,
                 Parity = Parity.None
             };
         }
 
-        void UpdateStatusCW(int text)
+        void UpdateStatusCW(int value)
         {
-            StatusTextCW = text;
+            StatusTextCW = value;
 
             EventHandler handler = OnUpdateStatusCW;
 
@@ -35,9 +36,9 @@ namespace LoadForceSim
                 handler(null, EventArgs.Empty);
             }
         }
-        void UpdateStatusCCW(int text)
+        void UpdateStatusCCW(int value)
         {
-            StatusTextCCW = text;
+            StatusTextCCW = value;
 
             EventHandler handler = OnUpdateStatusCCW;
 
@@ -50,58 +51,91 @@ namespace LoadForceSim
 
         public void SetTorque(int value )
         {
-            try
+            if (StatusTextCCW != value || StatusTextCW != value)
             {
-                mbc.Connect();
-                mbc.WriteSingleRegister(8, value);
-                mbc.WriteSingleRegister(9, value * -1);
-                mbc.Disconnect();
-                UpdateStatusCW(value);
-                UpdateStatusCCW(value);
-                Debug.WriteLine("updated torques " + value);
+                try
+                {
+                    mbc.Connect();
+                    mbc.WriteSingleRegister(8, value);
+                    mbc.WriteSingleRegister(9, value * -1);
+                    mbc.Disconnect();
+                    UpdateStatusCW(value);
+                    UpdateStatusCCW(value);
+                    Debug.WriteLine("updated torques " + value);
 
+                }
+                catch (Exception ex)
+                {
+                    mbc.Disconnect();
+                    Debug.WriteLine("ERROR: failed update torques " + ex.Message);
+
+                }
             }
-            catch (Exception ex)
-            {
-                mbc.Disconnect();
-                Debug.WriteLine("ERROR: failed update torques " + ex.Message);
+        }
 
+        public void SetTorques(int cwValue, int ccwValue)
+        {
+            if (StatusTextCCW != ccwValue || StatusTextCW != cwValue)
+            {
+                try
+                {
+                    mbc.Connect();
+                    mbc.WriteSingleRegister(8, cwValue);
+                    mbc.WriteSingleRegister(9, ccwValue * -1);
+                    mbc.Disconnect();
+                    UpdateStatusCW(cwValue);
+                    UpdateStatusCCW(ccwValue);
+                    Debug.WriteLine("updated torques. cw: " + cwValue + "- ccw: " + ccwValue);
+
+                }
+                catch (Exception ex)
+                {
+                    mbc.Disconnect();
+                    Debug.WriteLine("ERROR: failed update torques " + ex.Message);
+
+                }
             }
         }
 
         public void SetTorqueCW(int value)
         {
-            try
+            if (StatusTextCW != value)
             {
-                mbc.Connect();
-                mbc.WriteSingleRegister(8, value);
-                mbc.Disconnect();
-                UpdateStatusCW(value);
-                Debug.WriteLine("updated torque CW " + value);
-            }
-            catch (Exception ex)
-            {
-                mbc.Disconnect();
-                Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
+                try
+                {
+                    mbc.Connect();
+                    mbc.WriteSingleRegister(8, value);
+                    mbc.Disconnect();
+                    UpdateStatusCW(value);
+                    Debug.WriteLine("updated torque CW " + value);
+                }
+                catch (Exception ex)
+                {
+                    mbc.Disconnect();
+                    Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
+                }
             }
         }
 
         public void SetTorqueCCW(int value)
         {
-            try
+            if (StatusTextCCW != value)
             {
-                mbc.Connect();
-                mbc.WriteSingleRegister(9, value * -1);
-                mbc.Disconnect();
-                UpdateStatusCCW(value);
-                Debug.WriteLine("updated torque CCW " + value);
+                try
+                {
+                    mbc.Connect();
+                    mbc.WriteSingleRegister(9, value * -1);
+                    mbc.Disconnect();
+                    UpdateStatusCCW(value);
+                    Debug.WriteLine("updated torque CCW " + value);
 
-            }
-            catch (Exception ex)
-            {
-                mbc.Disconnect();
-                Debug.WriteLine("ERROR: failed update torque CCW " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    mbc.Disconnect();
+                    Debug.WriteLine("ERROR: failed update torque CCW " + ex.Message);
 
+                }
             }
         }
     }
