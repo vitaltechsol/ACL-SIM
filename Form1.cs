@@ -32,8 +32,8 @@ namespace LoadForceSim
         static int additionalAirSpeedTorqueBack = 0;
 
 
-        int fwdThrustTorqueFactor = 700;
-        int airSpeedTorqueFactor = 100;
+        int fwdThrustTorqueFactor = 800;
+        int airSpeedTorqueFactor = 20;
 
         static int torquePitchLow = 30;
         static int torquePitchHigh = 55;
@@ -75,7 +75,7 @@ namespace LoadForceSim
 
             // Add event to update the torque status
             torquePitch.OnUpdateStatusCCW += (sender1, e1) => UpdateTorquePitchLabelBack(torquePitch.StatusTextCCW);
-            torquePitch.OnUpdateStatusCW += (sender1, e1) => UpdateTorquePitchLabelFwd(torquePitch.StatusTextCCW);
+            torquePitch.OnUpdateStatusCW += (sender1, e1) => UpdateTorquePitchLabelFwd(torquePitch.StatusTextCW);
 
             // Register to receive connect and disconnect events
             connection.onConnect += connection_onConnect;
@@ -299,20 +299,22 @@ namespace LoadForceSim
 
                         case DayaRefNames.THRUST_1:
                             {
-                                //if (sendDataY == true)
-
                                 item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / fwdThrustTorqueFactor);
                                 if (additionalThrustTorqueFwd != item.ValueConverted)
                                 {
-                                    additionalThrustTorqueFwd = Convert.ToInt32(item.ValueConverted);
-                                    torquePitch.SetTorqueCCW(torquePitchLow + additionalThrustTorqueFwd + additionalAirSpeedTorqueFwd);
-
-
-                                    additionalThrustTorqueBack = Convert.ToInt32(item.ValueConverted);
-                                    torquePitch.SetTorqueCW(torquePitchLow - additionalThrustTorqueBack - additionalAirSpeedTorqueBack);
+                                    if (IsPitchUp())
+                                    {
+                                        additionalThrustTorqueFwd = Convert.ToInt32(item.ValueConverted);
+                                        additionalThrustTorqueBack = Convert.ToInt32(item.ValueConverted) * 1;
+                                    }
+                                    else
+                                    {
+                                        additionalThrustTorqueFwd = Convert.ToInt32(item.ValueConverted) * 1;
+                                        additionalThrustTorqueBack = Convert.ToInt32(item.ValueConverted);
+                                    }
+                                    UpdatePitchTorques();
                                 }
-                                // sendDataY = false;
-                                // }
+
                                 break;
 
                             }
@@ -323,11 +325,19 @@ namespace LoadForceSim
                                 item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / airSpeedTorqueFactor);
                                 if (additionalAirSpeedTorqueFwd != item.ValueConverted)
                                 {
-                                    additionalAirSpeedTorqueFwd = Convert.ToInt32(item.ValueConverted);
-                                    torquePitch.SetTorqueCCW(torquePitchLow + additionalThrustTorqueFwd + additionalAirSpeedTorqueFwd);
+                                    if (IsPitchUp())
+                                    {
+                                        additionalAirSpeedTorqueFwd = Convert.ToInt32(item.ValueConverted);
+                                        additionalAirSpeedTorqueBack = Convert.ToInt32(item.ValueConverted) * -1;
+                                    }
+                                    else
+                                    {
+                                        additionalAirSpeedTorqueFwd = Convert.ToInt32(item.ValueConverted) * -1;
+                                        additionalAirSpeedTorqueBack = Convert.ToInt32(item.ValueConverted);
+                                    }
 
-                                    additionalAirSpeedTorqueBack = Convert.ToInt32(item.ValueConverted);
-                                    torquePitch.SetTorqueCW(torquePitchLow - additionalThrustTorqueBack - additionalAirSpeedTorqueBack);
+                                    UpdatePitchTorques();
+
                                 }
                                 // sendDataY = false;
                                 // }
@@ -494,6 +504,25 @@ namespace LoadForceSim
             }
         }
 
+        private bool IsPitchUp()
+        {
+            DataRefTableItem itemPitch = dataRefs[DayaRefNames.PITCH];
+            double pitchValue = Convert.ToDouble(itemPitch.Value);
+            if (pitchValue > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void UpdatePitchTorques()
+        {
+            int tqccw = torquePitchLow + additionalThrustTorqueFwd + additionalAirSpeedTorqueFwd;
+            int tqcw = torquePitchLow + additionalThrustTorqueBack + additionalAirSpeedTorqueBack;
+            torquePitch.SetTorques(tqcw, tqccw);
+
+        }
         // Roll
         private void moveToX(double value)
         {
@@ -518,12 +547,9 @@ namespace LoadForceSim
         // Pitch Speed
         private void changeSpeedPitch(double value)
         {
-
             string arduLine = "<PITCH_SPEED, 0, " + value + ">";
             port.Write(arduLine);
             Debug.WriteLine("updated pitch speed " + value);
-
-
         }
 
         private void UpdateTorquePitchLabelBack(int value)
