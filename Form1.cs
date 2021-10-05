@@ -26,14 +26,14 @@ namespace LoadForceSim
         static string portName = "COM3";
         static int torqueRollLow = 18;
         static int torqueRollHigh = 65;
-        static int additionalThrustTorqueFwd = 0;
-        static int additionalThrustTorqueBack = 0;
-        static int additionalAirSpeedTorqueFwd = 0;
-        static int additionalAirSpeedTorqueBack = 0;
+        static int additionalThrustTorque = 0;
+        static int additionalAirSpeedTorque = 0;
+        static int additionalVerticalSpeedTorque = 0;
 
 
-        int fwdThrustTorqueFactor = 800;
-        int airSpeedTorqueFactor = 20;
+        int thrustTorqueFactor = 1200;
+        int airSpeedTorqueFactor = 30;
+        int verticalSpeedTorqueFactor = 250;
 
         static int torquePitchLow = 30;
         static int torquePitchHigh = 55;
@@ -206,8 +206,9 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.PITCH_CMD);
 
             this.add_data_ref(DayaRefNames.THRUST_1);
-            // this.add_data_ref(DayaRefNames.THRUST_2);
+            this.add_data_ref(DayaRefNames.THRUST_2);
             this.add_data_ref(DayaRefNames.SPEED_IAS);
+            this.add_data_ref(DayaRefNames.VERTICAL_SPEED);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
@@ -299,19 +300,10 @@ namespace LoadForceSim
 
                         case DayaRefNames.THRUST_1:
                             {
-                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / fwdThrustTorqueFactor);
-                                if (additionalThrustTorqueFwd != item.ValueConverted)
+                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / thrustTorqueFactor);
+                                if (additionalThrustTorque != item.ValueConverted)
                                 {
-                                    if (IsPitchUp())
-                                    {
-                                        additionalThrustTorqueFwd = Convert.ToInt32(item.ValueConverted);
-                                        additionalThrustTorqueBack = Convert.ToInt32(item.ValueConverted) * 1;
-                                    }
-                                    else
-                                    {
-                                        additionalThrustTorqueFwd = Convert.ToInt32(item.ValueConverted) * 1;
-                                        additionalThrustTorqueBack = Convert.ToInt32(item.ValueConverted);
-                                    }
+                                    additionalThrustTorque = Convert.ToInt32(item.ValueConverted);
                                     UpdatePitchTorques();
                                 }
 
@@ -320,27 +312,26 @@ namespace LoadForceSim
                             }
                         case DayaRefNames.SPEED_IAS:
                             {
-                                //if (sendDataY == true)
-
                                 item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / airSpeedTorqueFactor);
-                                if (additionalAirSpeedTorqueFwd != item.ValueConverted)
+                                if (additionalAirSpeedTorque != item.ValueConverted)
                                 {
-                                    if (IsPitchUp())
-                                    {
-                                        additionalAirSpeedTorqueFwd = Convert.ToInt32(item.ValueConverted);
-                                        additionalAirSpeedTorqueBack = Convert.ToInt32(item.ValueConverted) * -1;
-                                    }
-                                    else
-                                    {
-                                        additionalAirSpeedTorqueFwd = Convert.ToInt32(item.ValueConverted) * -1;
-                                        additionalAirSpeedTorqueBack = Convert.ToInt32(item.ValueConverted);
-                                    }
-
+                                    additionalAirSpeedTorque = Convert.ToInt32(item.ValueConverted);
                                     UpdatePitchTorques();
 
                                 }
-                                // sendDataY = false;
-                                // }
+                                break;
+
+                            }
+                        case DayaRefNames.VERTICAL_SPEED:
+                            {
+                                // Vertial speed tells us if more torque should be added when pushing or pulling
+
+                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / verticalSpeedTorqueFactor);
+                                if (additionalVerticalSpeedTorque != item.ValueConverted)
+                                {
+                                    additionalVerticalSpeedTorque = Convert.ToInt32(item.ValueConverted);
+                                    UpdatePitchTorques();
+                                }
                                 break;
 
                             }
@@ -518,9 +509,24 @@ namespace LoadForceSim
 
         private void UpdatePitchTorques()
         {
-            int tqccw = torquePitchLow + additionalThrustTorqueFwd + additionalAirSpeedTorqueFwd;
-            int tqcw = torquePitchLow + additionalThrustTorqueBack + additionalAirSpeedTorqueBack;
-            torquePitch.SetTorques(tqcw, tqccw);
+            int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
+            int additionalTorque = additionalThrustTorque + additionalAirSpeedTorque;
+            if (additionalVerticalSpeedTorque > 0)
+            {
+                int calcAdditionalTorque = additionalTorque / (20 / additionalVerticalSpeedTorque);
+
+                int tqccw =  torqueBase + calcAdditionalTorque;
+                int tqcw =  torqueBase - calcAdditionalTorque;
+                torquePitch.SetTorques(tqcw, tqccw);
+            }
+            else
+            {
+                int calcAdditionalTorque = (additionalTorque * -1) / (20 / additionalVerticalSpeedTorque);
+
+                int tqccw = torqueBase - calcAdditionalTorque;
+                int tqcw = torqueBase + calcAdditionalTorque;
+                torquePitch.SetTorques(tqcw, tqccw);
+            }
 
         }
         // Roll
@@ -652,6 +658,8 @@ namespace LoadForceSim
         public const string THRUST_2 = "aircraft.engines.2.thrust";
 
         public const string SPEED_IAS = "aircraft.speed.ias";
+        public const string VERTICAL_SPEED = "aircraft.verticalspeed";
+
 
         public const string PITCH = "aircraft.pitch";
 

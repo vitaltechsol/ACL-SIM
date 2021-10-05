@@ -51,8 +51,14 @@ namespace LoadForceSim
 
         public void SetTorque(int value )
         {
-            if (StatusTextCCW != value || StatusTextCW != value)
+            if (value > 0 && (StatusTextCCW != value || StatusTextCW != value))
             {
+
+                if (value < 0)
+                {
+                    value = 0;
+                }
+
                 try
                 {
                     mbc.Connect();
@@ -75,13 +81,24 @@ namespace LoadForceSim
 
         public void SetTorques(int cwValue, int ccwValue)
         {
+
             if (StatusTextCCW != ccwValue || StatusTextCW != cwValue)
             {
+                if (cwValue < 0)
+                {
+                    cwValue = 0;
+                }
+
+                if (ccwValue < 0)
+                {
+                    ccwValue = 0;
+                }
+
                 try
                 {
                     mbc.Connect();
                     mbc.WriteSingleRegister(8, cwValue);
-                    mbc.WriteSingleRegister(9, ccwValue * -1);
+                     mbc.WriteSingleRegister(9, ccwValue * -1);
                     mbc.Disconnect();
                     UpdateStatusCW(cwValue);
                     UpdateStatusCCW(ccwValue);
@@ -101,6 +118,10 @@ namespace LoadForceSim
         {
             if (StatusTextCW != value)
             {
+                if (value < 0)
+                {
+                    value = 0;
+                }
                 try
                 {
                     mbc.Connect();
@@ -121,6 +142,10 @@ namespace LoadForceSim
         {
             if (StatusTextCCW != value)
             {
+                if (value < 0)
+                {
+                    value = 0;
+                }
                 try
                 {
                     mbc.Connect();
