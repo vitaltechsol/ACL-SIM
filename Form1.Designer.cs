@@ -36,6 +36,11 @@ namespace LoadForceSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -70,16 +75,11 @@ namespace LoadForceSim
             this.txbPitchTorque = new System.Windows.Forms.TextBox();
             this.lblTorquePitchFwd = new System.Windows.Forms.Label();
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.tabTest.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
@@ -138,6 +138,40 @@ namespace LoadForceSim
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataRefView.Size = new System.Drawing.Size(728, 267);
             this.dataRefView.TabIndex = 5;
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueDataGridViewTextBoxColumn
+            // 
+            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
+            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
+            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
+            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueConvertedDataGridViewTextBoxColumn
+            // 
+            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
+            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // descriptionDataGridViewTextBoxColumn
+            // 
+            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
+            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
+            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
+            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dataRefTableItemBindingSource
+            // 
+            this.dataRefTableItemBindingSource.AllowNew = false;
+            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
+            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // name
             // 
@@ -439,54 +473,22 @@ namespace LoadForceSim
             // lblTorquePitchFwd
             // 
             this.lblTorquePitchFwd.AutoSize = true;
-            this.lblTorquePitchFwd.Location = new System.Drawing.Point(529, 35);
+            this.lblTorquePitchFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorquePitchFwd.Location = new System.Drawing.Point(531, 17);
             this.lblTorquePitchFwd.Name = "lblTorquePitchFwd";
-            this.lblTorquePitchFwd.Size = new System.Drawing.Size(31, 13);
+            this.lblTorquePitchFwd.Size = new System.Drawing.Size(95, 39);
             this.lblTorquePitchFwd.TabIndex = 18;
             this.lblTorquePitchFwd.Text = "Pitch";
             // 
             // lblTorquePitchBack
             // 
             this.lblTorquePitchBack.AutoSize = true;
-            this.lblTorquePitchBack.Location = new System.Drawing.Point(576, 36);
+            this.lblTorquePitchBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorquePitchBack.Location = new System.Drawing.Point(633, 17);
             this.lblTorquePitchBack.Name = "lblTorquePitchBack";
-            this.lblTorquePitchBack.Size = new System.Drawing.Size(31, 13);
+            this.lblTorquePitchBack.Size = new System.Drawing.Size(95, 39);
             this.lblTorquePitchBack.TabIndex = 19;
             this.lblTorquePitchBack.Text = "Pitch";
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueDataGridViewTextBoxColumn
-            // 
-            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
-            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
-            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
-            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueConvertedDataGridViewTextBoxColumn
-            // 
-            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
-            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // descriptionDataGridViewTextBoxColumn
-            // 
-            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
-            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
-            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
-            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // dataRefTableItemBindingSource
-            // 
-            this.dataRefTableItemBindingSource.AllowNew = false;
-            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
-            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // Form1
             // 
@@ -505,11 +507,11 @@ namespace LoadForceSim
             this.Text = "Load Form Sim";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
