@@ -28,12 +28,12 @@ namespace LoadForceSim
         static int torqueRollHigh = 65;
         static int additionalThrustTorque = 0;
         static int additionalAirSpeedTorque = 0;
-        static int additionalVerticalSpeedTorque = 0;
+        static int additionalVerticalSpeedTorque = 1;
 
 
         int thrustTorqueFactor = 1200;
-        int airSpeedTorqueFactor = 20;
-        int verticalSpeedTorqueFactor = 250;
+        int airSpeedTorqueFactor = 15;
+        int verticalSpeedTorqueFactor = 500;
 
         static int torquePitchLow = 30;
         static int torquePitchHigh = 55;
@@ -120,6 +120,10 @@ namespace LoadForceSim
 
             apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
             apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
+
+            // Reset position
+            moveToX(0);
+            moveToY(0);
         }
 
 
@@ -198,6 +202,8 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
             this.add_data_ref(DayaRefNames.TRIM_ELEVATOR);
+            this.add_data_ref(DayaRefNames.PITCH);
+
 
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
@@ -344,7 +350,6 @@ namespace LoadForceSim
                                 break;
 
                             }
-
                         case DayaRefNames.ROLL_CMD:
                             {
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
@@ -395,7 +400,7 @@ namespace LoadForceSim
                                 Debug.WriteLine("updated isHydAvail " + isHydAvail);
                                 double airSpeedValue = Convert.ToDouble(airSpeed.Value);
 
-
+                                // move if on ground
                                 if (airSpeedValue < 30)
                                 {
                                     if (!isHydAvail)
@@ -408,8 +413,7 @@ namespace LoadForceSim
                                         // reset position
                                         torquePitch.SetTorque(torquePitchHigh);
                                         changeSpeedPitch(80000);
-                                        // move if on ground
-                                         moveToY(0);
+                                        moveToY(0);
                                     }
                                 }
                                
@@ -492,13 +496,22 @@ namespace LoadForceSim
 
         private void UpdatePitchTorques()
         {
-            int vsFactor = 30;
+            int vsFactor = 50;
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
             int additionalTorque = additionalThrustTorque + additionalAirSpeedTorque;
+            if (additionalVerticalSpeedTorque == 0)
+            {
+                additionalVerticalSpeedTorque = 1;
+            }
+
             int vsTorqueWithFactor = (vsFactor / additionalVerticalSpeedTorque) + 1;
             // Some additional torque from the air speed
-            int speedTorque = additionalAirSpeedTorque / 3;
-            additionalVerticalSpeedTorque++;
+            int speedTorque = Convert.ToInt32(additionalAirSpeedTorque / 1.5);
+            if (vsTorqueWithFactor == 0)
+            {
+                vsTorqueWithFactor = 1;
+            }
+
             if (additionalVerticalSpeedTorque > 0)
             {
                 int calcAdditionalTorque = additionalTorque / vsTorqueWithFactor;

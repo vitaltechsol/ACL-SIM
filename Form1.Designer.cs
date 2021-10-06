@@ -75,6 +75,8 @@ namespace LoadForceSim
             this.txbPitchTorque = new System.Windows.Forms.TextBox();
             this.lblTorquePitchFwd = new System.Windows.Forms.Label();
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -490,11 +492,31 @@ namespace LoadForceSim
             this.lblTorquePitchBack.TabIndex = 19;
             this.lblTorquePitchBack.Text = "Pitch";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(637, 56);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(64, 13);
+            this.label8.TabIndex = 20;
+            this.label8.Text = "Push torque";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(535, 56);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(57, 13);
+            this.label9.TabIndex = 21;
+            this.label9.Text = "Pull torque";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(776, 492);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorquePitchBack);
             this.Controls.Add(this.lblTorquePitchFwd);
             this.Controls.Add(this.tabControl1);
@@ -563,6 +585,8 @@ namespace LoadForceSim
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label lblTorquePitchFwd;
         private System.Windows.Forms.Label lblTorquePitchBack;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
     }
 }
 
