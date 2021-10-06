@@ -32,7 +32,7 @@ namespace LoadForceSim
 
 
         int thrustTorqueFactor = 1200;
-        int airSpeedTorqueFactor = 30;
+        int airSpeedTorqueFactor = 20;
         int verticalSpeedTorqueFactor = 250;
 
         static int torquePitchLow = 30;
@@ -197,13 +197,11 @@ namespace LoadForceSim
 
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
-
-            this.add_data_ref(DayaRefNames.PITCH);
             this.add_data_ref(DayaRefNames.TRIM_ELEVATOR);
-
 
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
+            this.add_data_ref(DayaRefNames.MCP_AP_DISENGAGE);
 
             this.add_data_ref(DayaRefNames.THRUST_1);
             this.add_data_ref(DayaRefNames.THRUST_2);
@@ -258,7 +256,7 @@ namespace LoadForceSim
                 // Set the value of the table item to the new value
                 try
                 {
-                    item.Value = dataRef.value.ToString();
+                    item.Value = Convert.ToDouble(dataRef.value);
                     switch (name)
                     {
 
@@ -266,7 +264,7 @@ namespace LoadForceSim
                             {
                                 if (isRollCMD == true && sendDataX == true)
                                 {
-                                    double xValue = Math.Round(Convert.ToDouble(dataRef.value) * offsetX);
+                                    double xValue = Math.Round(item.Value * offsetX);
                                     // Skip sudden jumps to 0
                                     if (xValue != 0)
                                     {
@@ -284,7 +282,7 @@ namespace LoadForceSim
                             {
                               //  if ( sendDataY== true)
                              //   {
-                                    double yValue = Math.Round(Convert.ToDouble(dataRef.value) * 150000);
+                                    double yValue = Math.Round(item.Value * 250000);
                                     // Skip sudden jumps to 0
                                     if (yValue != 0)
                                     {
@@ -300,7 +298,7 @@ namespace LoadForceSim
 
                         case DayaRefNames.THRUST_1:
                             {
-                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / thrustTorqueFactor);
+                                item.ValueConverted = Math.Round(item.Value / thrustTorqueFactor);
                                 if (additionalThrustTorque != item.ValueConverted)
                                 {
                                     additionalThrustTorque = Convert.ToInt32(item.ValueConverted);
@@ -312,7 +310,7 @@ namespace LoadForceSim
                             }
                         case DayaRefNames.SPEED_IAS:
                             {
-                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / airSpeedTorqueFactor);
+                                item.ValueConverted = Math.Round(item.Value / airSpeedTorqueFactor);
                                 if (additionalAirSpeedTorque != item.ValueConverted)
                                 {
                                     additionalAirSpeedTorque = Convert.ToInt32(item.ValueConverted);
@@ -326,7 +324,7 @@ namespace LoadForceSim
                             {
                                 // Vertial speed tells us if more torque should be added when pushing or pulling
 
-                                item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) / verticalSpeedTorqueFactor);
+                                item.ValueConverted = Math.Round(item.Value / verticalSpeedTorqueFactor);
                                 if (additionalVerticalSpeedTorque != item.ValueConverted)
                                 {
                                     additionalVerticalSpeedTorque = Convert.ToInt32(item.ValueConverted);
@@ -339,7 +337,7 @@ namespace LoadForceSim
                             {
                                 if (isPitchCMD == true && sendDataY == true)
                                 {
-                                    item.ValueConverted = Math.Round(Convert.ToDouble(dataRef.value) * offsetY);
+                                    item.ValueConverted = Math.Round(item.Value * offsetY);
                                     moveToY(item.ValueConverted);
                                     sendDataY = false;
                                 }
@@ -349,77 +347,74 @@ namespace LoadForceSim
 
                         case DayaRefNames.ROLL_CMD:
                             {
-                                if (isRollCMD == true)
+                                isRollCMD = Convert.ToBoolean(dataRef.value);
+                                if (isRollCMD == false)
                                 {
                                     // Reset Position
                                     moveToX(0);
-                                    if (isHydAvail)
-                                    {
-                                        torqueRoll.SetTorque(torqueRollLow);
-                                    }
                                 }
-                                else
-                                {
-                                    torqueRoll.SetTorque(torqueRollHigh);
-                                }
-                                isRollCMD = Convert.ToBoolean(dataRef.value);
+                                UpdateRollTorques();
+
                                 Debug.WriteLine("updated isPitchCMD " + isRollCMD);
                                 break;
                             }
 
                         case DayaRefNames.PITCH_CMD:
                             {
-                                if (isPitchCMD == true)
+                                isPitchCMD = Convert.ToBoolean(dataRef.value);
+
+                                if (isPitchCMD == false)
                                 {
                                     // Reset Position
                                     moveToY(0);
-                                    if (isHydAvail)
-                                    {
-                                        torquePitch.SetTorque(torquePitchLow);
-                                    }
-                                }
-                                else
-                                {
-                                    torquePitch.SetTorque(torquePitchHigh);
                                 }
 
-                                isPitchCMD = Convert.ToBoolean(dataRef.value);
+                                UpdatePitchTorques();
                                 Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
                                 break;
                             }
+
+                        case DayaRefNames.MCP_AP_DISENGAGE:
+                        {
+                                bool isDisengaged = Convert.ToBoolean(dataRef.value); 
+                                if (isDisengaged)
+                                {
+                                    // TODO: Use trim
+                                    moveToX(0);
+                                    moveToY(0);
+                                    isPitchCMD = false;
+                                    isRollCMD = false;
+                                }
+                                break;
+                        }
 
                         case DayaRefNames.HYDRAULICS_AVAILABLE:
                             {
                                 isHydAvail = Convert.ToBoolean(dataRef.value);
                                 DataRefTableItem airSpeed = dataRefs[DayaRefNames.SPEED_IAS];
-
                                 Debug.WriteLine("updated isHydAvail " + isHydAvail);
-                                if (!isHydAvail)
-                                {
-                                    // When hydraulics are off move to max pitch
-                                    torqueRoll.SetTorque(torqueRollHigh);
-                                    torquePitch.SetTorque(torquePitchHigh);
+                                double airSpeedValue = Convert.ToDouble(airSpeed.Value);
 
-                                    // move if on ground
-                                    double airSpeedValue = Convert.ToDouble(airSpeed.Value);
-                                    if (airSpeedValue < 30)
+
+                                if (airSpeedValue < 30)
+                                {
+                                    if (!isHydAvail)
                                     {
+                                        torquePitch.SetTorque(torquePitchHigh);
                                         moveToY(hydOffPitchPosition);
                                     }
-                                }
-                                else
-                                {
-                                    // reset position
-                                    changeSpeedPitch(80000);
-                                    // move if on ground
-                                    if (Convert.ToDouble(airSpeed.Value) < 30)
+                                    else
                                     {
-                                        moveToY(0);
+                                        // reset position
+                                        torquePitch.SetTorque(torquePitchHigh);
+                                        changeSpeedPitch(80000);
+                                        // move if on ground
+                                         moveToY(0);
                                     }
-                                    torqueRoll.SetTorque(torqueRollLow);
-                                    torquePitch.SetTorque(torquePitchLow);
-
                                 }
+                               
+                                UpdateRollTorques();
+                                UpdatePitchTorques();
 
                                 break;
                             }
@@ -487,7 +482,7 @@ namespace LoadForceSim
                 }
 
                 // Signal the DataRefTable to update the row, so the new value is displayed
-                Invoke(new MethodInvoker(delegate ()
+                 Invoke(new MethodInvoker(delegate ()
                 {
                     if (!IsDisposed)
                         dataRefTableItemBindingSource.ResetItem(item.index);
@@ -495,40 +490,40 @@ namespace LoadForceSim
             }
         }
 
-        private bool IsPitchUp()
-        {
-            DataRefTableItem itemPitch = dataRefs[DayaRefNames.PITCH];
-            double pitchValue = Convert.ToDouble(itemPitch.Value);
-            if (pitchValue > 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private void UpdatePitchTorques()
         {
+            int vsFactor = 30;
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
             int additionalTorque = additionalThrustTorque + additionalAirSpeedTorque;
+            int vsTorqueWithFactor = (vsFactor / additionalVerticalSpeedTorque) + 1;
+            // Some additional torque from the air speed
+            int speedTorque = additionalAirSpeedTorque / 3;
+            additionalVerticalSpeedTorque++;
             if (additionalVerticalSpeedTorque > 0)
             {
-                int calcAdditionalTorque = additionalTorque / (20 / additionalVerticalSpeedTorque);
+                int calcAdditionalTorque = additionalTorque / vsTorqueWithFactor;
 
-                int tqccw =  torqueBase + calcAdditionalTorque;
-                int tqcw =  torqueBase - calcAdditionalTorque;
+                int tqccw = torqueBase + speedTorque + calcAdditionalTorque;
+                int tqcw = torqueBase + speedTorque - calcAdditionalTorque;
                 torquePitch.SetTorques(tqcw, tqccw);
             }
             else
             {
-                int calcAdditionalTorque = (additionalTorque * -1) / (20 / additionalVerticalSpeedTorque);
+                int calcAdditionalTorque = (additionalTorque * -1) / vsTorqueWithFactor;
 
-                int tqccw = torqueBase - calcAdditionalTorque;
-                int tqcw = torqueBase + calcAdditionalTorque;
+                int tqccw = torqueBase + speedTorque - calcAdditionalTorque;
+                int tqcw = torqueBase + speedTorque + calcAdditionalTorque;
                 torquePitch.SetTorques(tqcw, tqccw);
             }
 
         }
+
+        private void UpdateRollTorques()
+        {
+            int torqueBase = isHydAvail ? torqueRollLow : torqueRollHigh;
+            torqueRoll.SetTorque(torqueBase);
+        }
+
         // Roll
         private void moveToX(double value)
         {
@@ -632,7 +627,7 @@ namespace LoadForceSim
         public String Name { get { return dataRef.name; } }
         public String Description { get; set; }
         public String DataType { get; set; }
-        public String Value { get; set; }
+        public double Value { get; set; }
         public double ValueConverted { get; set; }
 
 

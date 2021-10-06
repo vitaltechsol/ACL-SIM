@@ -81,24 +81,25 @@ namespace LoadForceSim
 
         public void SetTorques(int cwValue, int ccwValue)
         {
+            if (cwValue < 0)
+            {
+                cwValue = 1;
+            }
+
+            if (ccwValue < 0)
+            {
+                ccwValue = 1;
+            }
 
             if (StatusTextCCW != ccwValue || StatusTextCW != cwValue)
             {
-                if (cwValue < 0)
-                {
-                    cwValue = 0;
-                }
-
-                if (ccwValue < 0)
-                {
-                    ccwValue = 0;
-                }
+            
 
                 try
                 {
                     mbc.Connect();
                     mbc.WriteSingleRegister(8, cwValue);
-                     mbc.WriteSingleRegister(9, ccwValue * -1);
+                    mbc.WriteSingleRegister(9, ccwValue * -1);
                     mbc.Disconnect();
                     UpdateStatusCW(cwValue);
                     UpdateStatusCCW(ccwValue);
