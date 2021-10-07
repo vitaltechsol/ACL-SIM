@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,15 +31,14 @@ namespace LoadForceSim
         static int additionalAirSpeedTorque = 0;
         static int additionalVerticalSpeedTorque = 1;
       
-
-        int thrustTorqueFactor = 1000;
-        int airSpeedTorqueFactor = 10;
-        int verticalSpeedTorqueFactor = 200;
-        static int elevatorTimFactor = 120000;
-        static int torquePitchLow = 25;
-        static int torquePitchHigh = 55;
-        static int torquePitchMax = 70;
-        static int torquePitchMin = 20;
+        int torqueFactorThrust = 1000;
+        int torqueFactorAirSpeed = 10;
+        int torqueFactorVerticalSpeed = 200;
+        int trimFactorElevator = 0;
+        int torquePitchLow = 25;
+        int torquePitchHigh = 55;
+        int torquePitchMax = 70;
+        int torquePitchMin = 20;
 
         static SerialPort port;
         int baud = 115200;
@@ -108,13 +108,30 @@ namespace LoadForceSim
 
         private void Form1_Shown(Object sender, EventArgs e)
         {
+            propertyGridSettings.SelectedObject = Properties.Settings.Default;
+            propertyGridSettings.BrowsableAttributes = new AttributeCollection(new UserScopedSettingAttribute());
+
             SetAppSettings();
+            // Reset position
+            moveToX(0);
+            moveToY(0);
         }
 
         private void SetAppSettings()
         {
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
+
+            torqueFactorThrust = Properties.Settings.Default.TorqueFactor_Thrust;
+            torqueFactorAirSpeed = Properties.Settings.Default.TorqueFactor_AirSpeed;
+            torqueFactorVerticalSpeed = Properties.Settings.Default.TorqueFactor_VerticalSpeed;
+
+            torquePitchLow = Properties.Settings.Default.Torque_Pitch_Low;
+            torquePitchHigh = Properties.Settings.Default.Torque_Pitch_High;
+            torquePitchMax = Properties.Settings.Default.Torque_Pitch_Max;
+            torquePitchMin = Properties.Settings.Default.Torque_Pitch_Min;
+
+            trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
 
             if (Properties.Settings.Default.AutoConnect)
             {
@@ -124,9 +141,6 @@ namespace LoadForceSim
             apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
             apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
 
-            // Reset position
-            moveToX(0);
-            moveToY(0);
         }
 
 
@@ -296,7 +310,7 @@ namespace LoadForceSim
 
                                     if (speed > 80)
                                     {
-                                        double yValue = Math.Round(item.Value * elevatorTimFactor);
+                                        double yValue = Math.Round(item.Value * trimFactorElevator);
                                         // Skip sudden jumps to 0
                                         if (yValue != 0)
                                         {
@@ -312,7 +326,7 @@ namespace LoadForceSim
 
                         case DayaRefNames.THRUST_1:
                             {
-                                item.ValueConverted = Math.Round(item.Value / thrustTorqueFactor);
+                                item.ValueConverted = Math.Round(item.Value / torqueFactorThrust);
                                 if (additionalThrustTorque != item.ValueConverted)
                                 {
                                     additionalThrustTorque = Convert.ToInt32(item.ValueConverted);
@@ -324,7 +338,7 @@ namespace LoadForceSim
                             }
                         case DayaRefNames.SPEED_IAS:
                             {
-                                item.ValueConverted = Math.Round(item.Value / airSpeedTorqueFactor);
+                                item.ValueConverted = Math.Round(item.Value / torqueFactorAirSpeed);
                                 if (additionalAirSpeedTorque != item.ValueConverted)
                                 {
                                     additionalAirSpeedTorque = Convert.ToInt32(item.ValueConverted);
@@ -338,7 +352,7 @@ namespace LoadForceSim
                             {
                                 // Vertial speed tells us if more torque should be added when pushing or pulling
 
-                                item.ValueConverted = Math.Round(item.Value / verticalSpeedTorqueFactor);
+                                item.ValueConverted = Math.Round(item.Value / torqueFactorVerticalSpeed);
                                 if (additionalVerticalSpeedTorque != item.ValueConverted)
                                 {
                                     additionalVerticalSpeedTorque = Convert.ToInt32(item.ValueConverted);
@@ -672,6 +686,15 @@ namespace LoadForceSim
                 dataRefView.Hide();
             }
             
+        }
+
+    
+        private void propertyGridSettings_PropertyValueChanged_1(object s, PropertyValueChangedEventArgs e)
+        {
+            Properties.Settings.Default.Save();
+            // Reload settigs
+            SetAppSettings();
+
         }
     }
 

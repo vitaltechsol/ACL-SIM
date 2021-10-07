@@ -38,24 +38,24 @@ namespace LoadForceSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int MaxPitchPos {
+        public int Position_Pitch_Max {
             get {
-                return ((int)(this["MaxPitchPos"]));
+                return ((int)(this["Position_Pitch_Max"]));
             }
             set {
-                this["MaxPitchPos"] = value;
+                this["Position_Pitch_Max"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int MaxRollPos {
+        public int Position_Roll_Max {
             get {
-                return ((int)(this["MaxRollPos"]));
+                return ((int)(this["Position_Roll_Max"]));
             }
             set {
-                this["MaxRollPos"] = value;
+                this["Position_Roll_Max"] = value;
             }
         }
         
@@ -98,24 +98,156 @@ namespace LoadForceSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
-        public string MinPitchPos {
+        public int Position_Pitch_Min {
             get {
-                return ((string)(this["MinPitchPos"]));
+                return ((int)(this["Position_Pitch_Min"]));
             }
             set {
-                this["MinPitchPos"] = value;
+                this["Position_Pitch_Min"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
-        public string MinRollPos {
+        public int Position_Roll_Min {
             get {
-                return ((string)(this["MinRollPos"]));
+                return ((int)(this["Position_Roll_Min"]));
             }
             set {
-                this["MinRollPos"] = value;
+                this["Position_Roll_Min"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int TorqueFactor_AirSpeed {
+            get {
+                return ((int)(this["TorqueFactor_AirSpeed"]));
+            }
+            set {
+                this["TorqueFactor_AirSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int TorqueFactor_Thrust {
+            get {
+                return ((int)(this["TorqueFactor_Thrust"]));
+            }
+            set {
+                this["TorqueFactor_Thrust"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public int TorqueFactor_VerticalSpeed {
+            get {
+                return ((int)(this["TorqueFactor_VerticalSpeed"]));
+            }
+            set {
+                this["TorqueFactor_VerticalSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int Torque_Pitch_Min {
+            get {
+                return ((int)(this["Torque_Pitch_Min"]));
+            }
+            set {
+                this["Torque_Pitch_Min"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        public int Torque_Pitch_Low {
+            get {
+                return ((int)(this["Torque_Pitch_Low"]));
+            }
+            set {
+                this["Torque_Pitch_Low"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("55")]
+        public int Torque_Pitch_High {
+            get {
+                return ((int)(this["Torque_Pitch_High"]));
+            }
+            set {
+                this["Torque_Pitch_High"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("70")]
+        public int Torque_Pitch_Max {
+            get {
+                return ((int)(this["Torque_Pitch_Max"]));
+            }
+            set {
+                this["Torque_Pitch_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Torque_Roll_Min {
+            get {
+                return ((int)(this["Torque_Roll_Min"]));
+            }
+            set {
+                this["Torque_Roll_Min"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Torque_Roll_Low {
+            get {
+                return ((int)(this["Torque_Roll_Low"]));
+            }
+            set {
+                this["Torque_Roll_Low"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Torque_Roll_High {
+            get {
+                return ((int)(this["Torque_Roll_High"]));
+            }
+            set {
+                this["Torque_Roll_High"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("120000")]
+        public int TrimFactor_Elevator {
+            get {
+                return ((int)(this["TrimFactor_Elevator"]));
+            }
+            set {
+                this["TrimFactor_Elevator"] = value;
             }
         }
     }

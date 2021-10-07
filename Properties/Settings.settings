@@ -5,10 +5,10 @@
     <Setting Name="ProSimIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.0</Value>
     </Setting>
-    <Setting Name="MaxPitchPos" Type="System.Int32" Scope="User">
+    <Setting Name="Position_Pitch_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
     </Setting>
-    <Setting Name="MaxRollPos" Type="System.Int32" Scope="User">
+    <Setting Name="Position_Roll_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="AutoConnect" Type="System.Boolean" Scope="User">
@@ -20,11 +20,44 @@
     <Setting Name="APDisconnetPitchThreshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
-    <Setting Name="MinPitchPos" Type="System.String" Scope="User">
+    <Setting Name="Position_Pitch_Min" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-2000</Value>
     </Setting>
-    <Setting Name="MinRollPos" Type="System.String" Scope="User">
+    <Setting Name="Position_Roll_Min" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-2000</Value>
+    </Setting>
+    <Setting Name="TorqueFactor_AirSpeed" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="TorqueFactor_Thrust" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="TorqueFactor_VerticalSpeed" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="Torque_Pitch_Min" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="Torque_Pitch_Low" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="Torque_Pitch_High" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">55</Value>
+    </Setting>
+    <Setting Name="Torque_Pitch_Max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">70</Value>
+    </Setting>
+    <Setting Name="Torque_Roll_Min" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Torque_Roll_Low" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="Torque_Roll_High" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="TrimFactor_Elevator" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">120000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

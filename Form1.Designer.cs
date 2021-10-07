@@ -36,6 +36,9 @@ namespace LoadForceSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -52,7 +55,9 @@ namespace LoadForceSim
             this.btnTorqueTest = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabStatus = new System.Windows.Forms.TabPage();
+            this.chkBoxStatus = new System.Windows.Forms.CheckBox();
             this.tabConfig = new System.Windows.Forms.TabPage();
+            this.propertyGridSettings = new System.Windows.Forms.PropertyGrid();
             this.tabTest = new System.Windows.Forms.TabPage();
             this.label7 = new System.Windows.Forms.Label();
             this.txtMinPitchPos = new System.Windows.Forms.TextBox();
@@ -73,22 +78,19 @@ namespace LoadForceSim
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.chkBoxStatus = new System.Windows.Forms.CheckBox();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
+            this.tabConfig.SuspendLayout();
             this.tabTest.SuspendLayout();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(333, 27);
+            this.connectButton.Location = new System.Drawing.Point(258, 27);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(75, 23);
+            this.connectButton.Size = new System.Drawing.Size(90, 23);
             this.connectButton.TabIndex = 5;
             this.connectButton.Text = "Connect";
             this.connectButton.UseVisualStyleBackColor = true;
@@ -105,9 +107,9 @@ namespace LoadForceSim
             // 
             // hostnameInput
             // 
-            this.hostnameInput.Location = new System.Drawing.Point(94, 29);
+            this.hostnameInput.Location = new System.Drawing.Point(94, 28);
             this.hostnameInput.Name = "hostnameInput";
-            this.hostnameInput.Size = new System.Drawing.Size(233, 20);
+            this.hostnameInput.Size = new System.Drawing.Size(158, 20);
             this.hostnameInput.TabIndex = 3;
             // 
             // connectionStatusLabel
@@ -137,8 +139,29 @@ namespace LoadForceSim
             this.dataRefView.ReadOnly = true;
             this.dataRefView.RowHeadersVisible = false;
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataRefView.Size = new System.Drawing.Size(728, 290);
+            this.dataRefView.Size = new System.Drawing.Size(543, 290);
             this.dataRefView.TabIndex = 5;
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueDataGridViewTextBoxColumn
+            // 
+            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
+            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
+            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
+            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueConvertedDataGridViewTextBoxColumn
+            // 
+            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
+            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // dataRefTableItemBindingSource
             // 
@@ -220,7 +243,7 @@ namespace LoadForceSim
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(414, 31);
+            this.chkAutoConnect.Location = new System.Drawing.Point(258, 56);
             this.chkAutoConnect.Name = "chkAutoConnect";
             this.chkAutoConnect.Size = new System.Drawing.Size(90, 17);
             this.chkAutoConnect.TabIndex = 13;
@@ -253,7 +276,7 @@ namespace LoadForceSim
             this.tabControl1.Location = new System.Drawing.Point(16, 84);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(748, 362);
+            this.tabControl1.Size = new System.Drawing.Size(553, 362);
             this.tabControl1.TabIndex = 17;
             // 
             // tabStatus
@@ -263,20 +286,40 @@ namespace LoadForceSim
             this.tabStatus.Location = new System.Drawing.Point(4, 22);
             this.tabStatus.Name = "tabStatus";
             this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStatus.Size = new System.Drawing.Size(740, 336);
+            this.tabStatus.Size = new System.Drawing.Size(555, 336);
             this.tabStatus.TabIndex = 0;
             this.tabStatus.Text = "Status";
             this.tabStatus.UseVisualStyleBackColor = true;
             // 
+            // chkBoxStatus
+            // 
+            this.chkBoxStatus.AutoSize = true;
+            this.chkBoxStatus.Location = new System.Drawing.Point(6, 313);
+            this.chkBoxStatus.Name = "chkBoxStatus";
+            this.chkBoxStatus.Size = new System.Drawing.Size(86, 17);
+            this.chkBoxStatus.TabIndex = 22;
+            this.chkBoxStatus.Text = "Show Status";
+            this.chkBoxStatus.UseVisualStyleBackColor = true;
+            this.chkBoxStatus.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // tabConfig
             // 
+            this.tabConfig.Controls.Add(this.propertyGridSettings);
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(740, 290);
+            this.tabConfig.Size = new System.Drawing.Size(555, 336);
             this.tabConfig.TabIndex = 2;
             this.tabConfig.Text = "Config";
             this.tabConfig.UseVisualStyleBackColor = true;
+            // 
+            // propertyGridSettings
+            // 
+            this.propertyGridSettings.Location = new System.Drawing.Point(6, 21);
+            this.propertyGridSettings.Name = "propertyGridSettings";
+            this.propertyGridSettings.Size = new System.Drawing.Size(528, 286);
+            this.propertyGridSettings.TabIndex = 0;
+            this.propertyGridSettings.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGridSettings_PropertyValueChanged_1);
             // 
             // tabTest
             // 
@@ -306,7 +349,7 @@ namespace LoadForceSim
             this.tabTest.Location = new System.Drawing.Point(4, 22);
             this.tabTest.Name = "tabTest";
             this.tabTest.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTest.Size = new System.Drawing.Size(740, 290);
+            this.tabTest.Size = new System.Drawing.Size(545, 336);
             this.tabTest.TabIndex = 1;
             this.tabTest.Text = "Servo Config";
             this.tabTest.UseVisualStyleBackColor = true;
@@ -357,7 +400,7 @@ namespace LoadForceSim
             // 
             // btnSaveServoConfigs
             // 
-            this.btnSaveServoConfigs.Location = new System.Drawing.Point(648, 15);
+            this.btnSaveServoConfigs.Location = new System.Drawing.Point(371, 15);
             this.btnSaveServoConfigs.Name = "btnSaveServoConfigs";
             this.btnSaveServoConfigs.Size = new System.Drawing.Size(75, 23);
             this.btnSaveServoConfigs.TabIndex = 25;
@@ -448,7 +491,7 @@ namespace LoadForceSim
             // 
             this.lblTorquePitchFwd.AutoSize = true;
             this.lblTorquePitchFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTorquePitchFwd.Location = new System.Drawing.Point(531, 17);
+            this.lblTorquePitchFwd.Location = new System.Drawing.Point(362, 20);
             this.lblTorquePitchFwd.Name = "lblTorquePitchFwd";
             this.lblTorquePitchFwd.Size = new System.Drawing.Size(95, 39);
             this.lblTorquePitchFwd.TabIndex = 18;
@@ -458,7 +501,7 @@ namespace LoadForceSim
             // 
             this.lblTorquePitchBack.AutoSize = true;
             this.lblTorquePitchBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTorquePitchBack.Location = new System.Drawing.Point(633, 17);
+            this.lblTorquePitchBack.Location = new System.Drawing.Point(481, 20);
             this.lblTorquePitchBack.Name = "lblTorquePitchBack";
             this.lblTorquePitchBack.Size = new System.Drawing.Size(95, 39);
             this.lblTorquePitchBack.TabIndex = 19;
@@ -467,7 +510,7 @@ namespace LoadForceSim
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(637, 56);
+            this.label8.Location = new System.Drawing.Point(485, 57);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(60, 13);
             this.label8.TabIndex = 20;
@@ -476,49 +519,17 @@ namespace LoadForceSim
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(535, 56);
+            this.label9.Location = new System.Drawing.Point(366, 57);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(65, 13);
             this.label9.TabIndex = 21;
             this.label9.Text = "Back torque";
             // 
-            // chkBoxStatus
-            // 
-            this.chkBoxStatus.AutoSize = true;
-            this.chkBoxStatus.Location = new System.Drawing.Point(6, 313);
-            this.chkBoxStatus.Name = "chkBoxStatus";
-            this.chkBoxStatus.Size = new System.Drawing.Size(86, 17);
-            this.chkBoxStatus.TabIndex = 22;
-            this.chkBoxStatus.Text = "Show Status";
-            this.chkBoxStatus.UseVisualStyleBackColor = true;
-            this.chkBoxStatus.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueDataGridViewTextBoxColumn
-            // 
-            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
-            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
-            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
-            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueConvertedDataGridViewTextBoxColumn
-            // 
-            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
-            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(776, 492);
+            this.ClientSize = new System.Drawing.Size(581, 492);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorquePitchBack);
@@ -537,6 +548,7 @@ namespace LoadForceSim
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabStatus.PerformLayout();
+            this.tabConfig.ResumeLayout(false);
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
             this.ResumeLayout(false);
@@ -592,6 +604,7 @@ namespace LoadForceSim
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
+        private System.Windows.Forms.PropertyGrid propertyGridSettings;
     }
 }
 
