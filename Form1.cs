@@ -350,28 +350,31 @@ namespace LoadForceSim
                             }
                         case DayaRefNames.VERTICAL_SPEED:
                             {
-                                // Vertial speed tells us if more torque should be added when pushing or pulling
-
-                                item.ValueConverted = Math.Round(item.Value / torqueFactorVerticalSpeed);
-                                if (additionalVerticalSpeedTorque != item.ValueConverted)
+                                double value = Math.Round(item.Value / torqueFactorVerticalSpeed);
+                                // Vertical speed tells us if more torque should be added when pushing or pulling
+                                if (additionalVerticalSpeedTorque != value)
                                 {
-                                    additionalVerticalSpeedTorque = Convert.ToInt32(item.ValueConverted);
+                                    int valueConverted = Convert.ToInt32(value);
+                                    // Can't be less than the minimun or we'll get negative values
+                                    if (valueConverted > torquePitchMin)
+                                    {
+                                        valueConverted = torquePitchMin;
+                                    }
+
+                                    if (valueConverted < torquePitchMin * -1)
+                                    {
+                                        valueConverted = torquePitchMin * -1;
+                                    }
+
+                                    additionalVerticalSpeedTorque = valueConverted;
+                                    item.ValueConverted = valueConverted;
+
                                     UpdatePitchTorques();
                                 }
                                 break;
 
                             }
-                        //case DayaRefNames.PITCH:
-                        //    {
-                        //        if (isPitchCMD == true && sendDataY == true)
-                        //        {
-                        //            item.ValueConverted = Math.Round(item.Value * offsetY);
-                        //            moveToY(item.ValueConverted);
-                        //            sendDataY = false;
-                        //        }
-                        //        break;
-
-                        //    }
+           
                         case DayaRefNames.ROLL_CMD:
                             {
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
