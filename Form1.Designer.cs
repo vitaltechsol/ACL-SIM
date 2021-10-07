@@ -77,6 +77,7 @@ namespace LoadForceSim
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -133,6 +134,7 @@ namespace LoadForceSim
             this.valueConvertedDataGridViewTextBoxColumn,
             this.descriptionDataGridViewTextBoxColumn});
             this.dataRefView.DataSource = this.dataRefTableItemBindingSource;
+            this.dataRefView.Enabled = false;
             this.dataRefView.Location = new System.Drawing.Point(6, 17);
             this.dataRefView.Name = "dataRefView";
             this.dataRefView.ReadOnly = true;
@@ -497,24 +499,36 @@ namespace LoadForceSim
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(637, 56);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(64, 13);
+            this.label8.Size = new System.Drawing.Size(60, 13);
             this.label8.TabIndex = 20;
-            this.label8.Text = "Push torque";
+            this.label8.Text = "Fwd torque";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(535, 56);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(57, 13);
+            this.label9.Size = new System.Drawing.Size(65, 13);
             this.label9.TabIndex = 21;
-            this.label9.Text = "Pull torque";
+            this.label9.Text = "Back torque";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(26, 407);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
+            this.checkBox1.TabIndex = 22;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(776, 492);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorquePitchBack);
@@ -587,6 +601,7 @@ namespace LoadForceSim
         private System.Windows.Forms.Label lblTorquePitchBack;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

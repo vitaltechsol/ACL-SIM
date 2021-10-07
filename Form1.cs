@@ -29,14 +29,16 @@ namespace LoadForceSim
         static int additionalThrustTorque = 0;
         static int additionalAirSpeedTorque = 0;
         static int additionalVerticalSpeedTorque = 1;
+      
 
-
-        int thrustTorqueFactor = 1200;
-        int airSpeedTorqueFactor = 15;
-        int verticalSpeedTorqueFactor = 500;
-
-        static int torquePitchLow = 30;
+        int thrustTorqueFactor = 1000;
+        int airSpeedTorqueFactor = 10;
+        int verticalSpeedTorqueFactor = 300;
+        static int elevatorTimFactor = 120000;
+        static int torquePitchLow = 25;
         static int torquePitchHigh = 55;
+        static int torquePitchMax = 70;
+        static int torquePitchMin = 20;
 
         static SerialPort port;
         int baud = 115200;
@@ -45,7 +47,7 @@ namespace LoadForceSim
         bool isHydAvail = false;
 
         int offsetX = 7000;
-        int offsetY = 500;
+        int offsetY = 300;
         int hydOffPitchPosition = -9500;
         int maxX = 4000;
         int maxY = 8000;
@@ -61,7 +63,6 @@ namespace LoadForceSim
 
         SpeedControl speedPitch = new SpeedControl("COM4", 1);
         SpeedControl speedRoll = new SpeedControl("COM4", 2);
-
 
         int lastRollMoved = -1;
         int lastPitchMoved = -1;
@@ -101,6 +102,8 @@ namespace LoadForceSim
 
             BeginSerial(baud, portName);
             port.Open();
+
+           dataRefView.Hide();
         }
 
         private void Form1_Shown(Object sender, EventArgs e)
@@ -286,21 +289,20 @@ namespace LoadForceSim
 
                         case DayaRefNames.TRIM_ELEVATOR:
                             {
-                              //  if ( sendDataY== true)
-                             //   {
-                                    double yValue = Math.Round(item.Value * 250000);
+
+                                if ( sendDataY== true)
+                                {
+                                    double yValue = Math.Round(item.Value * elevatorTimFactor);
                                     // Skip sudden jumps to 0
                                     if (yValue != 0)
                                     {
                                         item.ValueConverted = yValue;
                                         moveToY(yValue);
-                                    //   sendDataY = false;
+                                       sendDataY = false;
                                     }
-
                                 }
                                 break;
-
-                          //  }             
+                           }             
 
                         case DayaRefNames.THRUST_1:
                             {
@@ -339,17 +341,17 @@ namespace LoadForceSim
                                 break;
 
                             }
-                        case DayaRefNames.PITCH:
-                            {
-                                if (isPitchCMD == true && sendDataY == true)
-                                {
-                                    item.ValueConverted = Math.Round(item.Value * offsetY);
-                                    moveToY(item.ValueConverted);
-                                    sendDataY = false;
-                                }
-                                break;
+                        //case DayaRefNames.PITCH:
+                        //    {
+                        //        if (isPitchCMD == true && sendDataY == true)
+                        //        {
+                        //            item.ValueConverted = Math.Round(item.Value * offsetY);
+                        //            moveToY(item.ValueConverted);
+                        //            sendDataY = false;
+                        //        }
+                        //        break;
 
-                            }
+                        //    }
                         case DayaRefNames.ROLL_CMD:
                             {
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
@@ -496,7 +498,7 @@ namespace LoadForceSim
 
         private void UpdatePitchTorques()
         {
-            int vsFactor = 50;
+            int vsFactor = torquePitchMax;
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
             int additionalTorque = additionalThrustTorque + additionalAirSpeedTorque;
             if (additionalVerticalSpeedTorque == 0)
@@ -515,9 +517,30 @@ namespace LoadForceSim
             if (additionalVerticalSpeedTorque > 0)
             {
                 int calcAdditionalTorque = additionalTorque / vsTorqueWithFactor;
-
                 int tqccw = torqueBase + speedTorque + calcAdditionalTorque;
                 int tqcw = torqueBase + speedTorque - calcAdditionalTorque;
+
+                if (tqcw > torquePitchMax)
+                {
+                    tqcw = torquePitchMax;
+                }
+
+                if (tqcw < torquePitchMin)
+                {
+                    tqcw = torquePitchMin;
+                }
+
+                if (tqccw > torquePitchMax)
+                {
+                    tqccw = torquePitchMax;
+                }
+
+                if (tqccw < torquePitchMin)
+                {
+                    tqccw = torquePitchMin;
+                }
+
+
                 torquePitch.SetTorques(tqcw, tqccw);
             }
             else
@@ -526,6 +549,28 @@ namespace LoadForceSim
 
                 int tqccw = torqueBase + speedTorque - calcAdditionalTorque;
                 int tqcw = torqueBase + speedTorque + calcAdditionalTorque;
+
+
+                if (tqcw > torquePitchMax)
+                {
+                    tqcw = torquePitchMax;
+                }
+
+                if (tqcw < torquePitchMin)
+                {
+                    tqcw = torquePitchMin;
+                }
+
+                if (tqccw > torquePitchMax)
+                {
+                    tqccw = torquePitchMax;
+                }
+
+                if (tqccw < torquePitchMin)
+                {
+                    tqccw = torquePitchMin;
+                }
+
                 torquePitch.SetTorques(tqcw, tqccw);
             }
 
@@ -629,6 +674,19 @@ namespace LoadForceSim
             {
                 speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                dataRefView.Show();
+
+            } else
+            {
+                dataRefView.Hide();
+            }
+            
         }
     }
 
