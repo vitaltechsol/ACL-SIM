@@ -33,7 +33,7 @@ namespace LoadForceSim
 
         int thrustTorqueFactor = 1000;
         int airSpeedTorqueFactor = 10;
-        int verticalSpeedTorqueFactor = 300;
+        int verticalSpeedTorqueFactor = 200;
         static int elevatorTimFactor = 120000;
         static int torquePitchLow = 25;
         static int torquePitchHigh = 55;
@@ -292,15 +292,21 @@ namespace LoadForceSim
 
                                 if ( sendDataY== true)
                                 {
-                                    double yValue = Math.Round(item.Value * elevatorTimFactor);
-                                    // Skip sudden jumps to 0
-                                    if (yValue != 0)
+                                    double speed = dataRefs[DayaRefNames.SPEED_IAS].Value;
+
+                                    if (speed > 80)
                                     {
-                                        item.ValueConverted = yValue;
-                                        moveToY(yValue);
-                                       sendDataY = false;
+                                        double yValue = Math.Round(item.Value * elevatorTimFactor);
+                                        // Skip sudden jumps to 0
+                                        if (yValue != 0)
+                                        {
+                                            item.ValueConverted = yValue;
+                                            moveToY(yValue);
+                                            sendDataY = false;
+                                        }
                                     }
                                 }
+                                      
                                 break;
                            }             
 
@@ -358,9 +364,13 @@ namespace LoadForceSim
                                 if (isRollCMD == false)
                                 {
                                     // Reset Position
+                                    Debug.WriteLine("moved to X=0");
+
                                     moveToX(0);
-                                }
+                                } 
+                                
                                 UpdateRollTorques();
+
 
                                 Debug.WriteLine("updated isPitchCMD " + isRollCMD);
                                 break;
@@ -498,7 +508,7 @@ namespace LoadForceSim
 
         private void UpdatePitchTorques()
         {
-            int vsFactor = torquePitchMax;
+            int vsFactor = Convert.ToInt32(torquePitchMax / 1.3);
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
             int additionalTorque = additionalThrustTorque + additionalAirSpeedTorque;
             if (additionalVerticalSpeedTorque == 0)
@@ -520,28 +530,8 @@ namespace LoadForceSim
                 int tqccw = torqueBase + speedTorque + calcAdditionalTorque;
                 int tqcw = torqueBase + speedTorque - calcAdditionalTorque;
 
-                if (tqcw > torquePitchMax)
-                {
-                    tqcw = torquePitchMax;
-                }
 
-                if (tqcw < torquePitchMin)
-                {
-                    tqcw = torquePitchMin;
-                }
-
-                if (tqccw > torquePitchMax)
-                {
-                    tqccw = torquePitchMax;
-                }
-
-                if (tqccw < torquePitchMin)
-                {
-                    tqccw = torquePitchMin;
-                }
-
-
-                torquePitch.SetTorques(tqcw, tqccw);
+                torquePitch.SetTorques(GetMaxMinPitchTorque(tqcw), GetMaxMinPitchTorque(tqccw));
             }
             else
             {
@@ -550,32 +540,27 @@ namespace LoadForceSim
                 int tqccw = torqueBase + speedTorque - calcAdditionalTorque;
                 int tqcw = torqueBase + speedTorque + calcAdditionalTorque;
 
-
-                if (tqcw > torquePitchMax)
-                {
-                    tqcw = torquePitchMax;
-                }
-
-                if (tqcw < torquePitchMin)
-                {
-                    tqcw = torquePitchMin;
-                }
-
-                if (tqccw > torquePitchMax)
-                {
-                    tqccw = torquePitchMax;
-                }
-
-                if (tqccw < torquePitchMin)
-                {
-                    tqccw = torquePitchMin;
-                }
-
-                torquePitch.SetTorques(tqcw, tqccw);
+                torquePitch.SetTorques(GetMaxMinPitchTorque(tqcw), GetMaxMinPitchTorque(tqccw));
             }
 
         }
 
+        // Don't use more than the max or min torques
+        private int GetMaxMinPitchTorque(int torque)
+        {
+
+            if (torque > torquePitchMax)
+            {
+                return torquePitchMax;
+            }
+
+            if (torque < torquePitchMin)
+            {
+                return torquePitchMin;
+            }
+
+            return torque;
+        } 
         private void UpdateRollTorques()
         {
             int torqueBase = isHydAvail ? torqueRollLow : torqueRollHigh;
@@ -678,7 +663,7 @@ namespace LoadForceSim
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
+            if (chkBoxStatus.Checked)
             {
                 dataRefView.Show();
 

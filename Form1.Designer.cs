@@ -36,10 +36,6 @@ namespace LoadForceSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.descriptionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -77,7 +73,10 @@ namespace LoadForceSim
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chkBoxStatus = new System.Windows.Forms.CheckBox();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -131,45 +130,15 @@ namespace LoadForceSim
             this.dataRefView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
             this.valueDataGridViewTextBoxColumn,
-            this.valueConvertedDataGridViewTextBoxColumn,
-            this.descriptionDataGridViewTextBoxColumn});
+            this.valueConvertedDataGridViewTextBoxColumn});
             this.dataRefView.DataSource = this.dataRefTableItemBindingSource;
-            this.dataRefView.Enabled = false;
             this.dataRefView.Location = new System.Drawing.Point(6, 17);
             this.dataRefView.Name = "dataRefView";
             this.dataRefView.ReadOnly = true;
             this.dataRefView.RowHeadersVisible = false;
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataRefView.Size = new System.Drawing.Size(728, 267);
+            this.dataRefView.Size = new System.Drawing.Size(728, 290);
             this.dataRefView.TabIndex = 5;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueDataGridViewTextBoxColumn
-            // 
-            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
-            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
-            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
-            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueConvertedDataGridViewTextBoxColumn
-            // 
-            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
-            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // descriptionDataGridViewTextBoxColumn
-            // 
-            this.descriptionDataGridViewTextBoxColumn.DataPropertyName = "Description";
-            this.descriptionDataGridViewTextBoxColumn.HeaderText = "Description";
-            this.descriptionDataGridViewTextBoxColumn.Name = "descriptionDataGridViewTextBoxColumn";
-            this.descriptionDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // dataRefTableItemBindingSource
             // 
@@ -284,16 +253,17 @@ namespace LoadForceSim
             this.tabControl1.Location = new System.Drawing.Point(16, 84);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(748, 316);
+            this.tabControl1.Size = new System.Drawing.Size(748, 362);
             this.tabControl1.TabIndex = 17;
             // 
             // tabStatus
             // 
+            this.tabStatus.Controls.Add(this.chkBoxStatus);
             this.tabStatus.Controls.Add(this.dataRefView);
             this.tabStatus.Location = new System.Drawing.Point(4, 22);
             this.tabStatus.Name = "tabStatus";
             this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStatus.Size = new System.Drawing.Size(740, 290);
+            this.tabStatus.Size = new System.Drawing.Size(740, 336);
             this.tabStatus.TabIndex = 0;
             this.tabStatus.Text = "Status";
             this.tabStatus.UseVisualStyleBackColor = true;
@@ -512,23 +482,43 @@ namespace LoadForceSim
             this.label9.TabIndex = 21;
             this.label9.Text = "Back torque";
             // 
-            // checkBox1
+            // chkBoxStatus
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(26, 407);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 22;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.chkBoxStatus.AutoSize = true;
+            this.chkBoxStatus.Location = new System.Drawing.Point(6, 313);
+            this.chkBoxStatus.Name = "chkBoxStatus";
+            this.chkBoxStatus.Size = new System.Drawing.Size(86, 17);
+            this.chkBoxStatus.TabIndex = 22;
+            this.chkBoxStatus.Text = "Show Status";
+            this.chkBoxStatus.UseVisualStyleBackColor = true;
+            this.chkBoxStatus.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueDataGridViewTextBoxColumn
+            // 
+            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
+            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
+            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
+            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueConvertedDataGridViewTextBoxColumn
+            // 
+            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
+            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(776, 492);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorquePitchBack);
@@ -546,6 +536,7 @@ namespace LoadForceSim
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
+            this.tabStatus.PerformLayout();
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
             this.ResumeLayout(false);
@@ -577,10 +568,6 @@ namespace LoadForceSim
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabStatus;
         private System.Windows.Forms.TabPage tabTest;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn descriptionDataGridViewTextBoxColumn;
         private System.Windows.Forms.TextBox txbPitchTorque;
         private System.Windows.Forms.Button btnTorqueDefault;
         private System.Windows.Forms.TabPage tabConfig;
@@ -601,7 +588,10 @@ namespace LoadForceSim
         private System.Windows.Forms.Label lblTorquePitchBack;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox chkBoxStatus;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
     }
 }
 
