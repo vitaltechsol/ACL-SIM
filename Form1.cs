@@ -55,10 +55,12 @@ namespace LoadForceSim
         int maxY = 8000;
         int minX = -4000;
         int minY = -12000;
+        bool sendDataAPDisconnect = true;
         string mbusPort = "COM4";
         Timer timerX;
         static bool sendDataX = false;
         Timer timerY;
+        Timer timerAPdiconnect;
         static bool sendDataY = false;
         TorqueControl torquePitch = new TorqueControl("COM4", 1);
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
@@ -93,6 +95,10 @@ namespace LoadForceSim
             timerY.Start();
             timerY.Elapsed += sendDataOK_Y;
             timerY.AutoReset = true;
+
+            timerAPdiconnect = new Timer();
+            timerAPdiconnect.Interval = 2000;
+            timerAPdiconnect.Elapsed += sendDataAPDisconnectOK;
 
             //if (SerialPort.GetPortNames().Count() >= 0)
             //{
@@ -156,6 +162,12 @@ namespace LoadForceSim
         private void sendDataOK_Y(object sender, System.Timers.ElapsedEventArgs e)
         {
             sendDataY = true;
+        }
+
+        private void sendDataAPDisconnectOK(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            timerAPdiconnect.Stop();
+            sendDataAPDisconnect = true;
         }
 
 
@@ -240,9 +252,6 @@ namespace LoadForceSim
 
             this.add_data_ref(DayaRefNames.AILERON_IN_CPTN);
             this.add_data_ref(DayaRefNames.ELEVATOR_IN_CPTN);
-
-            this.add_data_ref(DayaRefNames.MCP_AP_DISENGAGE);
-
         }
 
         private void add_data_ref(string dataRefName)
@@ -418,13 +427,17 @@ namespace LoadForceSim
                                 if (isRollCMD == false)
                                 {
                                     // Reset Position
-                                    Debug.WriteLine("moved to X=0");
-
                                     moveToX(0);
-                                } 
+                                } else
+                                {
+                                    // This timer is used to avoid disconnecting
+                                    // inmediatly after first connecting
+                                    Debug.WriteLine("Don't allow mnual AP disc " + isRollCMD);
+                                    sendDataAPDisconnect = false;
+                                    timerAPdiconnect.Start();
+                                }
                                 
                                 UpdateRollTorques();
-
 
                                 Debug.WriteLine("updated isPitchCMD " + isRollCMD);
                                 break;
@@ -439,6 +452,13 @@ namespace LoadForceSim
                                     // Reset Position
                                     moveToY(0);
                                 }
+                                {
+                                    // This timer is used to avoid disconnecting
+                                    // inmediatly after first connecting
+                                    Debug.WriteLine("Don't allow mnual AP disc " + isRollCMD);
+                                    sendDataAPDisconnect = false;
+                                    timerAPdiconnect.Start();
+                                }
 
                                 UpdatePitchTorques();
                                 Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
@@ -450,7 +470,6 @@ namespace LoadForceSim
                                 bool isDisengaged = Convert.ToBoolean(dataRef.value); 
                                 if (isDisengaged)
                                 {
-                                    // TODO: Use trim
                                     moveToX(0);
                                     moveToY(0);
                                     isPitchCMD = false;
@@ -507,8 +526,7 @@ namespace LoadForceSim
                                     {
                                         item.ValueConverted = diff1 * 1000;
                                         // Disconnect
-                                        DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
-                                        apdisg.value = 1;
+                                        DisconnectAPWithTimer();                                  
                                     }
                                     lastRollMoved = value;
                                 }
@@ -530,9 +548,9 @@ namespace LoadForceSim
                                     {
                                         item.ValueConverted = diff1 * 1000;
                                         // Disconnect
-                                        DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
-                                        apdisg.value = 1;
+                                        DisconnectAPWithTimer();
                                     }
+                                        
 
                                     lastPitchMoved = value;
                                     sendDataY = false;
@@ -659,6 +677,21 @@ namespace LoadForceSim
         {
             Invoke(new MethodInvoker(delegate () { lblTorquePitchFwd.Text = value.ToString(); }));
 
+        }
+
+        // Disconnect the AP when the wheel/Column is moved.
+        // Wait two seconds before this check can happen again to 
+        // avoid inmediate second disconnection
+        private void DisconnectAPWithTimer()
+        {
+            if (sendDataAPDisconnect)
+            {
+                Debug.WriteLine("Manual AP override disconnect " + isRollCMD);
+                // Wait 2 seconds before this can be checked again
+                sendDataAPDisconnect = false;
+                DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
+                apdisg.value = 1;
+            }
         }
 
         private void btnCenterOut_Click(object sender, EventArgs e)
