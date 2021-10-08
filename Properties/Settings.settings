@@ -30,7 +30,7 @@
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="TorqueFactor_Thrust" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1000</Value>
+      <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="TorqueFactor_VerticalSpeed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>

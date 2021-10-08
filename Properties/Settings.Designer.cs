@@ -133,7 +133,7 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
         public int TorqueFactor_Thrust {
             get {
                 return ((int)(this["TorqueFactor_Thrust"]));

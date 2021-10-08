@@ -27,11 +27,12 @@ namespace LoadForceSim
         static string portName = "COM3";
         static int torqueRollLow = 18;
         static int torqueRollHigh = 65;
-        static int additionalThrustTorque = 0;
+        static int additionalThrustTorque1 = 0;
+        static int additionalThrustTorque2 = 0;
         static int additionalAirSpeedTorque = 0;
         static int additionalVerticalSpeedTorque = 1;
       
-        int torqueFactorThrust = 1000;
+        int torqueFactorThrust = 2000;
         int torqueFactorAirSpeed = 10;
         int torqueFactorVerticalSpeed = 200;
         int trimFactorElevator = 1200;
@@ -349,15 +350,29 @@ namespace LoadForceSim
                         case DayaRefNames.THRUST_1:
                             {
                                 item.ValueConverted = Math.Round(item.Value / torqueFactorThrust);
-                                if (additionalThrustTorque != item.ValueConverted)
+                                if (additionalThrustTorque1 != item.ValueConverted)
                                 {
-                                    additionalThrustTorque = Convert.ToInt32(item.ValueConverted);
+                                    additionalThrustTorque1 = Convert.ToInt32(item.ValueConverted);
                                     UpdatePitchTorques();
                                 }
 
                                 break;
 
                             }
+
+                        case DayaRefNames.THRUST_2:
+                            {
+                                item.ValueConverted = Math.Round(item.Value / torqueFactorThrust);
+                                if (additionalThrustTorque2 != item.ValueConverted)
+                                {
+                                    additionalThrustTorque2 = Convert.ToInt32(item.ValueConverted);
+                                    UpdatePitchTorques();
+                                }
+
+                                break;
+
+                            }
+
                         case DayaRefNames.SPEED_IAS:
                             {
                                 item.ValueConverted = Math.Round(item.Value / torqueFactorAirSpeed);
@@ -549,7 +564,7 @@ namespace LoadForceSim
         {
             int vsFactor = Convert.ToInt32(torquePitchMax / 1.3);
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
-            int additionalTorque = additionalThrustTorque + additionalAirSpeedTorque;
+            int additionalTorque = additionalThrustTorque1 + additionalThrustTorque2 + additionalAirSpeedTorque;
             if (additionalVerticalSpeedTorque == 0)
             {
                 additionalVerticalSpeedTorque = 1;
