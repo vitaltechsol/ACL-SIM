@@ -57,7 +57,10 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="TrimFactor_Elevator" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">120000</Value>
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

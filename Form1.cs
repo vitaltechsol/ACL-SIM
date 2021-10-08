@@ -34,7 +34,8 @@ namespace LoadForceSim
         int torqueFactorThrust = 1000;
         int torqueFactorAirSpeed = 10;
         int torqueFactorVerticalSpeed = 200;
-        int trimFactorElevator = 0;
+        int trimFactorElevator = 1200;
+        int trimFactorAileron = 1000;
         int torquePitchLow = 25;
         int torquePitchHigh = 55;
         int torquePitchMax = 70;
@@ -132,6 +133,8 @@ namespace LoadForceSim
             torquePitchMin = Properties.Settings.Default.Torque_Pitch_Min;
 
             trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
+            trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
+
 
             if (Properties.Settings.Default.AutoConnect)
             {
@@ -219,8 +222,8 @@ namespace LoadForceSim
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
             this.add_data_ref(DayaRefNames.TRIM_ELEVATOR);
-            this.add_data_ref(DayaRefNames.PITCH);
-
+            this.add_data_ref(DayaRefNames.TRIM_AILERON);
+           // this.add_data_ref(DayaRefNames.PITCH);
 
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
@@ -310,7 +313,7 @@ namespace LoadForceSim
 
                                     if (speed > 80)
                                     {
-                                        double yValue = Math.Round(item.Value * trimFactorElevator);
+                                        double yValue = Math.Round((item.Value * trimFactorElevator) * 100);
                                         // Skip sudden jumps to 0
                                         if (yValue != 0)
                                         {
@@ -322,7 +325,26 @@ namespace LoadForceSim
                                 }
                                       
                                 break;
-                           }             
+                           }
+
+                        case DayaRefNames.TRIM_AILERON:
+                            {
+
+                                if (sendDataX == true)
+                                {
+                                    double xValue = Math.Round(item.Value * trimFactorAileron);
+                                    // Skip sudden jumps to 0
+                                    if (xValue != 0)
+                                    {
+                                        item.ValueConverted = xValue * -1;
+                                        moveToX(xValue * -1);
+                                        sendDataY = false;
+                                    }
+                                    
+                                }
+
+                                break;
+                            }
 
                         case DayaRefNames.THRUST_1:
                             {
@@ -721,6 +743,7 @@ namespace LoadForceSim
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
         public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
+        public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
 
         public const string AILERON_IN_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string ELEVATOR_IN_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";

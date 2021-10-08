@@ -241,13 +241,25 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("120000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int TrimFactor_Elevator {
             get {
                 return ((int)(this["TrimFactor_Elevator"]));
             }
             set {
                 this["TrimFactor_Elevator"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int TrimFactor_Aileron {
+            get {
+                return ((int)(this["TrimFactor_Aileron"]));
+            }
+            set {
+                this["TrimFactor_Aileron"] = value;
             }
         }
     }
