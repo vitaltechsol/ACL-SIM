@@ -286,7 +286,7 @@ namespace LoadForceSim
             this.tabStatus.Location = new System.Drawing.Point(4, 22);
             this.tabStatus.Name = "tabStatus";
             this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStatus.Size = new System.Drawing.Size(555, 336);
+            this.tabStatus.Size = new System.Drawing.Size(545, 336);
             this.tabStatus.TabIndex = 0;
             this.tabStatus.Text = "Status";
             this.tabStatus.UseVisualStyleBackColor = true;
@@ -308,7 +308,7 @@ namespace LoadForceSim
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(555, 336);
+            this.tabConfig.Size = new System.Drawing.Size(545, 336);
             this.tabConfig.TabIndex = 2;
             this.tabConfig.Text = "Config";
             this.tabConfig.UseVisualStyleBackColor = true;
@@ -541,7 +541,7 @@ namespace LoadForceSim
             this.Controls.Add(this.label1);
             this.Controls.Add(this.hostnameInput);
             this.Name = "Form1";
-            this.Text = "Load Form Sim";
+            this.Text = "Load Force Sim";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
