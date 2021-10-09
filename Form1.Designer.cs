@@ -71,6 +71,7 @@ namespace LoadForceSim
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.btnRecenterSpeedRead = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -316,6 +317,7 @@ namespace LoadForceSim
             // 
             // tabTest
             // 
+            this.tabTest.Controls.Add(this.btnRecenterSpeedRead);
             this.tabTest.Controls.Add(this.label6);
             this.tabTest.Controls.Add(this.label5);
             this.tabTest.Controls.Add(this.label4);
@@ -347,7 +349,7 @@ namespace LoadForceSim
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(85, 13);
             this.label6.TabIndex = 24;
-            this.label6.Text = "Rebound Speed";
+            this.label6.Text = "Recenter Speed";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label5
@@ -417,9 +419,9 @@ namespace LoadForceSim
             this.lblTorquePitchFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorquePitchFwd.Location = new System.Drawing.Point(362, 20);
             this.lblTorquePitchFwd.Name = "lblTorquePitchFwd";
-            this.lblTorquePitchFwd.Size = new System.Drawing.Size(95, 39);
+            this.lblTorquePitchFwd.Size = new System.Drawing.Size(36, 39);
             this.lblTorquePitchFwd.TabIndex = 18;
-            this.lblTorquePitchFwd.Text = "Pitch";
+            this.lblTorquePitchFwd.Text = "0";
             // 
             // lblTorquePitchBack
             // 
@@ -427,9 +429,9 @@ namespace LoadForceSim
             this.lblTorquePitchBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorquePitchBack.Location = new System.Drawing.Point(481, 20);
             this.lblTorquePitchBack.Name = "lblTorquePitchBack";
-            this.lblTorquePitchBack.Size = new System.Drawing.Size(95, 39);
+            this.lblTorquePitchBack.Size = new System.Drawing.Size(36, 39);
             this.lblTorquePitchBack.TabIndex = 19;
-            this.lblTorquePitchBack.Text = "Pitch";
+            this.lblTorquePitchBack.Text = "0";
             // 
             // label8
             // 
@@ -448,6 +450,16 @@ namespace LoadForceSim
             this.label9.Size = new System.Drawing.Size(65, 13);
             this.label9.TabIndex = 21;
             this.label9.Text = "Back torque";
+            // 
+            // btnRecenterSpeedRead
+            // 
+            this.btnRecenterSpeedRead.Location = new System.Drawing.Point(371, 130);
+            this.btnRecenterSpeedRead.Name = "btnRecenterSpeedRead";
+            this.btnRecenterSpeedRead.Size = new System.Drawing.Size(75, 23);
+            this.btnRecenterSpeedRead.TabIndex = 25;
+            this.btnRecenterSpeedRead.Text = "Read";
+            this.btnRecenterSpeedRead.UseVisualStyleBackColor = true;
+            this.btnRecenterSpeedRead.Click += new System.EventHandler(this.btnRecenterSpeedRead_Click);
             // 
             // Form1
             // 
@@ -522,6 +534,7 @@ namespace LoadForceSim
         private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
         private System.Windows.Forms.PropertyGrid propertyGridSettings;
         private System.Windows.Forms.Button btnTorqueDefault;
+        private System.Windows.Forms.Button btnRecenterSpeedRead;
     }
 }
 

@@ -205,7 +205,7 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public int Torque_Roll_Min {
             get {
                 return ((int)(this["Torque_Roll_Min"]));
@@ -217,7 +217,7 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("18")]
         public int Torque_Roll_Low {
             get {
                 return ((int)(this["Torque_Roll_Low"]));
@@ -229,7 +229,7 @@ namespace LoadForceSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("55")]
         public int Torque_Roll_High {
             get {
                 return ((int)(this["Torque_Roll_High"]));
@@ -260,6 +260,18 @@ namespace LoadForceSim.Properties {
             }
             set {
                 this["TrimFactor_Aileron"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("75")]
+        public string Torque_Roll_Max {
+            get {
+                return ((string)(this["Torque_Roll_Max"]));
+            }
+            set {
+                this["Torque_Roll_Max"] = value;
             }
         }
     }

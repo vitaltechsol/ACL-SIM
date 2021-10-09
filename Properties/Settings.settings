@@ -48,19 +48,22 @@
       <Value Profile="(Default)">70</Value>
     </Setting>
     <Setting Name="Torque_Roll_Min" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Torque_Roll_Low" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">18</Value>
     </Setting>
     <Setting Name="Torque_Roll_High" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">55</Value>
     </Setting>
     <Setting Name="TrimFactor_Elevator" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="Torque_Roll_Max" Type="System.String" Scope="User">
+      <Value Profile="(Default)">75</Value>
     </Setting>
   </Settings>
 </SettingsFile>

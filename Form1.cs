@@ -65,8 +65,8 @@ namespace LoadForceSim
         TorqueControl torquePitch = new TorqueControl("COM4", 1);
         TorqueControl torqueRoll = new TorqueControl("COM4", 2);
 
-        SpeedControl speedPitch = new SpeedControl("COM4", 1);
-        SpeedControl speedRoll = new SpeedControl("COM4", 2);
+        CustomControl speedPitch = new CustomControl("COM4", 1);
+        CustomControl speedRoll = new CustomControl("COM4", 2);
 
         int lastRollMoved = -1;
         int lastPitchMoved = -1;
@@ -138,6 +138,9 @@ namespace LoadForceSim
             torquePitchHigh = Properties.Settings.Default.Torque_Pitch_High;
             torquePitchMax = Properties.Settings.Default.Torque_Pitch_Max;
             torquePitchMin = Properties.Settings.Default.Torque_Pitch_Min;
+
+            torqueRollLow = Properties.Settings.Default.Torque_Roll_Low;
+            torqueRollHigh = Properties.Settings.Default.Torque_Roll_High;
 
             trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
@@ -748,6 +751,13 @@ namespace LoadForceSim
             }
         }
 
+        private void btnRecenterSpeedRead_Click(object sender, EventArgs e)
+        {
+            txbPitchSpeedTest.Text = speedPitch.GetSpeed().ToString();
+            txbRollSpeedTest.Text = speedRoll.GetSpeed().ToString();
+
+        }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (chkBoxStatus.Checked)
@@ -769,6 +779,7 @@ namespace LoadForceSim
             SetAppSettings();
 
         }
+
     }
 
     // The data object that is used for the DataRef table
