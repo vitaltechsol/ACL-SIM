@@ -156,7 +156,7 @@ namespace LoadForceSim
 
         }
 
-
+  
         private void sendDataOK_X(object sender, System.Timers.ElapsedEventArgs e)
         {
             sendDataX = true;
@@ -758,6 +758,27 @@ namespace LoadForceSim
 
         }
 
+
+        private void btnBounceSet_Click(object sender, EventArgs e)
+        {
+            if (txbBouncePitch.Text != "")
+            {
+                speedPitch.SetBounceGain(Int32.Parse(txbBouncePitch.Text));
+            }
+
+            if (txbBounceRoll.Text != "")
+            {
+                speedRoll.SetBounceGain(Int32.Parse(txbBounceRoll.Text));
+            }
+        }
+
+        private void btnBounceGet_Click(object sender, EventArgs e)
+        {
+
+            txbBouncePitch.Text = speedPitch.GetBounceGain().ToString();
+            txbBounceRoll.Text = speedRoll.GetBounceGain().ToString();
+        }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (chkBoxStatus.Checked)
@@ -779,7 +800,6 @@ namespace LoadForceSim
             SetAppSettings();
 
         }
-
     }
 
     // The data object that is used for the DataRef table
@@ -792,8 +812,6 @@ namespace LoadForceSim
         public String DataType { get; set; }
         public double Value { get; set; }
         public double ValueConverted { get; set; }
-
-
     }
 
 
@@ -818,7 +836,6 @@ namespace LoadForceSim
 
         public const string SPEED_IAS = "aircraft.speed.ias";
         public const string VERTICAL_SPEED = "aircraft.verticalspeed";
-
 
         public const string PITCH = "aircraft.pitch";
 

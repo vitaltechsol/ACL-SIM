@@ -36,10 +36,6 @@ namespace LoadForceSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -59,6 +55,11 @@ namespace LoadForceSim
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.propertyGridSettings = new System.Windows.Forms.PropertyGrid();
             this.tabTest = new System.Windows.Forms.TabPage();
+            this.btnBounceGet = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txbBouncePitch = new System.Windows.Forms.TextBox();
+            this.txbBounceRoll = new System.Windows.Forms.TextBox();
+            this.btnBounceSet = new System.Windows.Forms.Button();
             this.btnRecenterSpeedRead = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -73,17 +74,21 @@ namespace LoadForceSim
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.lblACLSIMVersion = new System.Windows.Forms.Label();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.tabConfig.SuspendLayout();
             this.tabTest.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
             // 
-            this.connectButton.Location = new System.Drawing.Point(258, 27);
+            this.connectButton.Location = new System.Drawing.Point(215, 28);
             this.connectButton.Name = "connectButton";
             this.connectButton.Size = new System.Drawing.Size(90, 23);
             this.connectButton.TabIndex = 5;
@@ -104,7 +109,7 @@ namespace LoadForceSim
             // 
             this.hostnameInput.Location = new System.Drawing.Point(94, 28);
             this.hostnameInput.Name = "hostnameInput";
-            this.hostnameInput.Size = new System.Drawing.Size(158, 20);
+            this.hostnameInput.Size = new System.Drawing.Size(114, 20);
             this.hostnameInput.TabIndex = 3;
             // 
             // connectionStatusLabel
@@ -136,33 +141,6 @@ namespace LoadForceSim
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataRefView.Size = new System.Drawing.Size(543, 290);
             this.dataRefView.TabIndex = 5;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueDataGridViewTextBoxColumn
-            // 
-            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
-            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
-            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
-            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueConvertedDataGridViewTextBoxColumn
-            // 
-            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
-            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // dataRefTableItemBindingSource
-            // 
-            this.dataRefTableItemBindingSource.AllowNew = false;
-            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
-            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // name
             // 
@@ -238,7 +216,7 @@ namespace LoadForceSim
             // chkAutoConnect
             // 
             this.chkAutoConnect.AutoSize = true;
-            this.chkAutoConnect.Location = new System.Drawing.Point(258, 56);
+            this.chkAutoConnect.Location = new System.Drawing.Point(215, 57);
             this.chkAutoConnect.Name = "chkAutoConnect";
             this.chkAutoConnect.Size = new System.Drawing.Size(90, 17);
             this.chkAutoConnect.TabIndex = 13;
@@ -305,7 +283,7 @@ namespace LoadForceSim
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
             this.tabConfig.Size = new System.Drawing.Size(545, 336);
             this.tabConfig.TabIndex = 2;
-            this.tabConfig.Text = "Config";
+            this.tabConfig.Text = "Custom Config";
             this.tabConfig.UseVisualStyleBackColor = true;
             // 
             // propertyGridSettings
@@ -318,6 +296,11 @@ namespace LoadForceSim
             // 
             // tabTest
             // 
+            this.tabTest.Controls.Add(this.btnBounceGet);
+            this.tabTest.Controls.Add(this.label7);
+            this.tabTest.Controls.Add(this.txbBouncePitch);
+            this.tabTest.Controls.Add(this.txbBounceRoll);
+            this.tabTest.Controls.Add(this.btnBounceSet);
             this.tabTest.Controls.Add(this.btnRecenterSpeedRead);
             this.tabTest.Controls.Add(this.label6);
             this.tabTest.Controls.Add(this.label5);
@@ -343,6 +326,50 @@ namespace LoadForceSim
             this.tabTest.Text = "Servo Config";
             this.tabTest.UseVisualStyleBackColor = true;
             // 
+            // btnBounceGet
+            // 
+            this.btnBounceGet.Location = new System.Drawing.Point(371, 159);
+            this.btnBounceGet.Name = "btnBounceGet";
+            this.btnBounceGet.Size = new System.Drawing.Size(75, 23);
+            this.btnBounceGet.TabIndex = 30;
+            this.btnBounceGet.Text = "Read";
+            this.btnBounceGet.UseVisualStyleBackColor = true;
+            this.btnBounceGet.Click += new System.EventHandler(this.btnBounceGet_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(60, 165);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(69, 13);
+            this.label7.TabIndex = 29;
+            this.label7.Text = "Bounce Gain";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // txbBouncePitch
+            // 
+            this.txbBouncePitch.Location = new System.Drawing.Point(142, 160);
+            this.txbBouncePitch.Name = "txbBouncePitch";
+            this.txbBouncePitch.Size = new System.Drawing.Size(65, 20);
+            this.txbBouncePitch.TabIndex = 28;
+            // 
+            // txbBounceRoll
+            // 
+            this.txbBounceRoll.Location = new System.Drawing.Point(220, 161);
+            this.txbBounceRoll.Name = "txbBounceRoll";
+            this.txbBounceRoll.Size = new System.Drawing.Size(65, 20);
+            this.txbBounceRoll.TabIndex = 26;
+            // 
+            // btnBounceSet
+            // 
+            this.btnBounceSet.Location = new System.Drawing.Point(298, 159);
+            this.btnBounceSet.Name = "btnBounceSet";
+            this.btnBounceSet.Size = new System.Drawing.Size(60, 23);
+            this.btnBounceSet.TabIndex = 27;
+            this.btnBounceSet.Text = "Set";
+            this.btnBounceSet.UseVisualStyleBackColor = true;
+            this.btnBounceSet.Click += new System.EventHandler(this.btnBounceSet_Click);
+            // 
             // btnRecenterSpeedRead
             // 
             this.btnRecenterSpeedRead.Location = new System.Drawing.Point(371, 130);
@@ -358,9 +385,9 @@ namespace LoadForceSim
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(44, 134);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(85, 13);
+            this.label6.Size = new System.Drawing.Size(88, 13);
             this.label6.TabIndex = 24;
-            this.label6.Text = "Recenter Speed";
+            this.label6.Text = "Re-center Speed";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // label5
@@ -472,6 +499,33 @@ namespace LoadForceSim
             this.lblACLSIMVersion.TabIndex = 22;
             this.lblACLSIMVersion.Text = "1.0.0";
             // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueDataGridViewTextBoxColumn
+            // 
+            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
+            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
+            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
+            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueConvertedDataGridViewTextBoxColumn
+            // 
+            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
+            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dataRefTableItemBindingSource
+            // 
+            this.dataRefTableItemBindingSource.AllowNew = false;
+            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
+            this.dataRefTableItemBindingSource.Filter = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -493,13 +547,13 @@ namespace LoadForceSim
             this.Text = "ACL-SIM";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabStatus.PerformLayout();
             this.tabConfig.ResumeLayout(false);
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -549,6 +603,11 @@ namespace LoadForceSim
         private System.Windows.Forms.Button btnTorqueDefault;
         private System.Windows.Forms.Button btnRecenterSpeedRead;
         private System.Windows.Forms.Label lblACLSIMVersion;
+        private System.Windows.Forms.Button btnBounceGet;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox txbBouncePitch;
+        private System.Windows.Forms.TextBox txbBounceRoll;
+        private System.Windows.Forms.Button btnBounceSet;
     }
 }
 
