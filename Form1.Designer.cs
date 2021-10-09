@@ -36,10 +36,6 @@ namespace LoadForceSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,12 +74,16 @@ namespace LoadForceSim
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.tabConfig.SuspendLayout();
             this.tabTest.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
@@ -141,33 +141,6 @@ namespace LoadForceSim
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataRefView.Size = new System.Drawing.Size(543, 290);
             this.dataRefView.TabIndex = 5;
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueDataGridViewTextBoxColumn
-            // 
-            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
-            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
-            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
-            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueConvertedDataGridViewTextBoxColumn
-            // 
-            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
-            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
-            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // dataRefTableItemBindingSource
-            // 
-            this.dataRefTableItemBindingSource.AllowNew = false;
-            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
-            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // name
             // 
@@ -525,6 +498,33 @@ namespace LoadForceSim
             this.label9.TabIndex = 21;
             this.label9.Text = "Back torque";
             // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueDataGridViewTextBoxColumn
+            // 
+            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
+            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
+            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
+            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueConvertedDataGridViewTextBoxColumn
+            // 
+            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Valu eConverted";
+            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
+            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dataRefTableItemBindingSource
+            // 
+            this.dataRefTableItemBindingSource.AllowNew = false;
+            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
+            this.dataRefTableItemBindingSource.Filter = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -541,16 +541,16 @@ namespace LoadForceSim
             this.Controls.Add(this.label1);
             this.Controls.Add(this.hostnameInput);
             this.Name = "Form1";
-            this.Text = "Load Force Sim";
+            this.Text = "ACL-SIM";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabStatus.PerformLayout();
             this.tabConfig.ResumeLayout(false);
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
