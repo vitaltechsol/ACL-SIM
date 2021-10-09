@@ -59,6 +59,7 @@ namespace LoadForceSim
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.propertyGridSettings = new System.Windows.Forms.PropertyGrid();
             this.tabTest = new System.Windows.Forms.TabPage();
+            this.btnRecenterSpeedRead = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -71,7 +72,7 @@ namespace LoadForceSim
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.btnRecenterSpeedRead = new System.Windows.Forms.Button();
+            this.lblACLSIMVersion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -342,6 +343,16 @@ namespace LoadForceSim
             this.tabTest.Text = "Servo Config";
             this.tabTest.UseVisualStyleBackColor = true;
             // 
+            // btnRecenterSpeedRead
+            // 
+            this.btnRecenterSpeedRead.Location = new System.Drawing.Point(371, 130);
+            this.btnRecenterSpeedRead.Name = "btnRecenterSpeedRead";
+            this.btnRecenterSpeedRead.Size = new System.Drawing.Size(75, 23);
+            this.btnRecenterSpeedRead.TabIndex = 25;
+            this.btnRecenterSpeedRead.Text = "Read";
+            this.btnRecenterSpeedRead.UseVisualStyleBackColor = true;
+            this.btnRecenterSpeedRead.Click += new System.EventHandler(this.btnRecenterSpeedRead_Click);
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -451,21 +462,23 @@ namespace LoadForceSim
             this.label9.TabIndex = 21;
             this.label9.Text = "Back torque";
             // 
-            // btnRecenterSpeedRead
+            // lblACLSIMVersion
             // 
-            this.btnRecenterSpeedRead.Location = new System.Drawing.Point(371, 130);
-            this.btnRecenterSpeedRead.Name = "btnRecenterSpeedRead";
-            this.btnRecenterSpeedRead.Size = new System.Drawing.Size(75, 23);
-            this.btnRecenterSpeedRead.TabIndex = 25;
-            this.btnRecenterSpeedRead.Text = "Read";
-            this.btnRecenterSpeedRead.UseVisualStyleBackColor = true;
-            this.btnRecenterSpeedRead.Click += new System.EventHandler(this.btnRecenterSpeedRead_Click);
+            this.lblACLSIMVersion.AutoSize = true;
+            this.lblACLSIMVersion.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.lblACLSIMVersion.Location = new System.Drawing.Point(534, 9);
+            this.lblACLSIMVersion.Name = "lblACLSIMVersion";
+            this.lblACLSIMVersion.Size = new System.Drawing.Size(31, 13);
+            this.lblACLSIMVersion.TabIndex = 22;
+            this.lblACLSIMVersion.Text = "1.0.0";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(581, 492);
+            this.BackColor = System.Drawing.Color.Gainsboro;
+            this.ClientSize = new System.Drawing.Size(581, 454);
+            this.Controls.Add(this.lblACLSIMVersion);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorquePitchBack);
@@ -535,6 +548,7 @@ namespace LoadForceSim
         private System.Windows.Forms.PropertyGrid propertyGridSettings;
         private System.Windows.Forms.Button btnTorqueDefault;
         private System.Windows.Forms.Button btnRecenterSpeedRead;
+        private System.Windows.Forms.Label lblACLSIMVersion;
     }
 }
 
