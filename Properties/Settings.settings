@@ -62,8 +62,14 @@
     <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
-    <Setting Name="Torque_Roll_Max" Type="System.String" Scope="User">
+    <Setting Name="Torque_Roll_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">75</Value>
+    </Setting>
+    <Setting Name="Position_Pitch_HYD_OFF_Max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-2000</Value>
+    </Setting>
+    <Setting Name="APPosition_Roll_Factor" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">700</Value>
     </Setting>
   </Settings>
 </SettingsFile>

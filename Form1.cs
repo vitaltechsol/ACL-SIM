@@ -48,8 +48,7 @@ namespace LoadForceSim
         bool isPitchCMD = false;
         bool isHydAvail = false;
 
-        int offsetX = 7000;
-        int offsetY = 300;
+        int apPositionRollFactor = 700;
         int hydOffPitchPosition = -9500;
         int maxX = 4000;
         int maxY = 8000;
@@ -145,14 +144,16 @@ namespace LoadForceSim
             trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
 
+            apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
+            apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
+
+            hydOffPitchPosition = Properties.Settings.Default.Position_Pitch_HYD_OFF_Max;
+            apPositionRollFactor = Properties.Settings.Default.APPosition_Roll_Factor;
 
             if (Properties.Settings.Default.AutoConnect)
             {
                 connectToProSim();
             }
-
-            apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
-            apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
 
         }
 
@@ -303,11 +304,11 @@ namespace LoadForceSim
                             {
                                 if (isRollCMD == true && sendDataX == true)
                                 {
-                                    double xValue = Math.Round(item.Value * offsetX);
+                                    double xValue = Math.Round(item.Value * (apPositionRollFactor * 10));
                                     // Skip sudden jumps to 0
                                     if (xValue != 0)
                                     {
-                                        item.ValueConverted = xValue;
+                                        item.valueAdjusted = xValue;
                                         moveToX(xValue);
                                         sendDataX = false;
                                     }
@@ -330,7 +331,7 @@ namespace LoadForceSim
                                         // Skip sudden jumps to 0
                                         if (yValue != 0)
                                         {
-                                            item.ValueConverted = yValue;
+                                            item.valueAdjusted = yValue;
                                             moveToY(yValue);
                                             sendDataY = false;
                                         }
@@ -349,7 +350,7 @@ namespace LoadForceSim
                                     // Skip sudden jumps to 0
                                     if (xValue != 0)
                                     {
-                                        item.ValueConverted = xValue * -1;
+                                        item.valueAdjusted = xValue * -1;
                                         moveToX(xValue * -1);
                                         sendDataY = false;
                                     }
@@ -361,10 +362,10 @@ namespace LoadForceSim
 
                         case DayaRefNames.THRUST_1:
                             {
-                                item.ValueConverted = Math.Round(item.Value / torqueFactorThrust);
-                                if (additionalThrustTorque1 != item.ValueConverted)
+                                item.valueAdjusted = Math.Round(item.Value / torqueFactorThrust);
+                                if (additionalThrustTorque1 != item.valueAdjusted)
                                 {
-                                    additionalThrustTorque1 = Convert.ToInt32(item.ValueConverted);
+                                    additionalThrustTorque1 = Convert.ToInt32(item.valueAdjusted);
                                     UpdatePitchTorques();
                                 }
 
@@ -374,10 +375,10 @@ namespace LoadForceSim
 
                         case DayaRefNames.THRUST_2:
                             {
-                                item.ValueConverted = Math.Round(item.Value / torqueFactorThrust);
-                                if (additionalThrustTorque2 != item.ValueConverted)
+                                item.valueAdjusted = Math.Round(item.Value / torqueFactorThrust);
+                                if (additionalThrustTorque2 != item.valueAdjusted)
                                 {
-                                    additionalThrustTorque2 = Convert.ToInt32(item.ValueConverted);
+                                    additionalThrustTorque2 = Convert.ToInt32(item.valueAdjusted);
                                     UpdatePitchTorques();
                                 }
 
@@ -387,10 +388,10 @@ namespace LoadForceSim
 
                         case DayaRefNames.SPEED_IAS:
                             {
-                                item.ValueConverted = Math.Round(item.Value / torqueFactorAirSpeed);
-                                if (additionalAirSpeedTorque != item.ValueConverted)
+                                item.valueAdjusted = Math.Round(item.Value / torqueFactorAirSpeed);
+                                if (additionalAirSpeedTorque != item.valueAdjusted)
                                 {
-                                    additionalAirSpeedTorque = Convert.ToInt32(item.ValueConverted);
+                                    additionalAirSpeedTorque = Convert.ToInt32(item.valueAdjusted);
                                     UpdatePitchTorques();
 
                                 }
@@ -416,7 +417,7 @@ namespace LoadForceSim
                                     }
 
                                     additionalVerticalSpeedTorque = valueConverted;
-                                    item.ValueConverted = valueConverted;
+                                    item.valueAdjusted = valueConverted;
 
                                     UpdatePitchTorques();
                                 }
@@ -514,7 +515,7 @@ namespace LoadForceSim
 
                         case DayaRefNames.AILERON_IN_CPTN:
                             {
-                                item.ValueConverted = lastRollMoved;
+                                item.valueAdjusted = lastRollMoved;
 
                                 if (isRollCMD == true)
                                 {
@@ -522,12 +523,12 @@ namespace LoadForceSim
                                     double diff1 = value - lastRollMoved;
                                     double diff2 = lastRollMoved - value;
 
-                                    item.ValueConverted = diff1;
+                                    item.valueAdjusted = diff1;
 
                                     // Disconnect auto pilot
                                     if ((diff1 > apDisconnetRollThreshold || diff2 > apDisconnetRollThreshold) && lastRollMoved != -1)
                                     {
-                                        item.ValueConverted = diff1 * 1000;
+                                        item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
                                         DisconnectAPWithTimer();                                  
                                     }
@@ -544,12 +545,12 @@ namespace LoadForceSim
                                     int value = Convert.ToInt32(dataRef.value);
                                     double diff1 = value - lastPitchMoved;
                                     double diff2 = lastPitchMoved - value;
-                                    item.ValueConverted = diff1;
+                                    item.valueAdjusted = diff1;
 
                                     // Disconnect auto pilot
                                     if ((diff1 > apDisconnetPitchThreshold || diff2 > apDisconnetPitchThreshold) && lastPitchMoved != -1)
                                     {
-                                        item.ValueConverted = diff1 * 1000;
+                                        item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
                                         DisconnectAPWithTimer();
                                     }
@@ -811,7 +812,7 @@ namespace LoadForceSim
         public String Description { get; set; }
         public String DataType { get; set; }
         public double Value { get; set; }
-        public double ValueConverted { get; set; }
+        public double valueAdjusted { get; set; }
     }
 
 

@@ -266,12 +266,36 @@ namespace LoadForceSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("75")]
-        public string Torque_Roll_Max {
+        public int Torque_Roll_Max {
             get {
-                return ((string)(this["Torque_Roll_Max"]));
+                return ((int)(this["Torque_Roll_Max"]));
             }
             set {
                 this["Torque_Roll_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
+        public int Position_Pitch_HYD_OFF_Max {
+            get {
+                return ((int)(this["Position_Pitch_HYD_OFF_Max"]));
+            }
+            set {
+                this["Position_Pitch_HYD_OFF_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("700")]
+        public int APPosition_Roll_Factor {
+            get {
+                return ((int)(this["APPosition_Roll_Factor"]));
+            }
+            set {
+                this["APPosition_Roll_Factor"] = value;
             }
         }
     }
