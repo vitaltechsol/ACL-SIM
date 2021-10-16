@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using ProSimSDK;
 using Timer = System.Timers.Timer;
 
-namespace LoadForceSim
+namespace ACLSim
 {
 
     public partial class Form1 : Form

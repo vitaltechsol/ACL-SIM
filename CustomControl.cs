@@ -2,7 +2,7 @@
 using System;
 using System.IO.Ports;
 
-namespace LoadForceSim
+namespace ACLSim
 {
     internal class CustomControl
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace LoadForceSim
+namespace ACLSim
 {
     partial class Form1
     {
@@ -145,7 +145,7 @@ namespace LoadForceSim
             // dataRefTableItemBindingSource
             // 
             this.dataRefTableItemBindingSource.AllowNew = false;
-            this.dataRefTableItemBindingSource.DataSource = typeof(LoadForceSim.DataRefTableItem);
+            this.dataRefTableItemBindingSource.DataSource = typeof(ACLSim.DataRefTableItem);
             this.dataRefTableItemBindingSource.Filter = "";
             // 
             // name

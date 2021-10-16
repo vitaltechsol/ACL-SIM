@@ -3,7 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO.Ports;
 
-namespace LoadForceSim
+namespace ACLSim
 {
     internal class TorqueControl
     {
