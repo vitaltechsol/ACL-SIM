@@ -36,7 +36,6 @@ namespace ACLSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
-            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -75,15 +74,16 @@ namespace ACLSim
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.lblACLSIMVersion = new System.Windows.Forms.Label();
+            this.rtxtLog = new System.Windows.Forms.RichTextBox();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueConvertedDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.tabConfig.SuspendLayout();
             this.tabTest.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
@@ -131,22 +131,15 @@ namespace ACLSim
             this.dataRefView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataRefView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
-            this.valueDataGridViewTextBoxColumn,
-            this.valueConvertedDataGridViewTextBoxColumn});
+            this.valueDataGridViewTextBoxColumn});
             this.dataRefView.DataSource = this.dataRefTableItemBindingSource;
             this.dataRefView.Location = new System.Drawing.Point(6, 17);
             this.dataRefView.Name = "dataRefView";
             this.dataRefView.ReadOnly = true;
             this.dataRefView.RowHeadersVisible = false;
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataRefView.Size = new System.Drawing.Size(543, 290);
+            this.dataRefView.Size = new System.Drawing.Size(543, 252);
             this.dataRefView.TabIndex = 5;
-            // 
-            // dataRefTableItemBindingSource
-            // 
-            this.dataRefTableItemBindingSource.AllowNew = false;
-            this.dataRefTableItemBindingSource.DataSource = typeof(ACLSim.DataRefTableItem);
-            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // name
             // 
@@ -170,7 +163,7 @@ namespace ACLSim
             this.btnGoTo.Location = new System.Drawing.Point(298, 49);
             this.btnGoTo.Name = "btnGoTo";
             this.btnGoTo.Size = new System.Drawing.Size(60, 23);
-            this.btnGoTo.TabIndex = 8;
+            this.btnGoTo.TabIndex = 3;
             this.btnGoTo.Text = "Move";
             this.btnGoTo.UseVisualStyleBackColor = true;
             this.btnGoTo.Click += new System.EventHandler(this.btnGoTo_Click);
@@ -180,7 +173,7 @@ namespace ACLSim
             this.txtbxPitch.Location = new System.Drawing.Point(142, 49);
             this.txtbxPitch.Name = "txtbxPitch";
             this.txtbxPitch.Size = new System.Drawing.Size(65, 20);
-            this.txtbxPitch.TabIndex = 7;
+            this.txtbxPitch.TabIndex = 1;
             this.txtbxPitch.Text = "0";
             // 
             // btnCenterOut
@@ -188,7 +181,7 @@ namespace ACLSim
             this.btnCenterOut.Location = new System.Drawing.Point(371, 49);
             this.btnCenterOut.Name = "btnCenterOut";
             this.btnCenterOut.Size = new System.Drawing.Size(75, 23);
-            this.btnCenterOut.TabIndex = 9;
+            this.btnCenterOut.TabIndex = 4;
             this.btnCenterOut.Text = "Center ";
             this.btnCenterOut.UseVisualStyleBackColor = true;
             this.btnCenterOut.Click += new System.EventHandler(this.btnCenterOut_Click);
@@ -198,7 +191,7 @@ namespace ACLSim
             this.txtbxRoll.Location = new System.Drawing.Point(220, 50);
             this.txtbxRoll.Name = "txtbxRoll";
             this.txtbxRoll.Size = new System.Drawing.Size(65, 20);
-            this.txtbxRoll.TabIndex = 10;
+            this.txtbxRoll.TabIndex = 2;
             this.txtbxRoll.Text = "0";
             // 
             // label2
@@ -235,14 +228,14 @@ namespace ACLSim
             this.txbRollTorque.Location = new System.Drawing.Point(220, 90);
             this.txbRollTorque.Name = "txbRollTorque";
             this.txbRollTorque.Size = new System.Drawing.Size(65, 20);
-            this.txbRollTorque.TabIndex = 14;
+            this.txbRollTorque.TabIndex = 6;
             // 
             // btnTorqueTest
             // 
             this.btnTorqueTest.Location = new System.Drawing.Point(298, 90);
             this.btnTorqueTest.Name = "btnTorqueTest";
             this.btnTorqueTest.Size = new System.Drawing.Size(60, 23);
-            this.btnTorqueTest.TabIndex = 15;
+            this.btnTorqueTest.TabIndex = 7;
             this.btnTorqueTest.Text = "Test";
             this.btnTorqueTest.UseVisualStyleBackColor = true;
             this.btnTorqueTest.Click += new System.EventHandler(this.btnUpdateTorque_Click);
@@ -255,7 +248,7 @@ namespace ACLSim
             this.tabControl1.Location = new System.Drawing.Point(16, 84);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(553, 362);
+            this.tabControl1.Size = new System.Drawing.Size(553, 323);
             this.tabControl1.TabIndex = 17;
             // 
             // tabStatus
@@ -265,7 +258,7 @@ namespace ACLSim
             this.tabStatus.Location = new System.Drawing.Point(4, 22);
             this.tabStatus.Name = "tabStatus";
             this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStatus.Size = new System.Drawing.Size(545, 336);
+            this.tabStatus.Size = new System.Drawing.Size(545, 297);
             this.tabStatus.TabIndex = 0;
             this.tabStatus.Text = "Status";
             this.tabStatus.UseVisualStyleBackColor = true;
@@ -273,7 +266,7 @@ namespace ACLSim
             // chkBoxStatus
             // 
             this.chkBoxStatus.AutoSize = true;
-            this.chkBoxStatus.Location = new System.Drawing.Point(6, 313);
+            this.chkBoxStatus.Location = new System.Drawing.Point(6, 275);
             this.chkBoxStatus.Name = "chkBoxStatus";
             this.chkBoxStatus.Size = new System.Drawing.Size(86, 17);
             this.chkBoxStatus.TabIndex = 22;
@@ -287,7 +280,7 @@ namespace ACLSim
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(545, 336);
+            this.tabConfig.Size = new System.Drawing.Size(545, 297);
             this.tabConfig.TabIndex = 2;
             this.tabConfig.Text = "Custom Config";
             this.tabConfig.UseVisualStyleBackColor = true;
@@ -327,7 +320,7 @@ namespace ACLSim
             this.tabTest.Location = new System.Drawing.Point(4, 22);
             this.tabTest.Name = "tabTest";
             this.tabTest.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTest.Size = new System.Drawing.Size(545, 336);
+            this.tabTest.Size = new System.Drawing.Size(545, 297);
             this.tabTest.TabIndex = 1;
             this.tabTest.Text = "Servo Config";
             this.tabTest.UseVisualStyleBackColor = true;
@@ -445,7 +438,7 @@ namespace ACLSim
             this.btnTorqueDefault.Location = new System.Drawing.Point(371, 90);
             this.btnTorqueDefault.Name = "btnTorqueDefault";
             this.btnTorqueDefault.Size = new System.Drawing.Size(75, 23);
-            this.btnTorqueDefault.TabIndex = 17;
+            this.btnTorqueDefault.TabIndex = 8;
             this.btnTorqueDefault.Text = "Revert";
             this.btnTorqueDefault.UseVisualStyleBackColor = true;
             this.btnTorqueDefault.Click += new System.EventHandler(this.btnTorqueDefault_Click);
@@ -455,7 +448,7 @@ namespace ACLSim
             this.txbPitchTorque.Location = new System.Drawing.Point(142, 90);
             this.txbPitchTorque.Name = "txbPitchTorque";
             this.txbPitchTorque.Size = new System.Drawing.Size(65, 20);
-            this.txbPitchTorque.TabIndex = 16;
+            this.txbPitchTorque.TabIndex = 5;
             // 
             // lblTorquePitchFwd
             // 
@@ -503,7 +496,15 @@ namespace ACLSim
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
             this.lblACLSIMVersion.Size = new System.Drawing.Size(31, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.0.0";
+            this.lblACLSIMVersion.Text = "1.0.1";
+            // 
+            // rtxtLog
+            // 
+            this.rtxtLog.Location = new System.Drawing.Point(16, 413);
+            this.rtxtLog.Name = "rtxtLog";
+            this.rtxtLog.Size = new System.Drawing.Size(549, 114);
+            this.rtxtLog.TabIndex = 23;
+            this.rtxtLog.Text = "";
             // 
             // nameDataGridViewTextBoxColumn
             // 
@@ -519,19 +520,19 @@ namespace ACLSim
             this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
             this.valueDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // valueConvertedDataGridViewTextBoxColumn
+            // dataRefTableItemBindingSource
             // 
-            this.valueConvertedDataGridViewTextBoxColumn.DataPropertyName = "ValueAdjusted";
-            this.valueConvertedDataGridViewTextBoxColumn.HeaderText = "Value Adjusted";
-            this.valueConvertedDataGridViewTextBoxColumn.Name = "valueConvertedDataGridViewTextBoxColumn";
-            this.valueConvertedDataGridViewTextBoxColumn.ReadOnly = true;
+            this.dataRefTableItemBindingSource.AllowNew = false;
+            this.dataRefTableItemBindingSource.DataSource = typeof(ACLSim.DataRefTableItem);
+            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gainsboro;
-            this.ClientSize = new System.Drawing.Size(581, 454);
+            this.ClientSize = new System.Drawing.Size(581, 539);
+            this.Controls.Add(this.rtxtLog);
             this.Controls.Add(this.lblACLSIMVersion);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
@@ -547,13 +548,13 @@ namespace ACLSim
             this.Text = "ACL-SIM";
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabStatus.PerformLayout();
             this.tabConfig.ResumeLayout(false);
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -608,6 +609,7 @@ namespace ACLSim
         private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
+        private System.Windows.Forms.RichTextBox rtxtLog;
     }
 }
 

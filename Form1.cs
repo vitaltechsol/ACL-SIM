@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ProSimSDK;
+using static ACLSim.ErrorHandler;
 using Timer = System.Timers.Timer;
 
 namespace ACLSim
@@ -31,7 +32,8 @@ namespace ACLSim
         static int additionalThrustTorque2 = 0;
         static int additionalAirSpeedTorque = 0;
         static int additionalVerticalSpeedTorque = 1;
-      
+        static string mbusPort = "COM4";
+
         int torqueFactorThrust = 2000;
         int torqueFactorAirSpeed = 10;
         int torqueFactorVerticalSpeed = 200;
@@ -55,17 +57,18 @@ namespace ACLSim
         int minX = -4000;
         int minY = -12000;
         bool sendDataAPDisconnect = true;
-        string mbusPort = "COM4";
         Timer timerX;
         static bool sendDataX = false;
         Timer timerY;
         Timer timerAPdiconnect;
         static bool sendDataY = false;
-        TorqueControl torquePitch = new TorqueControl("COM4", 1);
-        TorqueControl torqueRoll = new TorqueControl("COM4", 2);
+        TorqueControl torquePitch = new TorqueControl(mbusPort, 1);
+        TorqueControl torqueRoll = new TorqueControl(mbusPort, 2);
 
-        CustomControl speedPitch = new CustomControl("COM4", 1);
-        CustomControl speedRoll = new CustomControl("COM4", 2);
+        CustomControl speedPitch = new CustomControl(mbusPort, 1);
+        CustomControl speedRoll = new CustomControl(mbusPort, 2);
+        
+        ErrorHandler errorh = new ErrorHandler();
 
         int lastRollMoved = -1;
         int lastPitchMoved = -1;
@@ -76,6 +79,11 @@ namespace ACLSim
         public Form1()
         {
             InitializeComponent();
+            errorh.onError += (msg) => ShowFormError(msg);
+            torquePitch.onError += (msg) => ShowFormError(msg);
+            torqueRoll.onError += (msg) => ShowFormError(msg);
+            speedPitch.onError += (msg) => ShowFormError(msg);
+            speedRoll.onError += (msg) => ShowFormError(msg);
 
             // Add event to update the torque status
             torquePitch.OnUpdateStatusCCW += (sender1, e1) => UpdateTorquePitchLabelBack(torquePitch.StatusTextCCW);
@@ -197,7 +205,7 @@ namespace ACLSim
             catch (Exception ex)
             {
                 updateStatusLabel();
-                // MessageBox.Show("Error connecting to ProSim737 System: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                errorh.DisplayError("Cannot connect to Prosim. " + ex.Message);
             }
         }
 
@@ -570,7 +578,7 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     Debug.WriteLine("failed to update sim var " + ex.Message);
-
+                    errorh.DisplayError("failed to update sim var " + ex.Message);
                 }
 
                 // Signal the DataRefTable to update the row, so the new value is displayed
@@ -801,6 +809,12 @@ namespace ACLSim
             SetAppSettings();
 
         }
+
+        private void ShowFormError(string message)
+        {
+            Invoke(new MethodInvoker(delegate () { rtxtLog.Text = message + rtxtLog.Text; }));
+        }
+
     }
 
     // The data object that is used for the DataRef table

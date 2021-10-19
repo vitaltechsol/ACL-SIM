@@ -6,10 +6,14 @@ namespace ACLSim
 {
     internal class CustomControl
     {
-        ModbusClient mbc; 
+        ModbusClient mbc;
+        ErrorHandler errorLog = new ErrorHandler();
+        public event ErrorHandler.OnError onError;
 
-       public CustomControl(string port, byte driverID)
+        public CustomControl(string port, byte driverID)
         {
+            errorLog.onError += (message) => onError(message);
+
             mbc = new ModbusClient(port)
             {
                 Baudrate = 115200,
@@ -46,7 +50,6 @@ namespace ACLSim
             try
             {
                 mbc.Connect();
-                // 51 - Motor running top speed
                 int[] values =  mbc.ReadHoldingRegisters(pn, 1);
                 mbc.Disconnect();
                 return values[0];
@@ -54,6 +57,7 @@ namespace ACLSim
             catch (Exception ex)
             {
                 mbc.Disconnect();
+                errorLog.DisplayError("failed get value: " + ex.Message);
             }
 
             return 0;
@@ -70,6 +74,7 @@ namespace ACLSim
             catch (Exception ex)
             {
                 mbc.Disconnect();
+                errorLog.DisplayError("failed set value: " + ex.Message);
             }
         }
 

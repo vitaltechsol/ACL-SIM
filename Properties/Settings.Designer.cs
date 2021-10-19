@@ -298,5 +298,17 @@ namespace ACLSim.Properties {
                 this["APPosition_Roll_Factor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int RS485COM_Port {
+            get {
+                return ((int)(this["RS485COM_Port"]));
+            }
+            set {
+                this["RS485COM_Port"] = value;
+            }
+        }
     }
 }

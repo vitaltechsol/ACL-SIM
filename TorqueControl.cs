@@ -10,12 +10,17 @@ namespace ACLSim
         ModbusClient mbc;
         public event EventHandler OnUpdateStatusCW;
         public event EventHandler OnUpdateStatusCCW;
+        ErrorHandler errorLog = new ErrorHandler();
+        public event ErrorHandler.OnError onError;
+
 
         public int StatusTextCW { get; private set; }
         public int StatusTextCCW { get; private set; }
 
         public TorqueControl(string port, byte driverID)
         {
+            errorLog.onError += (message) => onError(message);
+
             mbc = new ModbusClient(port)
             {
                 Baudrate = 115200,
@@ -74,6 +79,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
+                    errorLog.DisplayError("Failed update torques: (" + mbc.UnitIdentifier + ") " + ex.Message);
 
                 }
             }
@@ -110,7 +116,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-
+                    errorLog.DisplayError("Failed update torques: (" + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
@@ -135,6 +141,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
+                    errorLog.DisplayError("Failed update torque CW: (" + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
@@ -159,8 +166,8 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     mbc.Disconnect();
-                    Debug.WriteLine("ERROR: failed update torque CCW " + ex.Message);
-
+                    Debug.WriteLine("ERROR: failed update torque CCW: " + ex.Message);
+                    errorLog.DisplayError("Failed update torque CCW: (" + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
