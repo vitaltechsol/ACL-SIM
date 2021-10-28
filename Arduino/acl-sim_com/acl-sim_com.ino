@@ -18,13 +18,17 @@ int driverDIR = 9;    // DIR- pin
 int driverPUL2 = 10;    // PUL- pin
 int driverDIR2 = 11;    // DIR- pin
 
+int driverPUL3 = 6;    // PUL- pin
+int driverDIR3 = 7;    // DIR- pin
+
 const int LED_PIN = 13;
 const int TQ_PIN = 12;
 const int vlt = 2;
 
 // Define a stepper and the pins it will use
-AccelStepper stepper(1, driverPUL, driverDIR); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
-AccelStepper stepper2(1, driverPUL2, driverDIR2); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+AccelStepper stepper(1, driverPUL, driverDIR); 
+AccelStepper stepper2(1, driverPUL2, driverDIR2); 
+AccelStepper stepper3(1, driverPUL3, driverDIR3); 
 
 int speedval = 800;
 
@@ -53,8 +57,14 @@ void setup() {
 
   stepper2.setMaxSpeed(8000);
   stepper2.setAcceleration(8000);
+
+  stepper3.setMaxSpeed(8000);
+  stepper3.setAcceleration(8000);
+
   stepper.moveTo(0);
   stepper2.moveTo(0);
+  stepper3.moveTo(0);
+
 
   Serial.begin(115200);
 }
@@ -146,6 +156,10 @@ void showParsedData() {
     stepper2.moveTo(floatFromPC);
   }
 
+  if (strcmp(messageFromPC, "Z_POS") == 0) {
+    stepper3.moveTo(floatFromPC);
+  }
+
   if (strcmp(messageFromPC, "PITCH_SPEED") == 0) {
     stepper2.setMaxSpeed(floatFromPC);
     stepper2.setAcceleration(floatFromPC);
@@ -160,6 +174,11 @@ void showParsedData() {
   while (stepper2.distanceToGo() != 0) {
     //    Serial.println(stepper2.distanceToGo());
     stepper2.run();
+  }
+
+  while (stepper3.distanceToGo() != 0) {
+    //    Serial.println(stepper3.distanceToGo());
+    stepper3.run();
   }
 
 }

@@ -310,5 +310,77 @@ namespace ACLSim.Properties {
                 this["RS485COM_Port"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        public int Torque_Yaw_High {
+            get {
+                return ((int)(this["Torque_Yaw_High"]));
+            }
+            set {
+                this["Torque_Yaw_High"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int Torque_Yaw_Low {
+            get {
+                return ((int)(this["Torque_Yaw_Low"]));
+            }
+            set {
+                this["Torque_Yaw_Low"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1000")]
+        public int Position_Yaw_HYD_OFF_Max {
+            get {
+                return ((int)(this["Position_Yaw_HYD_OFF_Max"]));
+            }
+            set {
+                this["Position_Yaw_HYD_OFF_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int APDisconnectFactor {
+            get {
+                return ((int)(this["APDisconnectFactor"]));
+            }
+            set {
+                this["APDisconnectFactor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int TrimFactor_Rudder {
+            get {
+                return ((int)(this["TrimFactor_Rudder"]));
+            }
+            set {
+                this["TrimFactor_Rudder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool EnableRudderACL {
+            get {
+                return ((bool)(this["EnableRudderACL"]));
+            }
+            set {
+                this["EnableRudderACL"] = value;
+            }
+        }
     }
 }

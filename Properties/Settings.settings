@@ -74,5 +74,23 @@
     <Setting Name="RS485COM_Port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
+    <Setting Name="Torque_Yaw_High" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">40</Value>
+    </Setting>
+    <Setting Name="Torque_Yaw_Low" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="Position_Yaw_HYD_OFF_Max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1000</Value>
+    </Setting>
+    <Setting Name="APDisconnectFactor" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="TrimFactor_Rudder" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="EnableRudderACL" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

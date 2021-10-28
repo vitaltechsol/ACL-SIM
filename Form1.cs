@@ -23,6 +23,8 @@ namespace ACLSim
         // Our main ProSim connection
         // Y is pitch
         // X is roll
+        // Z is yaw
+
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static string portName = "COM3";
@@ -39,10 +41,13 @@ namespace ACLSim
         int torqueFactorVerticalSpeed = 200;
         int trimFactorElevator = 1200;
         int trimFactorAileron = 1000;
+        int trimFactorRudder = 1000;
         int torquePitchLow = 25;
         int torquePitchHigh = 55;
         int torquePitchMax = 70;
         int torquePitchMin = 20;
+        int torqueYawHigh = 40;
+        int torqueYawLow = 20;
 
         static SerialPort port;
         int baud = 115200;
@@ -51,23 +56,27 @@ namespace ACLSim
         bool isHydAvail = false;
 
         int apPositionRollFactor = 700;
-        int hydOffPitchPosition = -9500;
         int maxX = 4000;
         int maxY = 8000;
         int minX = -4000;
         int minY = -12000;
         bool sendDataAPDisconnect = true;
         Timer timerX;
-        static bool sendDataX = false;
         Timer timerY;
+        Timer timerZ;
         Timer timerAPdiconnect;
+        static bool sendDataX = false;
         static bool sendDataY = false;
+        static bool sendDataZ = false;
+
         TorqueControl torquePitch = new TorqueControl(mbusPort, 1);
         TorqueControl torqueRoll = new TorqueControl(mbusPort, 2);
+        TorqueControl torqueYaw = new TorqueControl(mbusPort, 3);
 
         CustomControl speedPitch = new CustomControl(mbusPort, 1);
         CustomControl speedRoll = new CustomControl(mbusPort, 2);
-        
+        CustomControl speedYaw = new CustomControl(mbusPort, 3);
+
         ErrorHandler errorh = new ErrorHandler();
 
         int lastRollMoved = -1;
@@ -75,15 +84,18 @@ namespace ACLSim
         int apDisconnetRollThreshold;
         int apDisconnetPitchThreshold;
 
-
         public Form1()
         {
             InitializeComponent();
             errorh.onError += (msg) => ShowFormError(msg);
             torquePitch.onError += (msg) => ShowFormError(msg);
             torqueRoll.onError += (msg) => ShowFormError(msg);
+            torqueYaw.onError += (msg) => ShowFormError(msg);
+
             speedPitch.onError += (msg) => ShowFormError(msg);
             speedRoll.onError += (msg) => ShowFormError(msg);
+            speedYaw.onError += (msg) => ShowFormError(msg);
+
 
             // Add event to update the torque status
             torquePitch.OnUpdateStatusCCW += (sender1, e1) => UpdateTorquePitchLabelBack(torquePitch.StatusTextCCW);
@@ -102,6 +114,10 @@ namespace ACLSim
             timerY.Start();
             timerY.Elapsed += sendDataOK_Y;
             timerY.AutoReset = true;
+            
+            timerZ = new Timer();
+            timerZ.Interval = 100;
+            timerY.Elapsed += sendDataOK_Z;
 
             timerAPdiconnect = new Timer();
             timerAPdiconnect.Interval = 2000;
@@ -130,6 +146,7 @@ namespace ACLSim
             // Reset position
             moveToX(0);
             moveToY(0);
+            moveToZ(0);
         }
 
         private void SetAppSettings()
@@ -149,13 +166,16 @@ namespace ACLSim
             torqueRollLow = Properties.Settings.Default.Torque_Roll_Low;
             torqueRollHigh = Properties.Settings.Default.Torque_Roll_High;
 
+            torqueYawLow = Properties.Settings.Default.Torque_Yaw_Low;
+            torqueYawHigh = Properties.Settings.Default.Torque_Yaw_High;
+
             trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
+            trimFactorRudder = Properties.Settings.Default.TrimFactor_Rudder;
 
             apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
             apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
 
-            hydOffPitchPosition = Properties.Settings.Default.Position_Pitch_HYD_OFF_Max;
             apPositionRollFactor = Properties.Settings.Default.APPosition_Roll_Factor;
 
             if (Properties.Settings.Default.AutoConnect)
@@ -174,6 +194,12 @@ namespace ACLSim
         private void sendDataOK_Y(object sender, System.Timers.ElapsedEventArgs e)
         {
             sendDataY = true;
+        }
+
+        private void sendDataOK_Z(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            timerZ.Stop();
+            sendDataZ = true;
         }
 
         private void sendDataAPDisconnectOK(object sender, System.Timers.ElapsedEventArgs e)
@@ -248,7 +274,7 @@ namespace ACLSim
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
             this.add_data_ref(DayaRefNames.TRIM_ELEVATOR);
             this.add_data_ref(DayaRefNames.TRIM_AILERON);
-           // this.add_data_ref(DayaRefNames.PITCH);
+            this.add_data_ref(DayaRefNames.TRIM_RUDDER);
 
             this.add_data_ref(DayaRefNames.ROLL_CMD);
             this.add_data_ref(DayaRefNames.PITCH_CMD);
@@ -360,9 +386,29 @@ namespace ACLSim
                                     {
                                         item.valueAdjusted = xValue * -1;
                                         moveToX(xValue * -1);
-                                        sendDataY = false;
+                                        sendDataX = false;
                                     }
                                     
+                                }
+
+                                break;
+                            }
+
+                        case DayaRefNames.TRIM_RUDDER:
+                            {
+
+                                if (sendDataZ == true)
+                                {
+                                    double zValue = Math.Round(item.Value * trimFactorRudder);
+                                    // Skip sudden jumps to 0
+                                    if (zValue != 0)
+                                    {
+                                        item.valueAdjusted = zValue * -1;
+                                        moveToZ(zValue * -1);
+                                        sendDataZ = false;
+                                        timerZ.Start();
+                                    }
+
                                 }
 
                                 break;
@@ -500,10 +546,13 @@ namespace ACLSim
                                 // move if on ground
                                 if (airSpeedValue < 30)
                                 {
+                                    torquePitch.SetTorque(torquePitchHigh);
+                                    torqueYaw.SetTorque(torqueYawHigh);
+
                                     if (!isHydAvail)
                                     {
-                                        torquePitch.SetTorque(torquePitchHigh);
-                                        moveToY(hydOffPitchPosition);
+                                        moveToY(Properties.Settings.Default.Position_Pitch_HYD_OFF_Max);
+                                        moveToZ(Properties.Settings.Default.Position_Yaw_HYD_OFF_Max);
                                     }
                                     else
                                     {
@@ -511,11 +560,13 @@ namespace ACLSim
                                         torquePitch.SetTorque(torquePitchHigh);
                                         changeSpeedPitch(80000);
                                         moveToY(0);
+                                        moveToZ(0);
                                     }
                                 }
                                
                                 UpdateRollTorques();
                                 UpdatePitchTorques();
+                                UpdateYawTorques();
 
                                 break;
                             }
@@ -651,24 +702,57 @@ namespace ACLSim
             torqueRoll.SetTorque(torqueBase);
         }
 
+        private void UpdateYawTorques()
+        {
+            int torqueBase = isHydAvail ? torqueYawLow : torqueYawHigh;
+            torqueYaw.SetTorque(torqueBase);
+        }
+
         // Roll
         private void moveToX(double value)
         {
-            if (value > minX && value < maxX)
+
+            if (value < minX)
             {
-                string arduLine = "<X_POS, 0, " + value + ">";
-                port.Write(arduLine);
+                value = minX;
             }
+
+
+            if (value > maxX)
+            {
+                value = maxX;
+            }
+
+            string arduLine = "<X_POS, 0, " + value + ">";
+            port.Write(arduLine);
         }
 
         // Pitch
         private void moveToY(double value)
         {
-            if (value > minY && value < maxY)
+            if (value < minY)
             {
-                string arduLine = "<Y_POS, 0, " + value + ">";
-                port.Write(arduLine);
+                value = minY;
             }
+
+
+            if (value > maxY)
+            {
+                value = maxY;
+            }
+
+            string arduLine = "<Y_POS, 0, " + value + ">";
+            port.Write(arduLine);
+
+        }
+
+
+        // Yaw
+        private void moveToZ(double value)
+        {
+            
+            string arduLine = "<Z_POS, 0, " + value + ">";
+            port.Write(arduLine);
 
         }
 
@@ -836,6 +920,7 @@ namespace ACLSim
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
         public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
         public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
+        public const string TRIM_RUDDER = "aircraft.flightControls.trim.rudder.units";
 
         public const string AILERON_IN_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string ELEVATOR_IN_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
