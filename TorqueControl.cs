@@ -12,14 +12,14 @@ namespace ACLSim
         public event EventHandler OnUpdateStatusCCW;
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
-        public bool disabled = false;
+        public bool enabled = true;
 
         public int StatusTextCW { get; private set; }
         public int StatusTextCCW { get; private set; }
 
-        public TorqueControl(string port, byte driverID, bool disabled) : this (port, driverID)
+        public TorqueControl(string port, byte driverID, bool enabled) : this (port, driverID)
         {
-            this.disabled = disabled;
+            this.enabled = enabled;
         }
         public TorqueControl(string port, byte driverID)
         {
@@ -75,7 +75,7 @@ namespace ACLSim
                 ccwValue = 1;
             }
 
-            if (!this.disabled && (StatusTextCCW != ccwValue || StatusTextCW != cwValue))
+            if (this.enabled && (StatusTextCCW != ccwValue || StatusTextCW != cwValue))
             {
             
 
@@ -94,14 +94,14 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-                    errorLog.DisplayError("Failed update torques: (" + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed update torques: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
 
         public void SetTorqueCW(int value)
         {
-            if (!this.disabled && StatusTextCW != value)
+            if (this.enabled && StatusTextCW != value)
             {
                 if (value < 0)
                 {
@@ -119,14 +119,14 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
-                    errorLog.DisplayError("Failed update torque CW: (" + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed update torque CW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
 
         public void SetTorqueCCW(int value)
         {
-            if (!this.disabled && StatusTextCCW != value)
+            if (this.enabled && StatusTextCCW != value)
             {
                 if (value < 0)
                 {
@@ -145,7 +145,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CCW: " + ex.Message);
-                    errorLog.DisplayError("Failed update torque CCW: (" + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed update torque CCW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }

@@ -73,14 +73,16 @@ namespace ACLSim
         TorqueControl torqueRoll = new TorqueControl(mbusPort,
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
         TorqueControl torqueYaw = new TorqueControl(mbusPort,
-            Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), true);
+            Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), 
+            Properties.Settings.Default.Enable_Rudder_ACL);
 
         CustomControl speedPitch = new CustomControl(mbusPort,
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID));
         CustomControl speedRoll = new CustomControl(mbusPort,
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
         CustomControl speedYaw = new CustomControl(mbusPort,
-            Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), true);
+            Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
+            Properties.Settings.Default.Enable_Rudder_ACL);
 
         ErrorHandler errorh = new ErrorHandler();
 
@@ -181,6 +183,9 @@ namespace ACLSim
             apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
 
             apPositionRollFactor = Properties.Settings.Default.APPosition_Roll_Factor;
+
+            torqueYaw.enabled = Properties.Settings.Default.Enable_Rudder_ACL;
+            speedYaw.enabled = Properties.Settings.Default.Enable_Rudder_ACL;
 
             if (Properties.Settings.Default.AutoConnect)
             {

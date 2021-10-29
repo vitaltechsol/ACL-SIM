@@ -9,11 +9,11 @@ namespace ACLSim
         ModbusClient mbc;
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
-        Boolean disabled = false;
+        public bool enabled = true;
 
-        public CustomControl(string port, byte driverID, bool disabled) : this(port, driverID)
+        public CustomControl(string port, byte driverID, bool enabled) : this(port, driverID)
         {
-            this.disabled = disabled;
+            this.enabled = enabled;
         }
         public CustomControl(string port, byte driverID)
         {
@@ -52,7 +52,7 @@ namespace ACLSim
 
         public int GetValue(int pn)
         {
-            if (!disabled)
+            if (enabled)
             {
                 try
                 {
@@ -64,7 +64,7 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     mbc.Disconnect();
-                    errorLog.DisplayError("failed get value (" + mbc.UnitIdentifier + ") : " + ex.Message);
+                    errorLog.DisplayError("failed get value (Servo " + mbc.UnitIdentifier + ") : " + ex.Message);
                 }
             }
 
@@ -73,7 +73,7 @@ namespace ACLSim
 
         public void SetValue(int pn, int value)
         {
-            if (!disabled)
+            if (enabled)
             { 
                 try
                 {
@@ -84,7 +84,7 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     mbc.Disconnect();
-                    errorLog.DisplayError("failed set value (" + mbc.UnitIdentifier + ") : " + ex.Message);
+                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") : " + ex.Message);
                 }
             }
         }
