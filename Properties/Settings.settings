@@ -35,9 +35,6 @@
     <Setting Name="TorqueFactor_VerticalSpeed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="Torque_Pitch_Min" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">20</Value>
-    </Setting>
     <Setting Name="Torque_Pitch_Low" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">25</Value>
     </Setting>
@@ -46,9 +43,6 @@
     </Setting>
     <Setting Name="Torque_Pitch_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">70</Value>
-    </Setting>
-    <Setting Name="Torque_Roll_Min" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Torque_Roll_Low" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
@@ -89,8 +83,17 @@
     <Setting Name="TrimFactor_Rudder" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
-    <Setting Name="EnableRudderACL" Type="System.Boolean" Scope="User">
+    <Setting Name="Enable_Rudder_ACL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Driver_Yaw_ID" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="Driver_Pitch_ID" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Driver_Roll_ID" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
     </Setting>
   </Settings>
 </SettingsFile>

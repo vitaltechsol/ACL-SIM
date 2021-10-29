@@ -12,11 +12,15 @@ namespace ACLSim
         public event EventHandler OnUpdateStatusCCW;
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
-
+        public bool disabled = false;
 
         public int StatusTextCW { get; private set; }
         public int StatusTextCCW { get; private set; }
 
+        public TorqueControl(string port, byte driverID, bool disabled) : this (port, driverID)
+        {
+            this.disabled = disabled;
+        }
         public TorqueControl(string port, byte driverID)
         {
             errorLog.onError += (message) => onError(message);
@@ -56,33 +60,7 @@ namespace ACLSim
 
         public void SetTorque(int value )
         {
-            if (value > 0 && (StatusTextCCW != value || StatusTextCW != value))
-            {
-
-                if (value < 0)
-                {
-                    value = 0;
-                }
-
-                try
-                {
-                    mbc.Connect();
-                    mbc.WriteSingleRegister(8, value);
-                    mbc.WriteSingleRegister(9, value * -1);
-                    mbc.Disconnect();
-                    UpdateStatusCW(value);
-                    UpdateStatusCCW(value);
-                    Debug.WriteLine("updated torques " + value);
-
-                }
-                catch (Exception ex)
-                {
-                    mbc.Disconnect();
-                    Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-                    errorLog.DisplayError("Failed update torques: (" + mbc.UnitIdentifier + ") " + ex.Message);
-
-                }
-            }
+            SetTorques(value, value);
         }
 
         public void SetTorques(int cwValue, int ccwValue)
@@ -97,7 +75,7 @@ namespace ACLSim
                 ccwValue = 1;
             }
 
-            if (StatusTextCCW != ccwValue || StatusTextCW != cwValue)
+            if (!this.disabled && (StatusTextCCW != ccwValue || StatusTextCW != cwValue))
             {
             
 
@@ -123,7 +101,7 @@ namespace ACLSim
 
         public void SetTorqueCW(int value)
         {
-            if (StatusTextCW != value)
+            if (!this.disabled && StatusTextCW != value)
             {
                 if (value < 0)
                 {
@@ -148,7 +126,7 @@ namespace ACLSim
 
         public void SetTorqueCCW(int value)
         {
-            if (StatusTextCCW != value)
+            if (!this.disabled && StatusTextCCW != value)
             {
                 if (value < 0)
                 {

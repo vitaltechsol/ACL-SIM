@@ -9,7 +9,12 @@ namespace ACLSim
         ModbusClient mbc;
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
+        Boolean disabled = false;
 
+        public CustomControl(string port, byte driverID, bool disabled) : this(port, driverID)
+        {
+            this.disabled = disabled;
+        }
         public CustomControl(string port, byte driverID)
         {
             errorLog.onError += (message) => onError(message);
@@ -47,17 +52,20 @@ namespace ACLSim
 
         public int GetValue(int pn)
         {
-            try
+            if (!disabled)
             {
-                mbc.Connect();
-                int[] values =  mbc.ReadHoldingRegisters(pn, 1);
-                mbc.Disconnect();
-                return values[0];
-            }
-            catch (Exception ex)
-            {
-                mbc.Disconnect();
-                errorLog.DisplayError("failed get value: " + ex.Message);
+                try
+                {
+                    mbc.Connect();
+                    int[] values = mbc.ReadHoldingRegisters(pn, 1);
+                    mbc.Disconnect();
+                    return values[0];
+                }
+                catch (Exception ex)
+                {
+                    mbc.Disconnect();
+                    errorLog.DisplayError("failed get value (" + mbc.UnitIdentifier + ") : " + ex.Message);
+                }
             }
 
             return 0;
@@ -65,16 +73,19 @@ namespace ACLSim
 
         public void SetValue(int pn, int value)
         {
-            try
-            {
-                mbc.Connect();
-                mbc.WriteSingleRegister(pn, value);
-                mbc.Disconnect();
-            }
-            catch (Exception ex)
-            {
-                mbc.Disconnect();
-                errorLog.DisplayError("failed set value: " + ex.Message);
+            if (!disabled)
+            { 
+                try
+                {
+                    mbc.Connect();
+                    mbc.WriteSingleRegister(pn, value);
+                    mbc.Disconnect();
+                }
+                catch (Exception ex)
+                {
+                    mbc.Disconnect();
+                    errorLog.DisplayError("failed set value (" + mbc.UnitIdentifier + ") : " + ex.Message);
+                }
             }
         }
 

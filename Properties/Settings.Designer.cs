@@ -157,18 +157,6 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int Torque_Pitch_Min {
-            get {
-                return ((int)(this["Torque_Pitch_Min"]));
-            }
-            set {
-                this["Torque_Pitch_Min"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("25")]
         public int Torque_Pitch_Low {
             get {
@@ -200,18 +188,6 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Torque_Pitch_Max"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int Torque_Roll_Min {
-            get {
-                return ((int)(this["Torque_Roll_Min"]));
-            }
-            set {
-                this["Torque_Roll_Min"] = value;
             }
         }
         
@@ -374,12 +350,48 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool EnableRudderACL {
+        public bool Enable_Rudder_ACL {
             get {
-                return ((bool)(this["EnableRudderACL"]));
+                return ((bool)(this["Enable_Rudder_ACL"]));
             }
             set {
-                this["EnableRudderACL"] = value;
+                this["Enable_Rudder_ACL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Driver_Yaw_ID {
+            get {
+                return ((int)(this["Driver_Yaw_ID"]));
+            }
+            set {
+                this["Driver_Yaw_ID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Driver_Pitch_ID {
+            get {
+                return ((int)(this["Driver_Pitch_ID"]));
+            }
+            set {
+                this["Driver_Pitch_ID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int Driver_Roll_ID {
+            get {
+                return ((int)(this["Driver_Roll_ID"]));
+            }
+            set {
+                this["Driver_Roll_ID"] = value;
             }
         }
     }

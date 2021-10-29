@@ -45,7 +45,6 @@ namespace ACLSim
         int torquePitchLow = 25;
         int torquePitchHigh = 55;
         int torquePitchMax = 70;
-        int torquePitchMin = 20;
         int torqueYawHigh = 40;
         int torqueYawLow = 20;
 
@@ -69,13 +68,19 @@ namespace ACLSim
         static bool sendDataY = false;
         static bool sendDataZ = false;
 
-        TorqueControl torquePitch = new TorqueControl(mbusPort, 1);
-        TorqueControl torqueRoll = new TorqueControl(mbusPort, 2);
-        TorqueControl torqueYaw = new TorqueControl(mbusPort, 3);
+        TorqueControl torquePitch = new TorqueControl(mbusPort, 
+            Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID));
+        TorqueControl torqueRoll = new TorqueControl(mbusPort,
+            Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
+        TorqueControl torqueYaw = new TorqueControl(mbusPort,
+            Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), true);
 
-        CustomControl speedPitch = new CustomControl(mbusPort, 1);
-        CustomControl speedRoll = new CustomControl(mbusPort, 2);
-        CustomControl speedYaw = new CustomControl(mbusPort, 3);
+        CustomControl speedPitch = new CustomControl(mbusPort,
+            Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID));
+        CustomControl speedRoll = new CustomControl(mbusPort,
+            Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
+        CustomControl speedYaw = new CustomControl(mbusPort,
+            Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), true);
 
         ErrorHandler errorh = new ErrorHandler();
 
@@ -161,7 +166,6 @@ namespace ACLSim
             torquePitchLow = Properties.Settings.Default.Torque_Pitch_Low;
             torquePitchHigh = Properties.Settings.Default.Torque_Pitch_High;
             torquePitchMax = Properties.Settings.Default.Torque_Pitch_Max;
-            torquePitchMin = Properties.Settings.Default.Torque_Pitch_Min;
 
             torqueRollLow = Properties.Settings.Default.Torque_Roll_Low;
             torqueRollHigh = Properties.Settings.Default.Torque_Roll_High;
@@ -460,14 +464,14 @@ namespace ACLSim
                                 {
                                     int valueConverted = Convert.ToInt32(value);
                                     // Can't be less than the minimun or we'll get negative values
-                                    if (valueConverted > torquePitchMin)
+                                    if (valueConverted > torquePitchLow)
                                     {
-                                        valueConverted = torquePitchMin;
+                                        valueConverted = torquePitchLow;
                                     }
 
-                                    if (valueConverted < torquePitchMin * -1)
+                                    if (valueConverted < torquePitchLow * -1)
                                     {
-                                        valueConverted = torquePitchMin * -1;
+                                        valueConverted = torquePitchLow * -1;
                                     }
 
                                     additionalVerticalSpeedTorque = valueConverted;
@@ -689,9 +693,9 @@ namespace ACLSim
                 return torquePitchMax;
             }
 
-            if (torque < torquePitchMin)
+            if (torque < torquePitchLow)
             {
-                return torquePitchMin;
+                return torquePitchLow;
             }
 
             return torque;
@@ -794,14 +798,19 @@ namespace ACLSim
         {
             moveToX(0);
             moveToY(0);
-            txtbxRoll.Text = "0";
-            txtbxPitch.Text = "0";
+            moveToZ(0);
+            txtbxRollPosition.Text = "0";
+            txtbxPitchPosition.Text = "0";
+            txtbxYawPosition.Text = "0";
+
         }
 
         private void btnGoTo_Click(object sender, EventArgs e)
         {
-            moveToX(Convert.ToDouble(txtbxRoll.Text));
-            moveToY(Convert.ToDouble(txtbxPitch.Text));
+            moveToX(Convert.ToDouble(txtbxRollPosition.Text));
+            moveToY(Convert.ToDouble(txtbxPitchPosition.Text));
+            moveToZ(Convert.ToDouble(txtbxYawPosition.Text));
+
         }
 
         private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
@@ -823,6 +832,11 @@ namespace ACLSim
             {
                 torquePitch.SetTorque(Int32.Parse(txbPitchTorque.Text));
             }
+
+            if (txbYawTorque.Text != "")
+            {
+                torqueYaw.SetTorque(Int32.Parse(txbPitchTorque.Text));
+            }
         }
 
         private void btnTorqueDefault_Click(object sender, EventArgs e)
@@ -842,13 +856,18 @@ namespace ACLSim
             {
                 speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
             }
+
+            if (txbYawSpeedTest.Text != "")
+            {
+                speedYaw.SetSpeed(Int32.Parse(txbYawSpeedTest.Text));
+            }
         }
 
         private void btnRecenterSpeedRead_Click(object sender, EventArgs e)
         {
             txbPitchSpeedTest.Text = speedPitch.GetSpeed().ToString();
             txbRollSpeedTest.Text = speedRoll.GetSpeed().ToString();
-
+            txbYawSpeedTest.Text = speedYaw.GetSpeed().ToString();
         }
 
 
@@ -870,6 +889,8 @@ namespace ACLSim
 
             txbBouncePitch.Text = speedPitch.GetBounceGain().ToString();
             txbBounceRoll.Text = speedRoll.GetBounceGain().ToString();
+            txbBounceYaw.Text = speedYaw.GetBounceGain().ToString();
+
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
