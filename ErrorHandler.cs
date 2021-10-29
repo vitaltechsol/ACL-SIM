@@ -11,5 +11,10 @@ namespace ACLSim
         {
             onError(DateTime.Now.ToLongTimeString() + " | Error: " + message + "\r\n");
         }
+
+        public void DisplayInfo(string message)
+        {
+            onError(DateTime.Now.ToLongTimeString() + " | Info: " + message + "\r\n");
+        }
     }
 }
