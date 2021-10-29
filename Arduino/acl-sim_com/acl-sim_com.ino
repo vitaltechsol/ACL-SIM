@@ -12,18 +12,25 @@
 //https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 #include <AccelStepper.h>
 
+// Roll
 int driverPUL = 8;    // PUL- pin
 int driverDIR = 9;    // DIR- pin
 
+// Pitch
 int driverPUL2 = 10;    // PUL- pin
 int driverDIR2 = 11;    // DIR- pin
 
+// Yaw
 int driverPUL3 = 6;    // PUL- pin
 int driverDIR3 = 7;    // DIR- pin
 
 const int LED_PIN = 13;
 const int TQ_PIN = 12;
 const int vlt = 2;
+
+int Xdest = 0;
+int Ydest = 0;
+int Zdest = 0;
 
 // Define a stepper and the pins it will use
 AccelStepper stepper(1, driverPUL, driverDIR); 
@@ -72,7 +79,6 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
 
-
   analogWrite( LED_PIN, vlt );
   analogWrite( TQ_PIN, vlt );
 
@@ -85,6 +91,10 @@ void loop() {
     showParsedData();
     newData = false;
   }
+
+  stepper.run();
+  stepper2.run();
+  stepper3.run();
 
 }
 
@@ -141,44 +151,34 @@ void parseData() {      // split the data into its parts
 //============
 
 void showParsedData() {
-  //  Serial.print("Message ");
-  //  Serial.println(messageFromPC);
-  //  Serial.print("Integer ");
-  //  Serial.println(integerFromPC);
-  //  Serial.print("Float ");
-  //  Serial.println(floatFromPC);
+//    Serial.print("Message ");
+//    Serial.println(messageFromPC);
+//    Serial.print("Integer ");
+//    Serial.println(integerFromPC);
+//    Serial.print("Float ");
+//    Serial.println(floatFromPC);
 
+  // Roll
   if (strcmp(messageFromPC, "X_POS") == 0) {
+    Xdest = floatFromPC;
     stepper.moveTo(floatFromPC);
   }
 
+  // Pitch
   if (strcmp(messageFromPC, "Y_POS") == 0) {
+    Ydest = floatFromPC;
     stepper2.moveTo(floatFromPC);
   }
 
+  // Yaw
   if (strcmp(messageFromPC, "Z_POS") == 0) {
+    Zdest = floatFromPC;
     stepper3.moveTo(floatFromPC);
   }
 
   if (strcmp(messageFromPC, "PITCH_SPEED") == 0) {
     stepper2.setMaxSpeed(floatFromPC);
     stepper2.setAcceleration(floatFromPC);
-  }
-
-  //Serial.println("disttogo");
-  while (stepper.distanceToGo() != 0) {
-    //    Serial.println(stepper.distanceToGo());
-    stepper.run();
-  }
-
-  while (stepper2.distanceToGo() != 0) {
-    //    Serial.println(stepper2.distanceToGo());
-    stepper2.run();
-  }
-
-  while (stepper3.distanceToGo() != 0) {
-    //    Serial.println(stepper3.distanceToGo());
-    stepper3.run();
   }
 
 }
