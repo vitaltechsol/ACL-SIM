@@ -707,7 +707,7 @@ namespace ACLSim
         } 
         private void UpdateRollTorques()
         {
-            int torqueBase = isHydAvail ? torqueRollLow : torqueRollHigh;
+            int torqueBase = !isHydAvail || isRollCMD ? torqueRollHigh : torqueRollLow;
             torqueRoll.SetTorque(torqueBase);
         }
 
@@ -802,8 +802,11 @@ namespace ACLSim
         private void btnCenterOut_Click(object sender, EventArgs e)
         {
             moveToX(0);
+            errorh.DisplayInfo("Moved Roll to 0");
             moveToY(0);
+            errorh.DisplayInfo("Moved Pitch to 0");
             moveToZ(0);
+            errorh.DisplayInfo("Moved Yaw to 0");
             txtbxRollPosition.Text = "0";
             txtbxPitchPosition.Text = "0";
             txtbxYawPosition.Text = "0";
@@ -840,7 +843,7 @@ namespace ACLSim
 
             if (txbYawTorque.Text != "")
             {
-                torqueYaw.SetTorque(Int32.Parse(txbPitchTorque.Text));
+                torqueYaw.SetTorque(Int32.Parse(txbYawTorque.Text));
             }
         }
 
