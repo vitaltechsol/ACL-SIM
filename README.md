@@ -27,7 +27,6 @@ Hardware:
 |             | Elevator Trim                                   | Complete |
 |             | Neutral position change                         | To do    |
 |             | Pitch Limit (Avoid Stalling)                    | To do    |
-|             | Pitch Limit (Avoid Stalling)                    | To do    |
 |             | Center Calibration when starting the stim       | To do    |
 | Roll Axis   |                                                 |          |
 |             | Self-centering                                  | Complete |
@@ -36,8 +35,8 @@ Hardware:
 |             | Autopilot disengage override                    | Complete |
 |             | Center Calibration when starting the stim       | To do    |
 | Rudder Axis |                                                 |          |
-|             | Rudders move left when hyndraulics are off      | Complete |
-|             | Load change when hyndraulics are avilable       | Complete |
+|             | Rudders move left when hydraulics are off       | Complete |
+|             | Load change when hydraulics are available       | Complete |
 |             | Rudder pedals move with rudder trim             | Complete |
-|             | Rudders don't move with hyndraulics off ?       | To do    |
+|             | Rudders don't move with hydraulics off ?        | To do    |
 |             | Center Calibration when starting the stim       | To do    |
