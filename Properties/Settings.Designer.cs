@@ -394,5 +394,29 @@ namespace ACLSim.Properties {
                 this["Driver_Roll_ID"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Enable_Pitch_ACL {
+            get {
+                return ((bool)(this["Enable_Pitch_ACL"]));
+            }
+            set {
+                this["Enable_Pitch_ACL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Enabe_Roll_ACL {
+            get {
+                return ((bool)(this["Enabe_Roll_ACL"]));
+            }
+            set {
+                this["Enabe_Roll_ACL"] = value;
+            }
+        }
     }
 }

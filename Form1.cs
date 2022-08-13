@@ -58,7 +58,7 @@ namespace ACLSim
         int maxX = 4000;
         int maxY = 8000;
         int minX = -4000;
-        int minY = -12000;
+        int minY = -8000;
         bool sendDataAPDisconnect = true;
         Timer timerX;
         Timer timerY;
@@ -139,9 +139,16 @@ namespace ACLSim
             //}
 
             BeginSerial(baud, portName);
-            port.Open();
+            try
+            {
+                port.Open();
+            }
+            catch (Exception ex)
+            {
+              errorh.DisplayError("Cannot connect to com port. " + ex.Message);
+            }
 
-           dataRefView.Hide();
+            dataRefView.Hide();
         }
 
         private void Form1_Shown(Object sender, EventArgs e)
@@ -175,6 +182,11 @@ namespace ACLSim
             torqueYawLow = Properties.Settings.Default.Torque_Yaw_Low;
             torqueYawHigh = Properties.Settings.Default.Torque_Yaw_High;
 
+            maxX = Properties.Settings.Default.Position_Roll_Max;
+            maxY = Properties.Settings.Default.Position_Pitch_Max;
+            minX = Properties.Settings.Default.Position_Roll_Min;
+            minY = Properties.Settings.Default.Position_Pitch_Min;
+
             trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
             trimFactorRudder = Properties.Settings.Default.TrimFactor_Rudder;
@@ -186,6 +198,12 @@ namespace ACLSim
 
             torqueYaw.enabled = Properties.Settings.Default.Enable_Rudder_ACL;
             speedYaw.enabled = Properties.Settings.Default.Enable_Rudder_ACL;
+
+            torquePitch.enabled = Properties.Settings.Default.Enable_Pitch_ACL;
+            speedPitch.enabled = Properties.Settings.Default.Enable_Pitch_ACL;
+
+            torqueRoll.enabled = Properties.Settings.Default.Enabe_Roll_ACL;
+            speedRoll.enabled = Properties.Settings.Default.Enabe_Roll_ACL;
 
             if (Properties.Settings.Default.AutoConnect)
             {
@@ -534,7 +552,8 @@ namespace ACLSim
 
                         case DayaRefNames.MCP_AP_DISENGAGE:
                         {
-                                bool isDisengaged = Convert.ToBoolean(dataRef.value); 
+                                bool isDisengaged = Convert.ToBoolean(dataRef.value);
+                                errorh.DisplayInfo("MCP A/P switch disengaged " + isDisengaged);
                                 if (isDisengaged)
                                 {
                                     moveToX(0);
@@ -598,6 +617,7 @@ namespace ACLSim
                                     {
                                         item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
+                                        errorh.DisplayInfo("A/P overriden by roll. Disconnecting: | " + diff1 + " | " + diff2 + " | value: " + value + " | Previous value: " + lastRollMoved);
                                         DisconnectAPWithTimer();                                  
                                     }
                                     lastRollMoved = value;
@@ -620,6 +640,7 @@ namespace ACLSim
                                     {
                                         item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
+                                        errorh.DisplayInfo("A/P overriden by pitch. Disconnecting: | " + diff1 + " | " + diff2 + " | Value: " + value + " | Previous value: " + lastPitchMoved);
                                         DisconnectAPWithTimer();
                                     }
                                         
@@ -791,7 +812,7 @@ namespace ACLSim
         {
             if (sendDataAPDisconnect)
             {
-                Debug.WriteLine("Manual AP override disconnect " + isRollCMD);
+                errorh.DisplayInfo("A/P manually disconnected");
                 // Wait 2 seconds before this can be checked again
                 sendDataAPDisconnect = false;
                 DataRef apdisg = new DataRef(DayaRefNames.MCP_AP_DISENGAGE, connection);
