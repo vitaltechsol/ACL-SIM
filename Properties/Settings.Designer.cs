@@ -394,5 +394,77 @@ namespace ACLSim.Properties {
                 this["Enabe_Roll_ACL"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("75")]
+        public int CenteringSpeedPitch {
+            get {
+                return ((int)(this["CenteringSpeedPitch"]));
+            }
+            set {
+                this["CenteringSpeedPitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("45")]
+        public int DampeningPitch {
+            get {
+                return ((int)(this["DampeningPitch"]));
+            }
+            set {
+                this["DampeningPitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int CenteringSpeedRoll {
+            get {
+                return ((int)(this["CenteringSpeedRoll"]));
+            }
+            set {
+                this["CenteringSpeedRoll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int DampeningRoll {
+            get {
+                return ((int)(this["DampeningRoll"]));
+            }
+            set {
+                this["DampeningRoll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int CenteringSpeedYaw {
+            get {
+                return ((int)(this["CenteringSpeedYaw"]));
+            }
+            set {
+                this["CenteringSpeedYaw"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int DampeningYaw {
+            get {
+                return ((int)(this["DampeningYaw"]));
+            }
+            set {
+                this["DampeningYaw"] = value;
+            }
+        }
     }
 }

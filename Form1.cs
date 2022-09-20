@@ -45,6 +45,13 @@ namespace ACLSim
         int torqueYawHigh = 40;
         int torqueYawLow = 20;
 
+        int centeringSpeedPitch = 0;
+        int centeringSpeedRoll = 0;
+        int centeringSpeedYaw = 0;
+        int dampeningPitch = 0;
+        int dampeningRoll = 0;
+        int dampeningYaw = 0;
+
         static SerialPort port;
         int baud = 115200;
         bool isRollCMD = false;
@@ -200,6 +207,23 @@ namespace ACLSim
 
             torqueRoll.enabled = Properties.Settings.Default.Enabe_Roll_ACL;
             speedRoll.enabled = Properties.Settings.Default.Enabe_Roll_ACL;
+
+            centeringSpeedPitch = Properties.Settings.Default.CenteringSpeedPitch;
+            centeringSpeedRoll = Properties.Settings.Default.CenteringSpeedRoll;
+            centeringSpeedYaw = Properties.Settings.Default.CenteringSpeedYaw;
+
+            dampeningPitch = Properties.Settings.Default.DampeningPitch;
+            dampeningRoll = Properties.Settings.Default.DampeningRoll;
+            dampeningYaw = Properties.Settings.Default.DampeningYaw;
+
+            // Values from settings
+            speedPitch.SetSpeed(centeringSpeedPitch);
+            speedPitch.SetBounceGain(dampeningPitch);
+            speedRoll.SetSpeed(centeringSpeedRoll);
+            speedRoll.SetBounceGain(dampeningRoll);
+            speedYaw.SetSpeed(centeringSpeedYaw);
+            speedYaw.SetBounceGain(dampeningYaw);
+
 
             if (Properties.Settings.Default.AutoConnect)
             {
@@ -822,17 +846,21 @@ namespace ACLSim
             if (txbPitchSpeedTest.Text != "")
             {
                 speedPitch.SetSpeed(Int32.Parse(txbPitchSpeedTest.Text));
+                Properties.Settings.Default.CenteringSpeedPitch = Int32.Parse(txbPitchSpeedTest.Text);
             }
 
             if (txbRollSpeedTest.Text != "")
             {
                 speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
+                Properties.Settings.Default.CenteringSpeedRoll = Int32.Parse(txbRollSpeedTest.Text);
             }
 
             if (txbYawSpeedTest.Text != "")
             {
                 speedYaw.SetSpeed(Int32.Parse(txbYawSpeedTest.Text));
+                Properties.Settings.Default.CenteringSpeedYaw = Int32.Parse(txbYawSpeedTest.Text);
             }
+            Properties.Settings.Default.Save();
         }
 
         private void btnRecenterSpeedRead_Click(object sender, EventArgs e)
@@ -848,12 +876,22 @@ namespace ACLSim
             if (txbBouncePitch.Text != "")
             {
                 speedPitch.SetBounceGain(Int32.Parse(txbBouncePitch.Text));
+                Properties.Settings.Default.DampeningPitch = Int32.Parse(txbBouncePitch.Text);
             }
 
             if (txbBounceRoll.Text != "")
             {
                 speedRoll.SetBounceGain(Int32.Parse(txbBounceRoll.Text));
+                Properties.Settings.Default.DampeningRoll = Int32.Parse(txbBounceRoll.Text);
             }
+
+            if (txbBounceYaw.Text != "")
+            {
+                speedYaw.SetBounceGain(Int32.Parse(txbBounceYaw.Text));
+                Properties.Settings.Default.DampeningYaw = Int32.Parse(txbBounceYaw.Text);
+            }
+
+            Properties.Settings.Default.Save();
         }
 
         private void btnBounceGet_Click(object sender, EventArgs e)
