@@ -133,30 +133,6 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int TorqueFactor_Thrust {
-            get {
-                return ((int)(this["TorqueFactor_Thrust"]));
-            }
-            set {
-                this["TorqueFactor_Thrust"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("200")]
-        public int TorqueFactor_VerticalSpeed {
-            get {
-                return ((int)(this["TorqueFactor_VerticalSpeed"]));
-            }
-            set {
-                this["TorqueFactor_VerticalSpeed"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("25")]
         public int Torque_Pitch_Low {
             get {
@@ -349,7 +325,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Enable_Rudder_ACL {
             get {
                 return ((bool)(this["Enable_Rudder_ACL"]));

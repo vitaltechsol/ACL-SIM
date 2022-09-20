@@ -29,12 +29,6 @@
     <Setting Name="TorqueFactor_AirSpeed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="TorqueFactor_Thrust" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2000</Value>
-    </Setting>
-    <Setting Name="TorqueFactor_VerticalSpeed" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">200</Value>
-    </Setting>
     <Setting Name="Torque_Pitch_Low" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">25</Value>
     </Setting>
@@ -84,7 +78,7 @@
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="Enable_Rudder_ACL" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Driver_Yaw_ID" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>

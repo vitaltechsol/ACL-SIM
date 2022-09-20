@@ -77,17 +77,18 @@ namespace ACLSim
 
             if (this.enabled && (StatusTextCCW != ccwValue || StatusTextCW != cwValue))
             {
-            
 
                 try
                 {
-                    mbc.Connect();
+                    if (!mbc.Connected) { 
+                        mbc.Connect();
+                    }
                     mbc.WriteSingleRegister(8, cwValue);
                     mbc.WriteSingleRegister(9, ccwValue * -1);
                     mbc.Disconnect();
                     UpdateStatusCW(cwValue);
                     UpdateStatusCCW(ccwValue);
-                    Debug.WriteLine("updated torques. cw: " + cwValue + "- ccw: " + ccwValue);
+                   // Debug.WriteLine("updated torques. cw: " + cwValue + "- ccw: " + ccwValue);
 
                 }
                 catch (Exception ex)
@@ -113,7 +114,7 @@ namespace ACLSim
                     mbc.WriteSingleRegister(8, value);
                     mbc.Disconnect();
                     UpdateStatusCW(value);
-                    Debug.WriteLine("updated torque CW " + value);
+                  //  Debug.WriteLine("updated torque CW " + value);
                 }
                 catch (Exception ex)
                 {

@@ -30,15 +30,12 @@ namespace ACLSim
         static string portName = "COM3";
         static int torqueRollLow = 18;
         static int torqueRollHigh = 65;
-        static int additionalThrustTorque1 = 0;
-        static int additionalThrustTorque2 = 0;
         static int additionalAirSpeedTorque = 0;
-        static int additionalVerticalSpeedTorque = 1;
+        static int additionalElevatorTorque = 0;
+        static int additionalPitchTorque = 0;
         static string mbusPort = "COM4";
 
-        int torqueFactorThrust = 2000;
         int torqueFactorAirSpeed = 10;
-        int torqueFactorVerticalSpeed = 200;
         int trimFactorElevator = 1200;
         int trimFactorAileron = 1000;
         int trimFactorRudder = 1000;
@@ -116,6 +113,7 @@ namespace ACLSim
             timerX.Start();
             timerX.Elapsed += sendDataOK_X;
             timerX.AutoReset = true;
+
             timerY = new Timer();
             timerY.Interval = 100;
             timerY.Start();
@@ -168,9 +166,7 @@ namespace ACLSim
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
 
-            torqueFactorThrust = Properties.Settings.Default.TorqueFactor_Thrust;
             torqueFactorAirSpeed = Properties.Settings.Default.TorqueFactor_AirSpeed;
-            torqueFactorVerticalSpeed = Properties.Settings.Default.TorqueFactor_VerticalSpeed;
 
             torquePitchLow = Properties.Settings.Default.Torque_Pitch_Low;
             torquePitchHigh = Properties.Settings.Default.Torque_Pitch_High;
@@ -299,6 +295,8 @@ namespace ACLSim
 
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
+
+            this.add_data_ref(DayaRefNames.ELEVATOR);
             this.add_data_ref(DayaRefNames.TRIM_ELEVATOR);
             this.add_data_ref(DayaRefNames.TRIM_AILERON);
             this.add_data_ref(DayaRefNames.TRIM_RUDDER);
@@ -441,71 +439,41 @@ namespace ACLSim
                                 break;
                             }
 
-                        case DayaRefNames.THRUST_1:
+                        case DayaRefNames.ELEVATOR:
                             {
-                                item.valueAdjusted = Math.Round(item.Value / torqueFactorThrust);
-                                if (additionalThrustTorque1 != item.valueAdjusted)
+                                double newVal = (15 * item.Value);
+                                if (newVal < 0)
                                 {
-                                    additionalThrustTorque1 = Convert.ToInt32(item.valueAdjusted);
-                                    UpdatePitchTorques();
+                                    newVal = newVal * -1;
                                 }
+                                double diff = (newVal - additionalElevatorTorque);
 
+                                if (diff >= 2 || diff <= -2 ||  additionalElevatorTorque == 0)
+                                    {
+                                       // errorh.DisplayInfo("Additional " + additionalElevatorTorque);
+                                       additionalElevatorTorque = (int)newVal;
+                                       UpdatePitchTorques();
+                                    }
                                 break;
-
-                            }
-
-                        case DayaRefNames.THRUST_2:
-                            {
-                                item.valueAdjusted = Math.Round(item.Value / torqueFactorThrust);
-                                if (additionalThrustTorque2 != item.valueAdjusted)
-                                {
-                                    additionalThrustTorque2 = Convert.ToInt32(item.valueAdjusted);
-                                    UpdatePitchTorques();
-                                }
-
-                                break;
-
                             }
 
                         case DayaRefNames.SPEED_IAS:
                             {
-                                item.valueAdjusted = Math.Round(item.Value / torqueFactorAirSpeed);
+                                item.valueAdjusted = Math.Round((item.Value - 140) / torqueFactorAirSpeed);
+
                                 if (additionalAirSpeedTorque != item.valueAdjusted)
                                 {
                                     additionalAirSpeedTorque = Convert.ToInt32(item.valueAdjusted);
-                                    UpdatePitchTorques();
-
-                                }
-                                break;
-
-                            }
-                        case DayaRefNames.VERTICAL_SPEED:
-                            {
-                                double value = Math.Round(item.Value / torqueFactorVerticalSpeed);
-                                // Vertical speed tells us if more torque should be added when pushing or pulling
-                                if (additionalVerticalSpeedTorque != value)
-                                {
-                                    int valueConverted = Convert.ToInt32(value);
-                                    // Can't be less than the minimun or we'll get negative values
-                                    if (valueConverted > torquePitchLow)
+                                    if (additionalAirSpeedTorque > 0)
                                     {
-                                        valueConverted = torquePitchLow;
+                                        UpdatePitchTorques();
                                     }
-
-                                    if (valueConverted < torquePitchLow * -1)
-                                    {
-                                        valueConverted = torquePitchLow * -1;
-                                    }
-
-                                    additionalVerticalSpeedTorque = valueConverted;
-                                    item.valueAdjusted = valueConverted;
-
-                                    UpdatePitchTorques();
                                 }
-                                break;
 
+                                break;
                             }
-           
+                      
+
                         case DayaRefNames.ROLL_CMD:
                             {
                                 isRollCMD = Convert.ToBoolean(dataRef.value);
@@ -643,12 +611,13 @@ namespace ACLSim
                                         errorh.DisplayInfo("A/P overriden by pitch. Disconnecting: | " + diff1 + " | " + diff2 + " | Value: " + value + " | Previous value: " + lastPitchMoved);
                                         DisconnectAPWithTimer();
                                     }
-                                        
+
 
                                     lastPitchMoved = value;
                                     sendDataY = false;
 
                                 }
+                               
                                 break;
                             }
 
@@ -673,41 +642,15 @@ namespace ACLSim
 
         private void UpdatePitchTorques()
         {
-            int vsFactor = Convert.ToInt32(torquePitchMax / 1.3);
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
-            int additionalTorque = additionalThrustTorque1 + additionalThrustTorque2 + additionalAirSpeedTorque;
-            if (additionalVerticalSpeedTorque == 0)
-            {
-                additionalVerticalSpeedTorque = 1;
-            }
+            int additionalTorque = torqueBase + additionalAirSpeedTorque;
+           
 
-            int vsTorqueWithFactor = (vsFactor / additionalVerticalSpeedTorque) + 1;
-            // Some additional torque from the air speed
-            int speedTorque = Convert.ToInt32(additionalAirSpeedTorque / 1.5);
-            if (vsTorqueWithFactor == 0)
-            {
-                vsTorqueWithFactor = 1;
-            }
-
-            if (additionalVerticalSpeedTorque > 0)
-            {
-                int calcAdditionalTorque = additionalTorque / vsTorqueWithFactor;
-                int tqccw = torqueBase + speedTorque + calcAdditionalTorque;
-                int tqcw = torqueBase + speedTorque - calcAdditionalTorque;
-
-
-                torquePitch.SetTorques(GetMaxMinPitchTorque(tqcw), GetMaxMinPitchTorque(tqccw));
-            }
-            else
-            {
-                int calcAdditionalTorque = (additionalTorque * -1) / vsTorqueWithFactor;
-
-                int tqccw = torqueBase + speedTorque - calcAdditionalTorque;
-                int tqcw = torqueBase + speedTorque + calcAdditionalTorque;
-
-                torquePitch.SetTorques(GetMaxMinPitchTorque(tqcw), GetMaxMinPitchTorque(tqccw));
-            }
-
+            int newAdditionalPitchTorque = additionalTorque + additionalElevatorTorque;
+                int tqcw = newAdditionalPitchTorque;
+                int tqccw = newAdditionalPitchTorque;
+            
+            torquePitch.SetTorques(GetMaxMinPitchTorque(tqcw), GetMaxMinPitchTorque(tqccw));
         }
 
         // Don't use more than the max or min torques
@@ -968,6 +911,7 @@ namespace ACLSim
     {
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
+        public const string ELEVATOR = "aircraft.flightControls.elevator";
         public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
         public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
         public const string TRIM_RUDDER = "aircraft.flightControls.trim.rudder.units";
