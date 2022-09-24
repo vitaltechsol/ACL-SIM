@@ -83,6 +83,7 @@ namespace ACLSim
             this.label9 = new System.Windows.Forms.Label();
             this.lblACLSIMVersion = new System.Windows.Forms.Label();
             this.rtxtLog = new System.Windows.Forms.RichTextBox();
+            this.btnCenterControls = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -270,7 +271,7 @@ namespace ACLSim
             this.tabControl1.Controls.Add(this.tabStatus);
             this.tabControl1.Controls.Add(this.tabConfig);
             this.tabControl1.Controls.Add(this.tabTest);
-            this.tabControl1.Location = new System.Drawing.Point(16, 84);
+            this.tabControl1.Location = new System.Drawing.Point(16, 135);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(553, 323);
@@ -568,18 +569,29 @@ namespace ACLSim
             // 
             // rtxtLog
             // 
-            this.rtxtLog.Location = new System.Drawing.Point(16, 413);
+            this.rtxtLog.Location = new System.Drawing.Point(16, 477);
             this.rtxtLog.Name = "rtxtLog";
             this.rtxtLog.Size = new System.Drawing.Size(549, 114);
             this.rtxtLog.TabIndex = 23;
             this.rtxtLog.Text = "";
+            // 
+            // btnCenterControls
+            // 
+            this.btnCenterControls.Location = new System.Drawing.Point(20, 92);
+            this.btnCenterControls.Name = "btnCenterControls";
+            this.btnCenterControls.Size = new System.Drawing.Size(90, 23);
+            this.btnCenterControls.TabIndex = 24;
+            this.btnCenterControls.Text = "Center Controls";
+            this.btnCenterControls.UseVisualStyleBackColor = true;
+            this.btnCenterControls.Click += new System.EventHandler(this.btnCenterControls_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gainsboro;
-            this.ClientSize = new System.Drawing.Size(581, 539);
+            this.ClientSize = new System.Drawing.Size(581, 603);
+            this.Controls.Add(this.btnCenterControls);
             this.Controls.Add(this.rtxtLog);
             this.Controls.Add(this.lblACLSIMVersion);
             this.Controls.Add(this.label9);
@@ -663,6 +675,7 @@ namespace ACLSim
         private System.Windows.Forms.TextBox txbYawTorque;
         private System.Windows.Forms.TextBox txtbxYawPosition;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnCenterControls;
     }
 }
 

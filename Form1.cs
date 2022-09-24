@@ -59,10 +59,6 @@ namespace ACLSim
         bool isHydAvail = false;
 
         int apPositionRollFactor = 700;
-        int maxX = 4000;
-        int maxY = 8000;
-        int minX = -4000;
-        int minY = -8000;
         bool sendDataAPDisconnect = true;
         Timer timerX;
         Timer timerY;
@@ -88,6 +84,10 @@ namespace ACLSim
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
             Properties.Settings.Default.Enable_Rudder_ACL);
 
+         AxisControl axisRoll = new AxisControl("X_POS", true);
+         AxisControl axisYaw = new AxisControl("Z_POS", true);
+
+
         ErrorHandler errorh = new ErrorHandler();
 
         int lastRollMoved = -1;
@@ -102,6 +102,9 @@ namespace ACLSim
             torquePitch.onError += (msg) => ShowFormError(msg);
             torqueRoll.onError += (msg) => ShowFormError(msg);
             torqueYaw.onError += (msg) => ShowFormError(msg);
+            axisRoll.onError += (msg) => ShowFormError(msg);
+            axisYaw.onError += (msg) => ShowFormError(msg);
+
 
             speedPitch.onError += (msg) => ShowFormError(msg);
             speedRoll.onError += (msg) => ShowFormError(msg);
@@ -152,6 +155,8 @@ namespace ACLSim
             {
               errorh.DisplayError("Cannot connect to com port. " + ex.Message);
             }
+            axisRoll.SetPort(port, connection);
+            axisYaw.SetPort(port, connection);
 
             dataRefView.Hide();
         }
@@ -184,11 +189,6 @@ namespace ACLSim
 
             torqueYawLow = Properties.Settings.Default.Torque_Yaw_Low;
             torqueYawHigh = Properties.Settings.Default.Torque_Yaw_High;
-
-            maxX = Properties.Settings.Default.Position_Roll_Max;
-            maxY = Properties.Settings.Default.Position_Pitch_Max;
-            minX = Properties.Settings.Default.Position_Roll_Min;
-            minY = Properties.Settings.Default.Position_Pitch_Min;
 
             trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
@@ -332,13 +332,14 @@ namespace ACLSim
             this.add_data_ref(DayaRefNames.THRUST_1);
             this.add_data_ref(DayaRefNames.THRUST_2);
             this.add_data_ref(DayaRefNames.SPEED_IAS);
-            this.add_data_ref(DayaRefNames.VERTICAL_SPEED);
 
             this.add_data_ref(DayaRefNames.HYDRAULICS_AVAILABLE);
             this.add_data_ref(DayaRefNames.HYD_PRESS);
 
-            this.add_data_ref(DayaRefNames.AILERON_IN_CPTN);
-            this.add_data_ref(DayaRefNames.ELEVATOR_IN_CPTN);
+            this.add_data_ref(DayaRefNames.AILERON_CPTN);
+            this.add_data_ref(DayaRefNames.ELEVATOR_CPTN);
+            this.add_data_ref(DayaRefNames.RUDDER_CAPT);
+
         }
 
         private void add_data_ref(string dataRefName)
@@ -592,7 +593,7 @@ namespace ACLSim
                             }
 
 
-                        case DayaRefNames.AILERON_IN_CPTN:
+                        case DayaRefNames.AILERON_CPTN:
                             {
                                 item.valueAdjusted = lastRollMoved;
 
@@ -618,7 +619,7 @@ namespace ACLSim
                                 break;
                             }
 
-                        case DayaRefNames.ELEVATOR_IN_CPTN:
+                        case DayaRefNames.ELEVATOR_CPTN:
                             {
                                 if (isPitchCMD == true)
                                 {
@@ -708,35 +709,12 @@ namespace ACLSim
         // Roll
         private void moveToX(double value)
         {
-
-            if (value < minX)
-            {
-                value = minX;
-            }
-
-
-            if (value > maxX)
-            {
-                value = maxX;
-            }
-
-            string arduLine = "<X_POS, 0, " + value + ">";
-            port.Write(arduLine);
+           axisRoll.MoveTo(value);
         }
 
         // Pitch
         private void moveToY(double value)
         {
-            if (value < minY)
-            {
-                value = minY;
-            }
-
-
-            if (value > maxY)
-            {
-                value = maxY;
-            }
 
             string arduLine = "<Y_POS, 0, " + value + ">";
             port.Write(arduLine);
@@ -747,10 +725,7 @@ namespace ACLSim
         // Yaw
         private void moveToZ(double value)
         {
-            
-            string arduLine = "<Z_POS, 0, " + value + ">";
-            port.Write(arduLine);
-
+           axisYaw.MoveTo(value);
         }
 
         // Pitch Speed
@@ -930,6 +905,19 @@ namespace ACLSim
             Invoke(new MethodInvoker(delegate () { rtxtLog.Text = message + rtxtLog.Text; }));
         }
 
+    
+        private void btnCenterControls_Click(object sender, EventArgs e)
+        {
+            torqueRoll.SetTorque(torqueRollHigh);
+            torqueYaw.SetTorque(torqueYawHigh);
+
+            axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, 500, 1);
+            axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 530, -1);
+
+            UpdateRollTorques();
+            UpdateYawTorques();
+
+        }
     }
 
     // The data object that is used for the DataRef table
@@ -954,8 +942,9 @@ namespace ACLSim
         public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
         public const string TRIM_RUDDER = "aircraft.flightControls.trim.rudder.units";
 
-        public const string AILERON_IN_CPTN = "system.analog.A_FC_AILERON_CAPT";
-        public const string ELEVATOR_IN_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
+        public const string AILERON_CPTN = "system.analog.A_FC_AILERON_CAPT";
+        public const string ELEVATOR_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
+        public const string RUDDER_CAPT = "system.analog.A_FC_RUDDER_CAPT";
 
         public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
@@ -967,7 +956,6 @@ namespace ACLSim
         public const string THRUST_2 = "aircraft.engines.2.thrust";
 
         public const string SPEED_IAS = "aircraft.speed.ias";
-        public const string VERTICAL_SPEED = "aircraft.verticalspeed";
 
         public const string PITCH = "aircraft.pitch";
 

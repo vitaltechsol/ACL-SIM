@@ -150,6 +150,11 @@ namespace ACLSim
                 }
             }
         }
+
+        public bool IsEnabled()
+        {
+            return this.enabled;
+        }
     }
 
 
