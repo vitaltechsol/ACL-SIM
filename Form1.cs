@@ -52,6 +52,10 @@ namespace ACLSim
         int dampeningRoll = 0;
         int dampeningYaw = 0;
 
+        int directionAxisPitch;
+        int directionAxisRoll;
+        int directionAxisYaw;
+
         static SerialPort port;
         int baud = 115200;
         bool isRollCMD = false;
@@ -74,7 +78,7 @@ namespace ACLSim
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
         TorqueControl torqueYaw = new TorqueControl(mbusPort,
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), 
-            Properties.Settings.Default.Enable_Rudder_ACL);
+            Properties.Settings.Default.Enable_Yaw_ACL);
 
         CustomControl speedPitch = new CustomControl(mbusPort,
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID));
@@ -82,11 +86,11 @@ namespace ACLSim
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
         CustomControl speedYaw = new CustomControl(mbusPort,
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
-            Properties.Settings.Default.Enable_Rudder_ACL);
+            Properties.Settings.Default.Enable_Yaw_ACL);
 
-         AxisControl axisRoll = new AxisControl("X_POS", true);
-         AxisControl axisYaw = new AxisControl("Z_POS", true);
-
+        AxisControl axisPitch = new AxisControl("Y_POS", Properties.Settings.Default.DirectionAxisPitch, Properties.Settings.Default.Enable_Pitch_ACL);
+        AxisControl axisRoll = new AxisControl("X_POS", Properties.Settings.Default.DirectionAxisRoll, Properties.Settings.Default.Enable_Roll_ACL);
+        AxisControl axisYaw = new AxisControl("Z_POS", Properties.Settings.Default.DirectionAxisYaw, Properties.Settings.Default.Enable_Yaw_ACL);
 
         ErrorHandler errorh = new ErrorHandler();
 
@@ -104,6 +108,8 @@ namespace ACLSim
             torqueYaw.onError += (msg) => ShowFormError(msg);
             axisRoll.onError += (msg) => ShowFormError(msg);
             axisYaw.onError += (msg) => ShowFormError(msg);
+            axisPitch.onError += (msg) => ShowFormError(msg);
+
 
 
             speedPitch.onError += (msg) => ShowFormError(msg);
@@ -157,6 +163,8 @@ namespace ACLSim
             }
             axisRoll.SetPort(port, connection);
             axisYaw.SetPort(port, connection);
+            axisPitch.SetPort(port, connection);
+
 
             dataRefView.Hide();
         }
@@ -199,14 +207,14 @@ namespace ACLSim
 
             apPositionRollFactor = Properties.Settings.Default.APPosition_Roll_Factor;
 
-            torqueYaw.enabled = Properties.Settings.Default.Enable_Rudder_ACL;
-            speedYaw.enabled = Properties.Settings.Default.Enable_Rudder_ACL;
+            torqueYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
+            speedYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
 
             torquePitch.enabled = Properties.Settings.Default.Enable_Pitch_ACL;
             speedPitch.enabled = Properties.Settings.Default.Enable_Pitch_ACL;
 
-            torqueRoll.enabled = Properties.Settings.Default.Enabe_Roll_ACL;
-            speedRoll.enabled = Properties.Settings.Default.Enabe_Roll_ACL;
+            torqueRoll.enabled = Properties.Settings.Default.Enable_Roll_ACL;
+            speedRoll.enabled = Properties.Settings.Default.Enable_Roll_ACL;
 
             centeringSpeedPitch = Properties.Settings.Default.CenteringSpeedPitch;
             centeringSpeedRoll = Properties.Settings.Default.CenteringSpeedRoll;
@@ -215,6 +223,11 @@ namespace ACLSim
             dampeningPitch = Properties.Settings.Default.DampeningPitch;
             dampeningRoll = Properties.Settings.Default.DampeningRoll;
             dampeningYaw = Properties.Settings.Default.DampeningYaw;
+
+            directionAxisPitch = Properties.Settings.Default.DirectionAxisRoll;
+            directionAxisRoll = Properties.Settings.Default.DirectionAxisRoll;
+            directionAxisYaw = Properties.Settings.Default.DirectionAxisYaw;
+
 
             // Values from settings
             speedPitch.SetSpeed(centeringSpeedPitch);
@@ -411,12 +424,12 @@ namespace ACLSim
 
                                     if (speed > 80)
                                     {
-                                        double yValue = Math.Round((item.Value * trimFactorElevator) * 100);
+                                        double pitchValue = Math.Round((item.Value * trimFactorElevator) * 100);
                                         // Skip sudden jumps to 0
-                                        if (yValue != 0)
+                                        if (pitchValue != 0)
                                         {
-                                            item.valueAdjusted = yValue;
-                                            moveToY(yValue);
+                                            item.valueAdjusted = pitchValue;
+                                            moveToY(pitchValue * directionAxisPitch);
                                             sendDataY = false;
                                         }
                                     }
@@ -430,12 +443,12 @@ namespace ACLSim
 
                                 if (sendDataX == true)
                                 {
-                                    double xValue = Math.Round(item.Value * trimFactorAileron);
+                                    double rollValue = Math.Round(item.Value * trimFactorAileron);
                                     // Skip sudden jumps to 0
-                                    if (xValue != 0)
+                                    if (rollValue != 0)
                                     {
-                                        item.valueAdjusted = xValue * -1;
-                                        moveToX(xValue * -1);
+                                        item.valueAdjusted = rollValue * -1 * directionAxisRoll;
+                                        moveToX(rollValue * -1 * directionAxisRoll);
                                         sendDataX = false;
                                     }
                                     
@@ -449,24 +462,24 @@ namespace ACLSim
 
                                 if (sendDataZ == true)
                                 {
-                                    double zValue = Math.Round(item.Value * trimFactorRudder);
+                                    double yawValue = Math.Round(item.Value * trimFactorRudder);
                                     // Skip sudden jumps to 0
-                                    if (zValue != 0)
+                                    if (yawValue != 0)
                                     {
-                                        item.valueAdjusted = zValue * -1;
-                                        moveToZ(zValue * -1);
+                                        item.valueAdjusted = yawValue * directionAxisYaw;
+                                        moveToZ(yawValue * directionAxisYaw);
                                         sendDataZ = false;
                                         timerZ.Start();
                                     }
 
                                 }
-
+                                2
                                 break;
                             }
 
                         case DayaRefNames.ELEVATOR:
                             {
-                                double newVal = (15 * item.Value);
+                                double newVal = (18 * item.Value);
                                 if (newVal < 0)
                                 {
                                     newVal = newVal * -1;
@@ -715,10 +728,7 @@ namespace ACLSim
         // Pitch
         private void moveToY(double value)
         {
-
-            string arduLine = "<Y_POS, 0, " + value + ">";
-            port.Write(arduLine);
-
+            axisPitch.MoveTo(value);
         }
 
 
@@ -814,6 +824,7 @@ namespace ACLSim
         {
             torqueRoll.SetTorque(torqueRollLow);
             torquePitch.SetTorque(torquePitchLow);
+            torqueYaw.SetTorque(torqueYawLow);
         }
 
         private void btnSpeedTest_Click(object sender, EventArgs e)
@@ -906,16 +917,20 @@ namespace ACLSim
         }
 
     
+        // Sef center flgiht controls bases on prosim control position
         private void btnCenterControls_Click(object sender, EventArgs e)
         {
+            torquePitch.SetTorque(torquePitchHigh);
             torqueRoll.SetTorque(torqueRollHigh);
             torqueYaw.SetTorque(torqueYawHigh);
 
-            axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, 500, 1);
-            axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 530, -1);
+            axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, Properties.Settings.Default.CenteredPositionRoll);
+            axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, Properties.Settings.Default.CenteredPositionPitch);
+            axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, Properties.Settings.Default.CenteredPositionYaw);
 
             UpdateRollTorques();
             UpdateYawTorques();
+            UpdatePitchTorques();
 
         }
     }

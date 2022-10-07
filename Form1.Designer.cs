@@ -407,11 +407,11 @@ namespace ACLSim
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(60, 165);
+            this.label7.Location = new System.Drawing.Point(68, 165);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(69, 13);
+            this.label7.Size = new System.Drawing.Size(61, 13);
             this.label7.TabIndex = 29;
-            this.label7.Text = "Bounce Gain";
+            this.label7.Text = "Dampening";
             this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // txbBouncePitch

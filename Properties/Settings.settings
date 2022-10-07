@@ -5,12 +5,6 @@
     <Setting Name="ProSimIP" Type="System.String" Scope="User">
       <Value Profile="(Default)">127.0.0.0</Value>
     </Setting>
-    <Setting Name="Position_Pitch_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2000</Value>
-    </Setting>
-    <Setting Name="Position_Roll_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2000</Value>
-    </Setting>
     <Setting Name="AutoConnect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -19,12 +13,6 @@
     </Setting>
     <Setting Name="APDisconnetPitchThreshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
-    </Setting>
-    <Setting Name="Position_Pitch_Min" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-2000</Value>
-    </Setting>
-    <Setting Name="Position_Roll_Min" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-2000</Value>
     </Setting>
     <Setting Name="TorqueFactor_AirSpeed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
@@ -77,7 +65,7 @@
     <Setting Name="TrimFactor_Rudder" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
-    <Setting Name="Enable_Rudder_ACL" Type="System.Boolean" Scope="User">
+    <Setting Name="Enable_Yaw_ACL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Driver_Yaw_ID" Type="System.Int32" Scope="User">
@@ -92,7 +80,7 @@
     <Setting Name="Enable_Pitch_ACL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Enabe_Roll_ACL" Type="System.Boolean" Scope="User">
+    <Setting Name="Enable_Roll_ACL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="CenteringSpeedPitch" Type="System.Int32" Scope="User">
@@ -112,6 +100,24 @@
     </Setting>
     <Setting Name="DampeningYaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="DirectionAxisPitch" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="DirectionAxisRoll" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="DirectionAxisYaw" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="CenteredPositionPitch" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="CenteredPositionRoll" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="CenteredPositionYaw" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">500</Value>
     </Setting>
   </Settings>
 </SettingsFile>

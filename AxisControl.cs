@@ -17,14 +17,16 @@ namespace ACLSim
         SerialPort port;
         string movePrefix;
         ProSimConnect connection;
-        int offset = 0;
+        int axisOfset = 0;
+        int direction;
 
-        public AxisControl(string movePrefix, bool enabled)
+        public AxisControl(string movePrefix, int direction, bool enabled)
         {
             errorLog.onError += (message) => onError(message);
 
             this.enabled = enabled;
             this.movePrefix = movePrefix;
+            this.direction = direction;
         }
 
         public void SetPort(SerialPort port, ProSimConnect connection)
@@ -35,15 +37,15 @@ namespace ACLSim
 
         public void MoveTo(double value)
         {
-            string arduLine =  "<" + movePrefix + ", 0, " + (value + offset) + ">";
+            string arduLine =  "<" + movePrefix + ", 0, " + (value + (axisOfset * direction)) + ">";
             port.Write(arduLine);
         }
 
 
-        public void CenterAxis(string refName, int target, int dir)
+        public void CenterAxis(string refName, int target)
         {
 
-            offset = 0;
+            axisOfset = 0;
             int posOffset = 0;
             int moveFactor = 10;
             string directing = "CW";
@@ -55,10 +57,10 @@ namespace ACLSim
             {
                 axisPosition = int.Parse(connection.ReadDataRef(refName).ToString());
 
-                //  errorLog.DisplayInfo("axisPosition " + axisPosition);
-                //  errorLog.DisplayInfo("posOffset " + posOffset);
+                 errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
+                 errorLog.DisplayInfo("posOffset " + posOffset);
 
-                MoveTo(posOffset * dir);
+                MoveTo(posOffset * direction);
 
                 // Move on direction, if passes target move oposite directions
                 if (axisPosition > target)
@@ -89,14 +91,14 @@ namespace ACLSim
                     posOffset += moveFactor;
                 }
 
-                if (axisPosition == target)
+                if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
                 {
                     move = false;
                     errorLog.DisplayInfo("Center calibration complete " + movePrefix + ":" + posOffset);
-                    offset = posOffset;
+                    axisOfset = posOffset;
                 }
 
-                if (offset > 35000 || offset < -35000)
+                if (posOffset > 35000 || posOffset < -35000)
                 {
                     errorLog.DisplayError("Maximun reached, could not center " + posOffset);
                 }

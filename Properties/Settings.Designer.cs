@@ -37,30 +37,6 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int Position_Pitch_Max {
-            get {
-                return ((int)(this["Position_Pitch_Max"]));
-            }
-            set {
-                this["Position_Pitch_Max"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int Position_Roll_Max {
-            get {
-                return ((int)(this["Position_Roll_Max"]));
-            }
-            set {
-                this["Position_Roll_Max"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AutoConnect {
             get {
@@ -92,30 +68,6 @@ namespace ACLSim.Properties {
             }
             set {
                 this["APDisconnetPitchThreshold"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
-        public int Position_Pitch_Min {
-            get {
-                return ((int)(this["Position_Pitch_Min"]));
-            }
-            set {
-                this["Position_Pitch_Min"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
-        public int Position_Roll_Min {
-            get {
-                return ((int)(this["Position_Roll_Min"]));
-            }
-            set {
-                this["Position_Roll_Min"] = value;
             }
         }
         
@@ -326,12 +278,12 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Enable_Rudder_ACL {
+        public bool Enable_Yaw_ACL {
             get {
-                return ((bool)(this["Enable_Rudder_ACL"]));
+                return ((bool)(this["Enable_Yaw_ACL"]));
             }
             set {
-                this["Enable_Rudder_ACL"] = value;
+                this["Enable_Yaw_ACL"] = value;
             }
         }
         
@@ -386,12 +338,12 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool Enabe_Roll_ACL {
+        public bool Enable_Roll_ACL {
             get {
-                return ((bool)(this["Enabe_Roll_ACL"]));
+                return ((bool)(this["Enable_Roll_ACL"]));
             }
             set {
-                this["Enabe_Roll_ACL"] = value;
+                this["Enable_Roll_ACL"] = value;
             }
         }
         
@@ -464,6 +416,78 @@ namespace ACLSim.Properties {
             }
             set {
                 this["DampeningYaw"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int DirectionAxisPitch {
+            get {
+                return ((int)(this["DirectionAxisPitch"]));
+            }
+            set {
+                this["DirectionAxisPitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int DirectionAxisRoll {
+            get {
+                return ((int)(this["DirectionAxisRoll"]));
+            }
+            set {
+                this["DirectionAxisRoll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int DirectionAxisYaw {
+            get {
+                return ((int)(this["DirectionAxisYaw"]));
+            }
+            set {
+                this["DirectionAxisYaw"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int CenteredPositionPitch {
+            get {
+                return ((int)(this["CenteredPositionPitch"]));
+            }
+            set {
+                this["CenteredPositionPitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int CenteredPositionRoll {
+            get {
+                return ((int)(this["CenteredPositionRoll"]));
+            }
+            set {
+                this["CenteredPositionRoll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int CenteredPositionYaw {
+            get {
+                return ((int)(this["CenteredPositionYaw"]));
+            }
+            set {
+                this["CenteredPositionYaw"] = value;
             }
         }
     }
