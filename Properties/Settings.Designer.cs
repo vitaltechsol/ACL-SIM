@@ -490,5 +490,17 @@ namespace ACLSim.Properties {
                 this["CenteredPositionYaw"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoCenterOnStart {
+            get {
+                return ((bool)(this["AutoCenterOnStart"]));
+            }
+            set {
+                this["AutoCenterOnStart"] = value;
+            }
+        }
     }
 }

@@ -42,12 +42,11 @@ namespace ACLSim
         }
 
 
-        public void CenterAxis(string refName, int target)
+        public void CenterAxis(string refName, int target, int moveFactor)
         {
 
             axisOfset = 0;
             int posOffset = 0;
-            int moveFactor = 10;
             string directing = "CW";
             int axisPosition;
             bool move = true;

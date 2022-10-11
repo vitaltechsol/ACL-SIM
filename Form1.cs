@@ -175,16 +175,13 @@ namespace ACLSim
             propertyGridSettings.BrowsableAttributes = new AttributeCollection(new UserScopedSettingAttribute());
 
             SetAppSettings();
-            // Reset position
-            moveToX(0);
-            moveToY(0);
-            moveToZ(0);
         }
 
         private void SetAppSettings()
         {
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
+            chkAutoCenter.Checked = Properties.Settings.Default.AutoCenterOnStart;
 
             torqueFactorAirSpeed = Properties.Settings.Default.TorqueFactor_AirSpeed;
 
@@ -241,8 +238,14 @@ namespace ACLSim
             if (Properties.Settings.Default.AutoConnect)
             {
                 connectToProSim();
+
+                if (Properties.Settings.Default.AutoCenterOnStart)
+                {
+                    centerAllAxis();
+                }
             }
 
+           
         }
 
   
@@ -473,13 +476,12 @@ namespace ACLSim
                                     }
 
                                 }
-                                2
                                 break;
                             }
 
                         case DayaRefNames.ELEVATOR:
                             {
-                                double newVal = (18 * item.Value);
+                                double newVal = (21 * item.Value);
                                 if (newVal < 0)
                                 {
                                     newVal = newVal * -1;
@@ -796,8 +798,8 @@ namespace ACLSim
 
         private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
         {
-            //Save Setting
             Properties.Settings.Default.AutoConnect = chkAutoConnect.Checked;
+            //Save Setting
             Properties.Settings.Default.Save();
 
         }
@@ -920,17 +922,40 @@ namespace ACLSim
         // Sef center flgiht controls bases on prosim control position
         private void btnCenterControls_Click(object sender, EventArgs e)
         {
-            torquePitch.SetTorque(torquePitchHigh);
-            torqueRoll.SetTorque(torqueRollHigh);
-            torqueYaw.SetTorque(torqueYawHigh);
+            centerAllAxis();
+        }
 
-            axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, Properties.Settings.Default.CenteredPositionRoll);
-            axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, Properties.Settings.Default.CenteredPositionPitch);
-            axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, Properties.Settings.Default.CenteredPositionYaw);
+        private void centerAllAxis()
+        {
 
-            UpdateRollTorques();
-            UpdateYawTorques();
-            UpdatePitchTorques();
+            if (connection.isConnected)
+            {
+                torquePitch.SetTorque(torquePitchHigh);
+                torqueRoll.SetTorque(torqueRollHigh);
+                torqueYaw.SetTorque(torqueYawHigh);
+
+                axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, Properties.Settings.Default.CenteredPositionRoll, 12);
+                axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, Properties.Settings.Default.CenteredPositionPitch, 20);
+                axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, Properties.Settings.Default.CenteredPositionYaw, 20);
+
+                UpdateRollTorques();
+                UpdateYawTorques();
+                UpdatePitchTorques();
+            } else
+            {
+                errorh.DisplayError("Cannot center axes when Prosim is not connected");
+            }
+           
+        }
+
+        private void chkAutoCenter_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AutoCenterOnStart = chkAutoCenter.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
         }
     }
