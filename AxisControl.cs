@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ACLSim
@@ -42,7 +43,7 @@ namespace ACLSim
         }
 
 
-        public void CenterAxis(string refName, int target, int moveFactor)
+        public async void CenterAxis(string refName, int target, int moveFactor)
         {
 
             axisOfset = 0;
@@ -55,9 +56,12 @@ namespace ACLSim
             while (move)
             {
                 axisPosition = int.Parse(connection.ReadDataRef(refName).ToString());
-
-                 errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
-                 errorLog.DisplayInfo("posOffset " + posOffset);
+                
+                // errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
+                // delay for servo to move
+                await Task.Delay(100);
+                
+                //errorLog.DisplayInfo("posOffset " + posOffset);
 
                 MoveTo(posOffset * direction);
 
@@ -93,12 +97,13 @@ namespace ACLSim
                 if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
                 {
                     move = false;
-                    errorLog.DisplayInfo("Center calibration complete " + movePrefix + ":" + posOffset);
+                    errorLog.DisplayInfo("Center calibration completed " + movePrefix + ":" + posOffset);
                     axisOfset = posOffset;
                 }
 
                 if (posOffset > 35000 || posOffset < -35000)
                 {
+                    move = false;
                     errorLog.DisplayError("Maximun reached, could not center " + posOffset);
                 }
 

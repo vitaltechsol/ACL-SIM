@@ -8,13 +8,13 @@
     <Setting Name="AutoConnect" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="APDisconnetRollThreshold" Type="System.Int32" Scope="User">
+    <Setting Name="AP_Disconnet_Roll_Threshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
-    <Setting Name="APDisconnetPitchThreshold" Type="System.Int32" Scope="User">
+    <Setting Name="AP_Disconnet_Pitch_Threshold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
-    <Setting Name="TorqueFactor_AirSpeed" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Factor_Air_Speed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Torque_Pitch_Low" Type="System.Int32" Scope="User">
@@ -59,9 +59,6 @@
     <Setting Name="Position_Yaw_HYD_OFF_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1000</Value>
     </Setting>
-    <Setting Name="APDisconnectFactor" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">100</Value>
-    </Setting>
     <Setting Name="TrimFactor_Rudder" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
@@ -83,44 +80,56 @@
     <Setting Name="Enable_Roll_ACL" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="CenteringSpeedPitch" Type="System.Int32" Scope="User">
+    <Setting Name="Centering_Speed_Pitch" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">75</Value>
     </Setting>
-    <Setting Name="DampeningPitch" Type="System.Int32" Scope="User">
+    <Setting Name="Dampening_Pitch" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">45</Value>
     </Setting>
-    <Setting Name="CenteringSpeedRoll" Type="System.Int32" Scope="User">
+    <Setting Name="Centering_Speed_Roll" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
-    <Setting Name="DampeningRoll" Type="System.Int32" Scope="User">
+    <Setting Name="Dampening_Roll" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
-    <Setting Name="CenteringSpeedYaw" Type="System.Int32" Scope="User">
+    <Setting Name="Centering_Speed_Yaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
-    <Setting Name="DampeningYaw" Type="System.Int32" Scope="User">
+    <Setting Name="Dampening_Yaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
-    <Setting Name="DirectionAxisPitch" Type="System.Int32" Scope="User">
+    <Setting Name="Direction_Axis_Pitch" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
-    <Setting Name="DirectionAxisRoll" Type="System.Int32" Scope="User">
+    <Setting Name="Direction_Axis_Roll" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
-    <Setting Name="DirectionAxisYaw" Type="System.Int32" Scope="User">
+    <Setting Name="Direction_Axis_Yaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
-    <Setting Name="CenteredPositionPitch" Type="System.Int32" Scope="User">
+    <Setting Name="Centered_Position_Pitch" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
-    <Setting Name="CenteredPositionRoll" Type="System.Int32" Scope="User">
+    <Setting Name="Centered_Position_Roll" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
-    <Setting Name="CenteredPositionYaw" Type="System.Int32" Scope="User">
+    <Setting Name="Centered_Position_Yaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>
     </Setting>
-    <Setting Name="AutoCenterOnStart" Type="System.Boolean" Scope="User">
+    <Setting Name="Auto_Center_On_Start" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="Center_Calibration_Speed_Pitch" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="Center_Calibration_Speed_Roll" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="Center_Calibration_Speed_Yaw" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="Torque_Pitch_Axis_Factor" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">12</Value>
     </Setting>
   </Settings>
 </SettingsFile>

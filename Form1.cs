@@ -44,17 +44,18 @@ namespace ACLSim
         int torquePitchMax = 70;
         int torqueYawHigh = 40;
         int torqueYawLow = 20;
+        int torquePithAxisFactor = 0;
 
-        int centeringSpeedPitch = 0;
-        int centeringSpeedRoll = 0;
-        int centeringSpeedYaw = 0;
-        int dampeningPitch = 0;
-        int dampeningRoll = 0;
-        int dampeningYaw = 0;
+        int Centering_Speed_Pitch = 0;
+        int Centering_Speed_Roll = 0;
+        int Centering_Speed_Yaw = 0;
+        int Dampening_Pitch = 0;
+        int Dampening_Roll = 0;
+        int Dampening_Yaw = 0;
 
-        int directionAxisPitch;
-        int directionAxisRoll;
-        int directionAxisYaw;
+        int Direction_Axis_Pitch;
+        int Direction_Axis_Roll;
+        int Direction_Axis_Yaw;
 
         static SerialPort port;
         int baud = 115200;
@@ -88,16 +89,16 @@ namespace ACLSim
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
             Properties.Settings.Default.Enable_Yaw_ACL);
 
-        AxisControl axisPitch = new AxisControl("Y_POS", Properties.Settings.Default.DirectionAxisPitch, Properties.Settings.Default.Enable_Pitch_ACL);
-        AxisControl axisRoll = new AxisControl("X_POS", Properties.Settings.Default.DirectionAxisRoll, Properties.Settings.Default.Enable_Roll_ACL);
-        AxisControl axisYaw = new AxisControl("Z_POS", Properties.Settings.Default.DirectionAxisYaw, Properties.Settings.Default.Enable_Yaw_ACL);
+        AxisControl axisPitch = new AxisControl("Y_POS", Properties.Settings.Default.Direction_Axis_Pitch, Properties.Settings.Default.Enable_Pitch_ACL);
+        AxisControl axisRoll = new AxisControl("X_POS", Properties.Settings.Default.Direction_Axis_Roll, Properties.Settings.Default.Enable_Roll_ACL);
+        AxisControl axisYaw = new AxisControl("Z_POS", Properties.Settings.Default.Direction_Axis_Yaw, Properties.Settings.Default.Enable_Yaw_ACL);
 
         ErrorHandler errorh = new ErrorHandler();
 
         int lastRollMoved = -1;
         int lastPitchMoved = -1;
-        int apDisconnetRollThreshold;
-        int apDisconnetPitchThreshold;
+        int AP_Disconnet_Roll_Threshold;
+        int AP_Disconnet_Pitch_Threshold;
 
         public Form1()
         {
@@ -109,8 +110,6 @@ namespace ACLSim
             axisRoll.onError += (msg) => ShowFormError(msg);
             axisYaw.onError += (msg) => ShowFormError(msg);
             axisPitch.onError += (msg) => ShowFormError(msg);
-
-
 
             speedPitch.onError += (msg) => ShowFormError(msg);
             speedRoll.onError += (msg) => ShowFormError(msg);
@@ -174,20 +173,21 @@ namespace ACLSim
             propertyGridSettings.SelectedObject = Properties.Settings.Default;
             propertyGridSettings.BrowsableAttributes = new AttributeCollection(new UserScopedSettingAttribute());
 
-            SetAppSettings();
+            SetAppSettings(true);
         }
 
-        private void SetAppSettings()
+        private void SetAppSettings(bool centerAxis)
         {
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
-            chkAutoCenter.Checked = Properties.Settings.Default.AutoCenterOnStart;
+            chkAutoCenter.Checked = Properties.Settings.Default.Auto_Center_On_Start;
 
-            torqueFactorAirSpeed = Properties.Settings.Default.TorqueFactor_AirSpeed;
+            torqueFactorAirSpeed = Properties.Settings.Default.Torque_Factor_Air_Speed;
 
             torquePitchLow = Properties.Settings.Default.Torque_Pitch_Low;
             torquePitchHigh = Properties.Settings.Default.Torque_Pitch_High;
             torquePitchMax = Properties.Settings.Default.Torque_Pitch_Max;
+            torquePithAxisFactor = Properties.Settings.Default.Torque_Pitch_Axis_Factor;
 
             torqueRollLow = Properties.Settings.Default.Torque_Roll_Low;
             torqueRollHigh = Properties.Settings.Default.Torque_Roll_High;
@@ -199,10 +199,10 @@ namespace ACLSim
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
             trimFactorRudder = Properties.Settings.Default.TrimFactor_Rudder;
 
-            apDisconnetRollThreshold = Properties.Settings.Default.APDisconnetRollThreshold;
-            apDisconnetPitchThreshold = Properties.Settings.Default.APDisconnetPitchThreshold;
+            AP_Disconnet_Roll_Threshold = Properties.Settings.Default.AP_Disconnet_Roll_Threshold;
+            AP_Disconnet_Pitch_Threshold = Properties.Settings.Default.AP_Disconnet_Pitch_Threshold;
 
-            apPositionRollFactor = Properties.Settings.Default.APPosition_Roll_Factor;
+            apPositionRollFactor = Properties.Settings.Default.AP_Position_Roll_Factor;
 
             torqueYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
             speedYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
@@ -213,33 +213,33 @@ namespace ACLSim
             torqueRoll.enabled = Properties.Settings.Default.Enable_Roll_ACL;
             speedRoll.enabled = Properties.Settings.Default.Enable_Roll_ACL;
 
-            centeringSpeedPitch = Properties.Settings.Default.CenteringSpeedPitch;
-            centeringSpeedRoll = Properties.Settings.Default.CenteringSpeedRoll;
-            centeringSpeedYaw = Properties.Settings.Default.CenteringSpeedYaw;
+            Centering_Speed_Pitch = Properties.Settings.Default.Centering_Speed_Pitch;
+            Centering_Speed_Roll = Properties.Settings.Default.Centering_Speed_Roll;
+            Centering_Speed_Yaw = Properties.Settings.Default.Centering_Speed_Yaw;
 
-            dampeningPitch = Properties.Settings.Default.DampeningPitch;
-            dampeningRoll = Properties.Settings.Default.DampeningRoll;
-            dampeningYaw = Properties.Settings.Default.DampeningYaw;
+            Dampening_Pitch = Properties.Settings.Default.Dampening_Pitch;
+            Dampening_Roll = Properties.Settings.Default.Dampening_Roll;
+            Dampening_Yaw = Properties.Settings.Default.Dampening_Yaw;
 
-            directionAxisPitch = Properties.Settings.Default.DirectionAxisRoll;
-            directionAxisRoll = Properties.Settings.Default.DirectionAxisRoll;
-            directionAxisYaw = Properties.Settings.Default.DirectionAxisYaw;
+            Direction_Axis_Pitch = Properties.Settings.Default.Direction_Axis_Roll;
+            Direction_Axis_Roll = Properties.Settings.Default.Direction_Axis_Roll;
+            Direction_Axis_Yaw = Properties.Settings.Default.Direction_Axis_Yaw;
 
 
             // Values from settings
-            speedPitch.SetSpeed(centeringSpeedPitch);
-            speedPitch.SetBounceGain(dampeningPitch);
-            speedRoll.SetSpeed(centeringSpeedRoll);
-            speedRoll.SetBounceGain(dampeningRoll);
-            speedYaw.SetSpeed(centeringSpeedYaw);
-            speedYaw.SetBounceGain(dampeningYaw);
+            speedPitch.SetSpeed(Centering_Speed_Pitch);
+            speedPitch.SetBounceGain(Dampening_Pitch);
+            speedRoll.SetSpeed(Centering_Speed_Roll);
+            speedRoll.SetBounceGain(Dampening_Roll);
+            speedYaw.SetSpeed(Centering_Speed_Yaw);
+            speedYaw.SetBounceGain(Dampening_Yaw);
 
 
             if (Properties.Settings.Default.AutoConnect)
             {
                 connectToProSim();
 
-                if (Properties.Settings.Default.AutoCenterOnStart)
+                if (Properties.Settings.Default.Auto_Center_On_Start && centerAxis)
                 {
                     centerAllAxis();
                 }
@@ -432,7 +432,7 @@ namespace ACLSim
                                         if (pitchValue != 0)
                                         {
                                             item.valueAdjusted = pitchValue;
-                                            moveToY(pitchValue * directionAxisPitch);
+                                            moveToY(pitchValue * Direction_Axis_Pitch * -1);
                                             sendDataY = false;
                                         }
                                     }
@@ -450,8 +450,8 @@ namespace ACLSim
                                     // Skip sudden jumps to 0
                                     if (rollValue != 0)
                                     {
-                                        item.valueAdjusted = rollValue * -1 * directionAxisRoll;
-                                        moveToX(rollValue * -1 * directionAxisRoll);
+                                        item.valueAdjusted = rollValue * -1 * Direction_Axis_Roll;
+                                        moveToX(rollValue * -1 * Direction_Axis_Roll);
                                         sendDataX = false;
                                     }
                                     
@@ -469,8 +469,8 @@ namespace ACLSim
                                     // Skip sudden jumps to 0
                                     if (yawValue != 0)
                                     {
-                                        item.valueAdjusted = yawValue * directionAxisYaw;
-                                        moveToZ(yawValue * directionAxisYaw);
+                                        item.valueAdjusted = yawValue * Direction_Axis_Yaw;
+                                        moveToZ(yawValue * Direction_Axis_Yaw);
                                         sendDataZ = false;
                                         timerZ.Start();
                                     }
@@ -481,17 +481,16 @@ namespace ACLSim
 
                         case DayaRefNames.ELEVATOR:
                             {
-                                double newVal = (21 * item.Value);
+                                int newVal = ((int)(torquePithAxisFactor * item.Value));
                                 if (newVal < 0)
                                 {
                                     newVal = newVal * -1;
                                 }
                                 double diff = (newVal - additionalElevatorTorque);
 
-                                if (diff >= 2 || diff <= -2 ||  additionalElevatorTorque == 0)
+                                if (diff >= 2 || diff <= -2)
                                     {
-                                       // errorh.DisplayInfo("Additional " + additionalElevatorTorque);
-                                       additionalElevatorTorque = (int)newVal;
+                                       additionalElevatorTorque = newVal;
                                        UpdatePitchTorques();
                                     }
                                 break;
@@ -499,13 +498,13 @@ namespace ACLSim
 
                         case DayaRefNames.SPEED_IAS:
                             {
-                                item.valueAdjusted = Math.Round((item.Value - 140) / torqueFactorAirSpeed);
+                                item.valueAdjusted = Math.Round((item.Value - 90) / torqueFactorAirSpeed);
 
                                 if (additionalAirSpeedTorque != item.valueAdjusted)
                                 {
-                                    additionalAirSpeedTorque = Convert.ToInt32(item.valueAdjusted);
-                                    if (additionalAirSpeedTorque > 0)
+                                    if (Convert.ToInt32(item.valueAdjusted) > 0)
                                     {
+                                        additionalAirSpeedTorque = Convert.ToInt32(item.valueAdjusted);
                                         UpdatePitchTorques();
                                     }
                                 }
@@ -621,7 +620,7 @@ namespace ACLSim
                                     item.valueAdjusted = diff1;
 
                                     // Disconnect auto pilot
-                                    if ((diff1 > apDisconnetRollThreshold || diff2 > apDisconnetRollThreshold) && lastRollMoved != -1)
+                                    if ((diff1 > AP_Disconnet_Roll_Threshold || diff2 > AP_Disconnet_Roll_Threshold) && lastRollMoved != -1)
                                     {
                                         item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
@@ -644,7 +643,7 @@ namespace ACLSim
                                     item.valueAdjusted = diff1;
 
                                     // Disconnect auto pilot
-                                    if ((diff1 > apDisconnetPitchThreshold || diff2 > apDisconnetPitchThreshold) && lastPitchMoved != -1)
+                                    if ((diff1 > AP_Disconnet_Pitch_Threshold || diff2 > AP_Disconnet_Pitch_Threshold) && lastPitchMoved != -1)
                                     {
                                         item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
@@ -667,7 +666,7 @@ namespace ACLSim
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("failed to update sim var " + ex.Message);
+                    Debug.WriteLine("failed to update sim var " + ex.Message + " " + ex.Data);
                     errorh.DisplayError("failed to update sim var " + ex.Message);
                 }
 
@@ -683,20 +682,13 @@ namespace ACLSim
         private void UpdatePitchTorques()
         {
             int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
-            int additionalTorque = torqueBase + additionalAirSpeedTorque;
-           
-
-            int newAdditionalPitchTorque = additionalTorque + additionalElevatorTorque;
-                int tqcw = newAdditionalPitchTorque;
-                int tqccw = newAdditionalPitchTorque;
-            
-            torquePitch.SetTorques(GetMaxMinPitchTorque(tqcw), GetMaxMinPitchTorque(tqccw));
+            int newAdditionalPitchTorque = torqueBase + additionalElevatorTorque + additionalAirSpeedTorque;
+            torquePitch.SetTorques(GetMaxMinPitchTorque(newAdditionalPitchTorque), GetMaxMinPitchTorque(newAdditionalPitchTorque));
         }
 
         // Don't use more than the max or min torques
         private int GetMaxMinPitchTorque(int torque)
         {
-
             if (torque > torquePitchMax)
             {
                 return torquePitchMax;
@@ -834,19 +826,19 @@ namespace ACLSim
             if (txbPitchSpeedTest.Text != "")
             {
                 speedPitch.SetSpeed(Int32.Parse(txbPitchSpeedTest.Text));
-                Properties.Settings.Default.CenteringSpeedPitch = Int32.Parse(txbPitchSpeedTest.Text);
+                Properties.Settings.Default.Centering_Speed_Pitch = Int32.Parse(txbPitchSpeedTest.Text);
             }
 
             if (txbRollSpeedTest.Text != "")
             {
                 speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
-                Properties.Settings.Default.CenteringSpeedRoll = Int32.Parse(txbRollSpeedTest.Text);
+                Properties.Settings.Default.Centering_Speed_Roll = Int32.Parse(txbRollSpeedTest.Text);
             }
 
             if (txbYawSpeedTest.Text != "")
             {
                 speedYaw.SetSpeed(Int32.Parse(txbYawSpeedTest.Text));
-                Properties.Settings.Default.CenteringSpeedYaw = Int32.Parse(txbYawSpeedTest.Text);
+                Properties.Settings.Default.Centering_Speed_Yaw = Int32.Parse(txbYawSpeedTest.Text);
             }
             Properties.Settings.Default.Save();
         }
@@ -864,19 +856,19 @@ namespace ACLSim
             if (txbBouncePitch.Text != "")
             {
                 speedPitch.SetBounceGain(Int32.Parse(txbBouncePitch.Text));
-                Properties.Settings.Default.DampeningPitch = Int32.Parse(txbBouncePitch.Text);
+                Properties.Settings.Default.Dampening_Pitch = Int32.Parse(txbBouncePitch.Text);
             }
 
             if (txbBounceRoll.Text != "")
             {
                 speedRoll.SetBounceGain(Int32.Parse(txbBounceRoll.Text));
-                Properties.Settings.Default.DampeningRoll = Int32.Parse(txbBounceRoll.Text);
+                Properties.Settings.Default.Dampening_Roll = Int32.Parse(txbBounceRoll.Text);
             }
 
             if (txbBounceYaw.Text != "")
             {
                 speedYaw.SetBounceGain(Int32.Parse(txbBounceYaw.Text));
-                Properties.Settings.Default.DampeningYaw = Int32.Parse(txbBounceYaw.Text);
+                Properties.Settings.Default.Dampening_Yaw = Int32.Parse(txbBounceYaw.Text);
             }
 
             Properties.Settings.Default.Save();
@@ -909,7 +901,7 @@ namespace ACLSim
         {
             Properties.Settings.Default.Save();
             // Reload settigs
-            SetAppSettings();
+            SetAppSettings(false);
 
         }
 
@@ -934,9 +926,20 @@ namespace ACLSim
                 torqueRoll.SetTorque(torqueRollHigh);
                 torqueYaw.SetTorque(torqueYawHigh);
 
-                axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, Properties.Settings.Default.CenteredPositionRoll, 12);
-                axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, Properties.Settings.Default.CenteredPositionPitch, 20);
-                axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, Properties.Settings.Default.CenteredPositionYaw, 20);
+                axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, 
+                    Properties.Settings.Default.Centered_Position_Roll,
+                    Properties.Settings.Default.Center_Calibration_Speed_Roll
+                );
+
+                axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, 
+                    Properties.Settings.Default.Centered_Position_Pitch,
+                    Properties.Settings.Default.Center_Calibration_Speed_Pitch
+                );
+
+                axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 
+                    Properties.Settings.Default.Centered_Position_Yaw,
+                    Properties.Settings.Default.Center_Calibration_Speed_Yaw
+                );
 
                 UpdateRollTorques();
                 UpdateYawTorques();
@@ -950,7 +953,7 @@ namespace ACLSim
 
         private void chkAutoCenter_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.AutoCenterOnStart = chkAutoCenter.Checked;
+            Properties.Settings.Default.Auto_Center_On_Start = chkAutoCenter.Checked;
             Properties.Settings.Default.Save();
         }
 

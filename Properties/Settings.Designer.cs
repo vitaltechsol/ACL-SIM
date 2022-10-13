@@ -50,36 +50,36 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int APDisconnetRollThreshold {
+        public int AP_Disconnet_Roll_Threshold {
             get {
-                return ((int)(this["APDisconnetRollThreshold"]));
+                return ((int)(this["AP_Disconnet_Roll_Threshold"]));
             }
             set {
-                this["APDisconnetRollThreshold"] = value;
+                this["AP_Disconnet_Roll_Threshold"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("60")]
-        public int APDisconnetPitchThreshold {
+        public int AP_Disconnet_Pitch_Threshold {
             get {
-                return ((int)(this["APDisconnetPitchThreshold"]));
+                return ((int)(this["AP_Disconnet_Pitch_Threshold"]));
             }
             set {
-                this["APDisconnetPitchThreshold"] = value;
+                this["AP_Disconnet_Pitch_Threshold"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int TorqueFactor_AirSpeed {
+        public int Torque_Factor_Air_Speed {
             get {
-                return ((int)(this["TorqueFactor_AirSpeed"]));
+                return ((int)(this["Torque_Factor_Air_Speed"]));
             }
             set {
-                this["TorqueFactor_AirSpeed"] = value;
+                this["Torque_Factor_Air_Speed"] = value;
             }
         }
         
@@ -194,12 +194,12 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("700")]
-        public int APPosition_Roll_Factor {
+        public int AP_Position_Roll_Factor {
             get {
-                return ((int)(this["APPosition_Roll_Factor"]));
+                return ((int)(this["AP_Position_Roll_Factor"]));
             }
             set {
-                this["APPosition_Roll_Factor"] = value;
+                this["AP_Position_Roll_Factor"] = value;
             }
         }
         
@@ -248,18 +248,6 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Position_Yaw_HYD_OFF_Max"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int APDisconnectFactor {
-            get {
-                return ((int)(this["APDisconnectFactor"]));
-            }
-            set {
-                this["APDisconnectFactor"] = value;
             }
         }
         
@@ -350,156 +338,204 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("75")]
-        public int CenteringSpeedPitch {
+        public int Centering_Speed_Pitch {
             get {
-                return ((int)(this["CenteringSpeedPitch"]));
+                return ((int)(this["Centering_Speed_Pitch"]));
             }
             set {
-                this["CenteringSpeedPitch"] = value;
+                this["Centering_Speed_Pitch"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("45")]
-        public int DampeningPitch {
+        public int Dampening_Pitch {
             get {
-                return ((int)(this["DampeningPitch"]));
+                return ((int)(this["Dampening_Pitch"]));
             }
             set {
-                this["DampeningPitch"] = value;
+                this["Dampening_Pitch"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("60")]
-        public int CenteringSpeedRoll {
+        public int Centering_Speed_Roll {
             get {
-                return ((int)(this["CenteringSpeedRoll"]));
+                return ((int)(this["Centering_Speed_Roll"]));
             }
             set {
-                this["CenteringSpeedRoll"] = value;
+                this["Centering_Speed_Roll"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int DampeningRoll {
+        public int Dampening_Roll {
             get {
-                return ((int)(this["DampeningRoll"]));
+                return ((int)(this["Dampening_Roll"]));
             }
             set {
-                this["DampeningRoll"] = value;
+                this["Dampening_Roll"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("60")]
-        public int CenteringSpeedYaw {
+        public int Centering_Speed_Yaw {
             get {
-                return ((int)(this["CenteringSpeedYaw"]));
+                return ((int)(this["Centering_Speed_Yaw"]));
             }
             set {
-                this["CenteringSpeedYaw"] = value;
+                this["Centering_Speed_Yaw"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int DampeningYaw {
+        public int Dampening_Yaw {
             get {
-                return ((int)(this["DampeningYaw"]));
+                return ((int)(this["Dampening_Yaw"]));
             }
             set {
-                this["DampeningYaw"] = value;
+                this["Dampening_Yaw"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1")]
-        public int DirectionAxisPitch {
+        public int Direction_Axis_Pitch {
             get {
-                return ((int)(this["DirectionAxisPitch"]));
+                return ((int)(this["Direction_Axis_Pitch"]));
             }
             set {
-                this["DirectionAxisPitch"] = value;
+                this["Direction_Axis_Pitch"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public int DirectionAxisRoll {
+        public int Direction_Axis_Roll {
             get {
-                return ((int)(this["DirectionAxisRoll"]));
+                return ((int)(this["Direction_Axis_Roll"]));
             }
             set {
-                this["DirectionAxisRoll"] = value;
+                this["Direction_Axis_Roll"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-1")]
-        public int DirectionAxisYaw {
+        public int Direction_Axis_Yaw {
             get {
-                return ((int)(this["DirectionAxisYaw"]));
+                return ((int)(this["Direction_Axis_Yaw"]));
             }
             set {
-                this["DirectionAxisYaw"] = value;
+                this["Direction_Axis_Yaw"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("500")]
-        public int CenteredPositionPitch {
+        public int Centered_Position_Pitch {
             get {
-                return ((int)(this["CenteredPositionPitch"]));
+                return ((int)(this["Centered_Position_Pitch"]));
             }
             set {
-                this["CenteredPositionPitch"] = value;
+                this["Centered_Position_Pitch"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("500")]
-        public int CenteredPositionRoll {
+        public int Centered_Position_Roll {
             get {
-                return ((int)(this["CenteredPositionRoll"]));
+                return ((int)(this["Centered_Position_Roll"]));
             }
             set {
-                this["CenteredPositionRoll"] = value;
+                this["Centered_Position_Roll"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("500")]
-        public int CenteredPositionYaw {
+        public int Centered_Position_Yaw {
             get {
-                return ((int)(this["CenteredPositionYaw"]));
+                return ((int)(this["Centered_Position_Yaw"]));
             }
             set {
-                this["CenteredPositionYaw"] = value;
+                this["Centered_Position_Yaw"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AutoCenterOnStart {
+        public bool Auto_Center_On_Start {
             get {
-                return ((bool)(this["AutoCenterOnStart"]));
+                return ((bool)(this["Auto_Center_On_Start"]));
             }
             set {
-                this["AutoCenterOnStart"] = value;
+                this["Auto_Center_On_Start"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int Center_Calibration_Speed_Pitch {
+            get {
+                return ((int)(this["Center_Calibration_Speed_Pitch"]));
+            }
+            set {
+                this["Center_Calibration_Speed_Pitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public int Center_Calibration_Speed_Roll {
+            get {
+                return ((int)(this["Center_Calibration_Speed_Roll"]));
+            }
+            set {
+                this["Center_Calibration_Speed_Roll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int Center_Calibration_Speed_Yaw {
+            get {
+                return ((int)(this["Center_Calibration_Speed_Yaw"]));
+            }
+            set {
+                this["Center_Calibration_Speed_Yaw"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public int Torque_Pitch_Axis_Factor {
+            get {
+                return ((int)(this["Torque_Pitch_Axis_Factor"]));
+            }
+            set {
+                this["Torque_Pitch_Axis_Factor"] = value;
             }
         }
     }
