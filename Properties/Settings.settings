@@ -44,7 +44,7 @@
     <Setting Name="Position_Pitch_HYD_OFF_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-2000</Value>
     </Setting>
-    <Setting Name="APPosition_Roll_Factor" Type="System.Int32" Scope="User">
+    <Setting Name="AP_Position_Roll_Factor" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">700</Value>
     </Setting>
     <Setting Name="RS485COM_Port" Type="System.Int32" Scope="User">
