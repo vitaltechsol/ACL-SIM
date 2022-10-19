@@ -95,7 +95,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-                    errorLog.DisplayError("Failed update torques: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
@@ -120,7 +120,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
-                    errorLog.DisplayError("Failed update torque CW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed to update torque CW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace ACLSim
                 {
                     mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CCW: " + ex.Message);
-                    errorLog.DisplayError("Failed update torque CCW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed to update torque CCW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
             }
         }

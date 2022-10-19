@@ -31,7 +31,7 @@ namespace ACLSim
         // 51 - Motor running top speed
         public void SetSpeed(int value)
         {
-            SetValue(51, value);
+            SetValue(51, value, 1);
         }
 
         public int GetSpeed()
@@ -42,7 +42,7 @@ namespace ACLSim
         // 192 - Proportinal Gain
         public void SetBounceGain(int value)
         {
-            SetValue(192, value);
+            SetValue(192, value, 5);
         }
 
         public int GetBounceGain()
@@ -71,10 +71,15 @@ namespace ACLSim
             return 0;
         }
 
-        public void SetValue(int pn, int value)
+        public void SetValue(int pn, int value, int min)
         {
             if (enabled)
             { 
+                if (value < min)
+                {
+                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value + " | Minimun is " + min);
+                    return;
+                }
                 try
                 {
                     mbc.Connect();
@@ -84,7 +89,9 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     mbc.Disconnect();
-                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") : " + ex.Message);
+                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value  + " | " + ex.Message);
+                    mbc.Disconnect();
+
                 }
             }
         }
