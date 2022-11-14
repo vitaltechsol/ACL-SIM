@@ -23,20 +23,19 @@ Hardware:
 |             | Load change when Hydraulics are available       | Complete |
 |             | Load change when Hydraulics are Not available   | Complete |
 |             | Autopilot disengage override                    | Complete |
-|             | Forces increase and decreases (Airspeed/Thrust) | Complete |
+|             | Forces increase and decreases (Airspeed)        | Complete |
 |             | Elevator Trim                                   | Complete |
-|             | Neutral position change                         | To do    |
 |             | Pitch Limit (Avoid Stalling)                    | To do    |
-|             | Center Calibration when starting the stim       | To do    |
+|             | Center Calibration when starting the sim        | Complete |
 | Roll Axis   |                                                 |          |
 |             | Self-centering                                  | Complete |
 |             | Autopilot Follow                                | Complete |
 |             | Trim Adjustment                                 | Complete |
 |             | Autopilot disengage override                    | Complete |
-|             | Center Calibration when starting the stim       | To do    |
+|             | Center Calibration when starting the sim        | Complete |
 | Rudder Axis |                                                 |          |
 |             | Rudders move left when hydraulics are off       | Complete |
 |             | Load change when hydraulics are available       | Complete |
 |             | Rudder pedals move with rudder trim             | Complete |
 |             | Rudders don't move with hydraulics off ?        | To do    |
-|             | Center Calibration when starting the stim       | To do    |
+|             | Center Calibration when starting the sim        | Complete |
