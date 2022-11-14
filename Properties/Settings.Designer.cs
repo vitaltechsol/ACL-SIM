@@ -146,12 +146,12 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1000")]
-        public int TrimFactor_Elevator {
+        public int TrimFactor_Stab {
             get {
-                return ((int)(this["TrimFactor_Elevator"]));
+                return ((int)(this["TrimFactor_Stab"]));
             }
             set {
-                this["TrimFactor_Elevator"] = value;
+                this["TrimFactor_Stab"] = value;
             }
         }
         

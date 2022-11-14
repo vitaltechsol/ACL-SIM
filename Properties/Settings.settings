@@ -32,7 +32,7 @@
     <Setting Name="Torque_Roll_High" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">55</Value>
     </Setting>
-    <Setting Name="TrimFactor_Elevator" Type="System.Int32" Scope="User">
+    <Setting Name="TrimFactor_Stab" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">

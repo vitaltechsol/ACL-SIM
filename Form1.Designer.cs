@@ -362,7 +362,7 @@ namespace ACLSim
             this.tabTest.Padding = new System.Windows.Forms.Padding(3);
             this.tabTest.Size = new System.Drawing.Size(545, 297);
             this.tabTest.TabIndex = 1;
-            this.tabTest.Text = "Servo Test";
+            this.tabTest.Text = "Servo Test/Config";
             this.tabTest.UseVisualStyleBackColor = true;
             // 
             // label10
@@ -582,7 +582,7 @@ namespace ACLSim
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
             this.lblACLSIMVersion.Size = new System.Drawing.Size(31, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.2.1";
+            this.lblACLSIMVersion.Text = "1.2.2";
             // 
             // rtxtLog
             // 

@@ -195,7 +195,7 @@ namespace ACLSim
             torqueYawLow = Properties.Settings.Default.Torque_Yaw_Low;
             torqueYawHigh = Properties.Settings.Default.Torque_Yaw_High;
 
-            trimFactorElevator = Properties.Settings.Default.TrimFactor_Elevator;
+            trimFactorElevator = Properties.Settings.Default.TrimFactor_Stab;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
             trimFactorRudder = Properties.Settings.Default.TrimFactor_Rudder;
 
@@ -221,7 +221,7 @@ namespace ACLSim
             Dampening_Roll = Properties.Settings.Default.Dampening_Roll;
             Dampening_Yaw = Properties.Settings.Default.Dampening_Yaw;
 
-            Direction_Axis_Pitch = Properties.Settings.Default.Direction_Axis_Roll;
+            Direction_Axis_Pitch = Properties.Settings.Default.Direction_Axis_Pitch;
             Direction_Axis_Roll = Properties.Settings.Default.Direction_Axis_Roll;
             Direction_Axis_Yaw = Properties.Settings.Default.Direction_Axis_Yaw;
 
@@ -404,7 +404,7 @@ namespace ACLSim
                             {
                                 if (isRollCMD == true && sendDataX == true)
                                 {
-                                    double xValue = Math.Round(item.Value * (apPositionRollFactor * 10));
+                                    double xValue = Math.Round(item.Value * (apPositionRollFactor * 10) * Direction_Axis_Roll * -1);
                                     // Skip sudden jumps to 0
                                     if (xValue != 0)
                                     {
@@ -432,12 +432,12 @@ namespace ACLSim
                                         if (pitchValue != 0)
                                         {
                                             item.valueAdjusted = pitchValue;
-                                            moveToY(pitchValue * Direction_Axis_Pitch * -1);
+                                            moveToY(pitchValue * Direction_Axis_Pitch);
                                             sendDataY = false;
                                         }
                                     }
                                 }
-                                      
+                                   
                                 break;
                            }
 
