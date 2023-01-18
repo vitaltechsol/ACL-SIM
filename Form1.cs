@@ -158,11 +158,14 @@ namespace ACLSim
             }
             catch (Exception ex)
             {
-              errorh.DisplayError("Cannot connect to com port. " + ex.Message);
+                Debug.WriteLine("Cannot connect to com port. " + ex.Message);
             }
+
             axisRoll.SetPort(port, connection);
             axisYaw.SetPort(port, connection);
             axisPitch.SetPort(port, connection);
+
+
 
 
             dataRefView.Hide();
@@ -593,7 +596,7 @@ namespace ACLSim
                                     {
                                         // reset position
                                         torquePitch.SetTorque(torquePitchHigh);
-                                        changeSpeedPitch(80000);
+                                        axisPitch.ChangeAxisSpeed(80000);
                                         moveToY(0);
                                         moveToZ(0);
                                     }

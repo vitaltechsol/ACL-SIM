@@ -39,7 +39,14 @@ namespace ACLSim
         public void MoveTo(double value)
         {
             string arduLine =  "<" + movePrefix + ", 0, " + (value + (axisOfset * direction)) + ">";
-            port.Write(arduLine);
+            try
+            {
+                port.Write(arduLine);
+            }
+            catch (Exception ex)
+            {
+                errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
+            }
         }
 
 
@@ -107,6 +114,20 @@ namespace ACLSim
                     errorLog.DisplayError("Maximun reached, could not center " + posOffset);
                 }
 
+            }
+        }
+
+        // Pitch Speed
+        public void ChangeAxisSpeed(double value)
+        {
+            string arduLine = "<" + movePrefix + "_SPEED, 0, " + value + ">";
+            try
+            {
+                port.Write(arduLine);
+            }
+            catch (Exception ex)
+            {
+                errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
             }
         }
     }
