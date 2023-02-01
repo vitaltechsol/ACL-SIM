@@ -684,9 +684,17 @@ namespace ACLSim
 
         private void UpdatePitchTorques()
         {
-            int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
-            int newAdditionalPitchTorque = torqueBase + additionalElevatorTorque + additionalAirSpeedTorque;
-            torquePitch.SetTorques(GetMaxMinPitchTorque(newAdditionalPitchTorque), GetMaxMinPitchTorque(newAdditionalPitchTorque));
+            try
+            {
+                int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
+                int newAdditionalPitchTorque = torqueBase + additionalElevatorTorque + additionalAirSpeedTorque;
+                torquePitch.SetTorques(GetMaxMinPitchTorque(newAdditionalPitchTorque), GetMaxMinPitchTorque(newAdditionalPitchTorque));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("failed to update pitch torque " + ex.Message + " " + ex.Data);
+                errorh.DisplayError("failed to update pitch torque " + ex.Message);
+            }
         }
 
         // Don't use more than the max or min torques
