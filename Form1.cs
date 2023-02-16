@@ -32,11 +32,9 @@ namespace ACLSim
         static int torqueRollHigh = 65;
         static int additionalAirSpeedTorque = 0;
         static int additionalElevatorTorque = 0;
-        static int additionalPitchTorque = 0;
         static string mbusPort = "COM4";
 
         int torqueFactorAirSpeed = 10;
-        int trimFactorElevator = 1200;
         int trimFactorAileron = 1000;
         int trimFactorRudder = 1000;
         int torquePitchLow = 25;
@@ -166,9 +164,6 @@ namespace ACLSim
             axisYaw.SetPort(port, connection);
             axisPitch.SetPort(port, connection);
 
-
-
-
             dataRefView.Hide();
         }
 
@@ -180,7 +175,7 @@ namespace ACLSim
             SetAppSettings(true);
         }
 
-        private void SetAppSettings(bool centerAxis)
+        private void SetAppSettings(bool firstTime)
         {
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
@@ -238,11 +233,11 @@ namespace ACLSim
             speedYaw.SetBounceGain(Dampening_Yaw);
 
 
-            if (Properties.Settings.Default.AutoConnect)
+            if (Properties.Settings.Default.AutoConnect && firstTime)
             {
                 connectToProSim();
 
-                if (Properties.Settings.Default.Auto_Center_On_Start && centerAxis)
+                if (Properties.Settings.Default.Auto_Center_On_Start && firstTime)
                 {
                     centerAllAxis();
                 }
@@ -420,31 +415,6 @@ namespace ACLSim
                                 break;
 
                             }
-
-
-
-                        //case DayaRefNames.TRIM_ELEVATOR:
-                        //    {
-
-                        //        if (sendDataY == true)
-                        //        {
-                        //            double speed = dataRefs[DayaRefNames.SPEED_IAS].Value;
-
-                        //            if (speed > 80)
-                        //            {
-                        //                double pitchValue = Math.Round((item.Value * trimFactorElevator) * 100);
-                        //                Skip sudden jumps to 0
-                        //                if (pitchValue != 0)
-                        //                {
-                        //                    item.valueAdjusted = pitchValue;
-                        //                    moveToY(pitchValue * Direction_Axis_Pitch);
-                        //                    sendDataY = false;
-                        //                }
-                        //            }
-                        //        }
-
-                        //        break;
-                        //    }
 
                         case DayaRefNames.TRIM_AILERON:
                             {
@@ -752,7 +722,6 @@ namespace ACLSim
             axisPitch.MoveTo(value);
         }
 
-
         // Yaw
         private void moveToZ(double value)
         {
@@ -944,8 +913,17 @@ namespace ACLSim
             centerAllAxis();
         }
 
-        private void centerAllAxis()
+        private async void centerAllAxis()
         {
+
+            axisRoll.MoveToHome();
+            errorh.DisplayInfo("Moved Roll to home");
+            axisPitch.MoveToHome();
+            errorh.DisplayInfo("Moved Pitch to Home");
+            axisYaw.MoveToHome();
+            errorh.DisplayInfo("Moved Yaw to Home");
+
+            await Task.Delay(4000);
 
             if (connection.isConnected)
             {
@@ -1008,32 +986,21 @@ namespace ACLSim
      
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
-        
         public const string ELEVATOR = "aircraft.flightControls.elevator";
-        
         public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
-        
         public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
-        
         public const string TRIM_RUDDER = "aircraft.flightControls.trim.rudder.units";
-
 
         
         public const string AILERON_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string ELEVATOR_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
         public const string RUDDER_CAPT = "system.analog.A_FC_RUDDER_CAPT";
 
-
         public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
-        
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
-
         
         public const string HYD_PRESS = "aircraft.hidraulics.sysA.pressure";
-        
         public const string HYDRAULICS_AVAILABLE = "system.gates.B_HYDRAULICS_AVAILABLE";
-
-
         
         public const string THRUST_1 = "aircraft.engines.1.thrust";
         public const string THRUST_2 = "aircraft.engines.2.thrust";

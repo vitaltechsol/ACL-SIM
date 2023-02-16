@@ -49,6 +49,19 @@ namespace ACLSim
             }
         }
 
+        public void MoveToHome()
+        {
+            string arduLine = "<" + movePrefix + ", 0, " + 0 + ">";
+            try
+            {
+                port.Write(arduLine);
+            }
+            catch (Exception ex)
+            {
+                errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
+            }
+        }
+
 
         public async void CenterAxis(string refName, int target, int moveFactor)
         {
