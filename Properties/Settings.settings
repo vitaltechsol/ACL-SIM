@@ -32,9 +32,6 @@
     <Setting Name="Torque_Roll_High" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">55</Value>
     </Setting>
-    <Setting Name="TrimFactor_Stab" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1000</Value>
-    </Setting>
     <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
@@ -130,6 +127,9 @@
     </Setting>
     <Setting Name="Torque_Pitch_Axis_Factor" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="AP_Position_Pitch_Factor" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

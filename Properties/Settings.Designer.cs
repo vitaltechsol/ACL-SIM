@@ -146,18 +146,6 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1000")]
-        public int TrimFactor_Stab {
-            get {
-                return ((int)(this["TrimFactor_Stab"]));
-            }
-            set {
-                this["TrimFactor_Stab"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int TrimFactor_Aileron {
             get {
                 return ((int)(this["TrimFactor_Aileron"]));
@@ -536,6 +524,18 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Torque_Pitch_Axis_Factor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int AP_Position_Pitch_Factor {
+            get {
+                return ((int)(this["AP_Position_Pitch_Factor"]));
+            }
+            set {
+                this["AP_Position_Pitch_Factor"] = value;
             }
         }
     }

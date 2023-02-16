@@ -64,6 +64,7 @@ namespace ACLSim
         bool isHydAvail = false;
 
         int apPositionRollFactor = 700;
+        int apPositionPitchFactor = 700;
         bool sendDataAPDisconnect = true;
         Timer timerX;
         Timer timerY;
@@ -198,7 +199,6 @@ namespace ACLSim
             torqueYawLow = Properties.Settings.Default.Torque_Yaw_Low;
             torqueYawHigh = Properties.Settings.Default.Torque_Yaw_High;
 
-            trimFactorElevator = Properties.Settings.Default.TrimFactor_Stab;
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
             trimFactorRudder = Properties.Settings.Default.TrimFactor_Rudder;
 
@@ -421,28 +421,30 @@ namespace ACLSim
 
                             }
 
-                        case DayaRefNames.TRIM_ELEVATOR:
-                            {
 
-                                if ( sendDataY== true)
-                                {
-                                    double speed = dataRefs[DayaRefNames.SPEED_IAS].Value;
 
-                                    if (speed > 80)
-                                    {
-                                        double pitchValue = Math.Round((item.Value * trimFactorElevator) * 100);
-                                        // Skip sudden jumps to 0
-                                        if (pitchValue != 0)
-                                        {
-                                            item.valueAdjusted = pitchValue;
-                                            moveToY(pitchValue * Direction_Axis_Pitch);
-                                            sendDataY = false;
-                                        }
-                                    }
-                                }
-                                   
-                                break;
-                           }
+                        //case DayaRefNames.TRIM_ELEVATOR:
+                        //    {
+
+                        //        if (sendDataY == true)
+                        //        {
+                        //            double speed = dataRefs[DayaRefNames.SPEED_IAS].Value;
+
+                        //            if (speed > 80)
+                        //            {
+                        //                double pitchValue = Math.Round((item.Value * trimFactorElevator) * 100);
+                        //                Skip sudden jumps to 0
+                        //                if (pitchValue != 0)
+                        //                {
+                        //                    item.valueAdjusted = pitchValue;
+                        //                    moveToY(pitchValue * Direction_Axis_Pitch);
+                        //                    sendDataY = false;
+                        //                }
+                        //            }
+                        //        }
+
+                        //        break;
+                        //    }
 
                         case DayaRefNames.TRIM_AILERON:
                             {
@@ -492,10 +494,24 @@ namespace ACLSim
                                 double diff = (newVal - additionalElevatorTorque);
 
                                 if (diff >= 2 || diff <= -2)
+                                {
+                                    additionalElevatorTorque = newVal;
+                                    UpdatePitchTorques();
+                                }
+
+                                if (isPitchCMD == true && sendDataY == true)
+                                {
+                                    double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
+                                    // Skip sudden jumps to 0
+                                    if (yValue != 0)
                                     {
-                                       additionalElevatorTorque = newVal;
-                                       UpdatePitchTorques();
+                                        item.valueAdjusted = yValue;
+                                        moveToY(yValue);
+                                        sendDataY = false;
                                     }
+
+                                }
+
                                 break;
                             }
 
@@ -989,23 +1005,36 @@ namespace ACLSim
 
     public static class DayaRefNames
     {
+     
         public const string AILERON_LEFT = "aircraft.flightControls.leftAileron";
         public const string AILERON_RIGHT = "aircraft.flightControls.rightAileron";
+        
         public const string ELEVATOR = "aircraft.flightControls.elevator";
+        
         public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
+        
         public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
+        
         public const string TRIM_RUDDER = "aircraft.flightControls.trim.rudder.units";
 
+
+        
         public const string AILERON_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string ELEVATOR_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
         public const string RUDDER_CAPT = "system.analog.A_FC_RUDDER_CAPT";
 
+
         public const string PITCH_CMD = "system.gates.B_PITCH_CMD";
+        
         public const string ROLL_CMD = "system.gates.B_ROLL_CMD";
 
+        
         public const string HYD_PRESS = "aircraft.hidraulics.sysA.pressure";
+        
         public const string HYDRAULICS_AVAILABLE = "system.gates.B_HYDRAULICS_AVAILABLE";
 
+
+        
         public const string THRUST_1 = "aircraft.engines.1.thrust";
         public const string THRUST_2 = "aircraft.engines.2.thrust";
 
