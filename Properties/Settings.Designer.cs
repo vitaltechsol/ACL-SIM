@@ -433,7 +433,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int Centered_Position_Pitch {
             get {
                 return ((int)(this["Centered_Position_Pitch"]));
@@ -445,7 +445,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int Centered_Position_Roll {
             get {
                 return ((int)(this["Centered_Position_Roll"]));
@@ -457,7 +457,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int Centered_Position_Yaw {
             get {
                 return ((int)(this["Centered_Position_Yaw"]));
@@ -469,7 +469,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Auto_Center_On_Start {
             get {
                 return ((bool)(this["Auto_Center_On_Start"]));

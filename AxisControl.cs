@@ -17,17 +17,24 @@ namespace ACLSim
         bool enabled;
         SerialPort port;
         string movePrefix;
+        string axisName;
         ProSimConnect connection;
         int axisOfset = 0;
+        int hydOffPosition = 0;
+        bool axisCentered = false;
+        bool hydraulicPower = false;
+
         int direction;
 
-        public AxisControl(string movePrefix, int direction, bool enabled)
+        public AxisControl(string movePrefix, string axisName, int direction, int hydOffPosition, bool enabled)
         {
             errorLog.onError += (message) => onError(message);
 
             this.enabled = enabled;
+            this.axisName = axisName;
             this.movePrefix = movePrefix;
             this.direction = direction;
+            this.hydOffPosition = hydOffPosition;
         }
 
         public void SetPort(SerialPort port, ProSimConnect connection)
@@ -36,12 +43,25 @@ namespace ACLSim
             this.connection = connection;
         }
 
+        public bool HydraulicPower
+        {
+            get { return hydraulicPower; }
+            set { hydraulicPower = value; }
+        }
+
+        public bool AxisCentered
+        {
+            get { return axisCentered; }
+            set { axisCentered = value; }
+        }
+
         public void MoveTo(double value)
         {
-            string arduLine =  "<" + movePrefix + ", 0, " + (value + (axisOfset * direction)) + ">";
+            string arduLine =  "<" + movePrefix + ", 0, " + (value + ((axisOfset) * direction)) + ">";
             try
             {
                 port.Write(arduLine);
+              //  errorLog.DisplayInfo("Move axis " + axisName + " to " + value);
             }
             catch (Exception ex)
             {
@@ -62,8 +82,25 @@ namespace ACLSim
             }
         }
 
+        public void MoveToHydPos()
+        {
+            if (hydraulicPower)
+            {
+                errorLog.DisplayInfo("Hydraulics On, moving " + axisName);
+                MoveTo(0);
+            } else {
+                if (hydOffPosition != 0)
+                {
+                    errorLog.DisplayInfo("Hydraulics Off, moving " + axisName);
+                    MoveTo(hydOffPosition);
+                }
+               
+            }
+        }
 
-        public async void CenterAxis(string refName, int target, int moveFactor)
+
+
+        public async void CenterAxis(string refName, int additionalOffset, int moveFactor)
         {
 
             axisOfset = 0;
@@ -71,7 +108,8 @@ namespace ACLSim
             string directing = "CW";
             int axisPosition;
             bool move = true;
-            errorLog.DisplayInfo("Center calibration started " + movePrefix);
+            int target = 500;
+            errorLog.DisplayInfo("Center calibration started " + axisName);
 
             while (move)
             {
@@ -117,14 +155,16 @@ namespace ACLSim
                 if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
                 {
                     move = false;
-                    errorLog.DisplayInfo("Center calibration completed " + movePrefix + ":" + posOffset);
-                    axisOfset = posOffset;
+                    errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset);
+                    axisOfset = posOffset + additionalOffset;
+                    axisCentered = true;
+                    MoveToHydPos();
                 }
 
                 if (posOffset > 35000 || posOffset < -35000)
                 {
                     move = false;
-                    errorLog.DisplayError("Maximun reached, could not center " + posOffset);
+                    errorLog.DisplayError("Maximun reached, could not center " + axisName + " : " + posOffset);
                 }
 
             }

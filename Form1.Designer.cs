@@ -87,6 +87,8 @@ namespace ACLSim
             this.btnCenterControls = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.chkAutoCenter = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.lblHydPower = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -100,9 +102,9 @@ namespace ACLSim
             // 
             this.connectButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
             this.connectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.connectButton.Location = new System.Drawing.Point(144, 67);
+            this.connectButton.Location = new System.Drawing.Point(248, 39);
             this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(98, 23);
+            this.connectButton.Size = new System.Drawing.Size(64, 23);
             this.connectButton.TabIndex = 2;
             this.connectButton.Text = "Connect";
             this.connectButton.UseVisualStyleBackColor = false;
@@ -122,14 +124,14 @@ namespace ACLSim
             // 
             this.hostnameInput.Location = new System.Drawing.Point(144, 41);
             this.hostnameInput.Name = "hostnameInput";
-            this.hostnameInput.Size = new System.Drawing.Size(122, 20);
+            this.hostnameInput.Size = new System.Drawing.Size(98, 20);
             this.hostnameInput.TabIndex = 1;
             // 
             // connectionStatusLabel
             // 
             this.connectionStatusLabel.AutoSize = true;
             this.connectionStatusLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.connectionStatusLabel.Location = new System.Drawing.Point(141, 91);
+            this.connectionStatusLabel.Location = new System.Drawing.Point(145, 71);
             this.connectionStatusLabel.Name = "connectionStatusLabel";
             this.connectionStatusLabel.Size = new System.Drawing.Size(16, 13);
             this.connectionStatusLabel.TabIndex = 6;
@@ -280,7 +282,7 @@ namespace ACLSim
             this.tabControl1.Controls.Add(this.tabStatus);
             this.tabControl1.Controls.Add(this.tabConfig);
             this.tabControl1.Controls.Add(this.tabTest);
-            this.tabControl1.Location = new System.Drawing.Point(16, 135);
+            this.tabControl1.Location = new System.Drawing.Point(16, 147);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(553, 323);
@@ -582,7 +584,7 @@ namespace ACLSim
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
             this.lblACLSIMVersion.Size = new System.Drawing.Size(31, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.3.0";
+            this.lblACLSIMVersion.Text = "1.4.0";
             // 
             // rtxtLog
             // 
@@ -601,9 +603,9 @@ namespace ACLSim
             // 
             this.btnCenterControls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
             this.btnCenterControls.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCenterControls.Location = new System.Drawing.Point(366, 100);
+            this.btnCenterControls.Location = new System.Drawing.Point(144, 104);
             this.btnCenterControls.Name = "btnCenterControls";
-            this.btnCenterControls.Size = new System.Drawing.Size(90, 23);
+            this.btnCenterControls.Size = new System.Drawing.Size(98, 23);
             this.btnCenterControls.TabIndex = 3;
             this.btnCenterControls.Text = "Center Controls";
             this.btnCenterControls.UseVisualStyleBackColor = false;
@@ -625,7 +627,7 @@ namespace ACLSim
             this.chkAutoCenter.AutoSize = true;
             this.chkAutoCenter.BackColor = System.Drawing.Color.Transparent;
             this.chkAutoCenter.ForeColor = System.Drawing.SystemColors.Control;
-            this.chkAutoCenter.Location = new System.Drawing.Point(465, 104);
+            this.chkAutoCenter.Location = new System.Drawing.Point(248, 109);
             this.chkAutoCenter.Name = "chkAutoCenter";
             this.chkAutoCenter.Size = new System.Drawing.Size(81, 17);
             this.chkAutoCenter.TabIndex = 26;
@@ -633,12 +635,38 @@ namespace ACLSim
             this.chkAutoCenter.UseVisualStyleBackColor = false;
             this.chkAutoCenter.CheckedChanged += new System.EventHandler(this.chkAutoCenter_CheckedChanged);
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.Color.Transparent;
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
+            this.label11.Location = new System.Drawing.Point(366, 91);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(84, 13);
+            this.label11.TabIndex = 27;
+            this.label11.Text = "Hydraulic Power";
+            // 
+            // lblHydPower
+            // 
+            this.lblHydPower.AutoSize = true;
+            this.lblHydPower.BackColor = System.Drawing.Color.Transparent;
+            this.lblHydPower.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.lblHydPower.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHydPower.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
+            this.lblHydPower.Location = new System.Drawing.Point(457, 88);
+            this.lblHydPower.Name = "lblHydPower";
+            this.lblHydPower.Size = new System.Drawing.Size(18, 18);
+            this.lblHydPower.TabIndex = 28;
+            this.lblHydPower.Text = "--";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(581, 603);
+            this.Controls.Add(this.lblHydPower);
+            this.Controls.Add(this.label11);
             this.Controls.Add(this.chkAutoCenter);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnCenterControls);
@@ -733,6 +761,8 @@ namespace ACLSim
         private System.Windows.Forms.Button btnCenterControls;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.CheckBox chkAutoCenter;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label lblHydPower;
     }
 }
 

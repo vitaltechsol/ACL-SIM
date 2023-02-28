@@ -43,6 +43,7 @@ namespace ACLSim
         int torqueYawHigh = 40;
         int torqueYawLow = 20;
         int torquePithAxisFactor = 0;
+        bool autoCenterOnStatart = false;
 
         int Centering_Speed_Pitch = 0;
         int Centering_Speed_Roll = 0;
@@ -88,9 +89,23 @@ namespace ACLSim
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
             Properties.Settings.Default.Enable_Yaw_ACL);
 
-        AxisControl axisPitch = new AxisControl("Y_POS", Properties.Settings.Default.Direction_Axis_Pitch, Properties.Settings.Default.Enable_Pitch_ACL);
-        AxisControl axisRoll = new AxisControl("X_POS", Properties.Settings.Default.Direction_Axis_Roll, Properties.Settings.Default.Enable_Roll_ACL);
-        AxisControl axisYaw = new AxisControl("Z_POS", Properties.Settings.Default.Direction_Axis_Yaw, Properties.Settings.Default.Enable_Yaw_ACL);
+        AxisControl axisPitch = new AxisControl("Y_POS", 
+            "Pitch",
+            Properties.Settings.Default.Direction_Axis_Pitch,
+            Properties.Settings.Default.Position_Pitch_HYD_OFF_Max,
+            Properties.Settings.Default.Enable_Pitch_ACL);
+       
+        AxisControl axisRoll = new AxisControl("X_POS",
+            "Roll",
+            Properties.Settings.Default.Direction_Axis_Roll,
+            0,  // no hydraulic positionchange
+            Properties.Settings.Default.Enable_Roll_ACL);
+
+        AxisControl axisYaw = new AxisControl("Z_POS",
+            "Yaw",
+            Properties.Settings.Default.Direction_Axis_Yaw,
+            Properties.Settings.Default.Position_Yaw_HYD_OFF_Max,
+            Properties.Settings.Default.Enable_Yaw_ACL);
 
         ErrorHandler errorh = new ErrorHandler();
 
@@ -179,7 +194,8 @@ namespace ACLSim
         {
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
-            chkAutoCenter.Checked = Properties.Settings.Default.Auto_Center_On_Start;
+            autoCenterOnStatart = Properties.Settings.Default.Auto_Center_On_Start;
+            chkAutoCenter.Checked = autoCenterOnStatart;
 
             torqueFactorAirSpeed = Properties.Settings.Default.Torque_Factor_Air_Speed;
 
@@ -235,12 +251,7 @@ namespace ACLSim
 
             if (Properties.Settings.Default.AutoConnect && firstTime)
             {
-                connectToProSim();
-
-                if (Properties.Settings.Default.Auto_Center_On_Start && firstTime)
-                {
-                    centerAllAxis();
-                }
+                connectToProSim(firstTime);
             }
 
            
@@ -278,16 +289,20 @@ namespace ACLSim
             // Save
             Properties.Settings.Default.ProSimIP = hostnameInput.Text;
             Properties.Settings.Default.Save();
-            connectToProSim();
+            connectToProSim(false);
         }
 
 
-        void connectToProSim()
+        void connectToProSim(bool firstTime)
         {
             try
             {
                 connection.Connect(hostnameInput.Text);
                 updateStatusLabel();
+                if (Properties.Settings.Default.Auto_Center_On_Start && firstTime)
+                {
+                    centerAllAxis();
+                }
             }
             catch (Exception ex)
             {
@@ -312,7 +327,8 @@ namespace ACLSim
 
         void updateStatusLabel()
         {
-            connectionStatusLabel.Text = "Connection status: " + (connection.isConnected ? "Connected" : "Disconnected");
+            connectionStatusLabel.Text = connection.isConnected ? "Connected" : "Disconnected";
+            connectionStatusLabel.ForeColor = connection.isConnected ?  Color.LimeGreen : Color.Red;
             connectButton.Enabled = !connection.isConnected;
         }
 
@@ -508,7 +524,10 @@ namespace ACLSim
                                 if (isRollCMD == false)
                                 {
                                     // Reset Position
-                                    moveToX(0);
+                                    if (canMoveAfterCenter())
+                                    {
+                                        moveToX(0);
+                                    }
                                 } else
                                 {
                                     // This timer is used to avoid disconnecting
@@ -531,7 +550,10 @@ namespace ACLSim
                                 if (isPitchCMD == false)
                                 {
                                     // Reset Position
-                                    moveToY(0);
+                                    if (canMoveAfterCenter())
+                                    {
+                                        moveToY(0);
+                                    }
                                 }
                                 {
                                     // This timer is used to avoid disconnecting
@@ -552,8 +574,11 @@ namespace ACLSim
                                 errorh.DisplayInfo("MCP A/P switch disengaged " + isDisengaged);
                                 if (isDisengaged)
                                 {
-                                    moveToX(0);
-                                    moveToY(0);
+                                    if (canMoveAfterCenter())
+                                    {
+                                        moveToX(0);
+                                        moveToY(0);
+                                    }
                                     isPitchCMD = false;
                                     isRollCMD = false;
                                 }
@@ -566,28 +591,32 @@ namespace ACLSim
                                 DataRefTableItem airSpeed = dataRefs[DayaRefNames.SPEED_IAS];
                                 Debug.WriteLine("updated isHydAvail " + isHydAvail);
                                 double airSpeedValue = Convert.ToDouble(airSpeed.Value);
+                                if (lblHydPower.InvokeRequired)
+                                {
+                                    lblHydPower.Invoke(new MethodInvoker(delegate { lblHydPower.Text = isHydAvail ? "On" : "Off"; }));
+                                }
+
+                                if (!isHydAvail)
+                                {
+                                    axisPitch.HydraulicPower = false;
+                                    axisYaw.HydraulicPower = false;
+                                } 
+                                else
+                                {
+                                    axisPitch.HydraulicPower = true;
+                                    axisYaw.HydraulicPower = true;
+                                }
 
                                 // move if on ground
-                                if (airSpeedValue < 30)
+                                if (airSpeedValue < 30 && canMoveAfterCenter())
                                 {
+                                    axisPitch.ChangeAxisSpeed(80000);
                                     torquePitch.SetTorque(torquePitchHigh);
                                     torqueYaw.SetTorque(torqueYawHigh);
-
-                                    if (!isHydAvail)
-                                    {
-                                        moveToY(Properties.Settings.Default.Position_Pitch_HYD_OFF_Max);
-                                        moveToZ(Properties.Settings.Default.Position_Yaw_HYD_OFF_Max);
-                                    }
-                                    else
-                                    {
-                                        // reset position
-                                        torquePitch.SetTorque(torquePitchHigh);
-                                        axisPitch.ChangeAxisSpeed(80000);
-                                        moveToY(0);
-                                        moveToZ(0);
-                                    }
+                                    axisPitch.MoveToHydPos();
+                                    axisYaw.MoveToHydPos();
                                 }
-                               
+
                                 UpdateRollTorques();
                                 UpdatePitchTorques();
                                 UpdateYawTorques();
@@ -726,6 +755,16 @@ namespace ACLSim
         private void moveToZ(double value)
         {
            axisYaw.MoveTo(value);
+        }
+
+        // Don't move axis until they are centered
+        private bool canMoveAfterCenter()
+        {
+            if (!autoCenterOnStatart || (autoCenterOnStatart && axisPitch.AxisCentered && axisYaw.AxisCentered))
+            {
+                return true;
+            }
+            return false;
         }
 
         // Pitch Speed
