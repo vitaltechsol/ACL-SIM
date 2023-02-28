@@ -172,7 +172,7 @@ namespace ACLSim
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Cannot connect to com port. " + ex.Message);
+                Debug.WriteLine("Cannot initially connect to com port. " + ex.Message);
             }
 
             axisRoll.SetPort(port, connection);
@@ -240,20 +240,21 @@ namespace ACLSim
             Direction_Axis_Yaw = Properties.Settings.Default.Direction_Axis_Yaw;
 
 
-            // Values from settings
-            speedPitch.SetSpeed(Centering_Speed_Pitch);
-            speedPitch.SetBounceGain(Dampening_Pitch);
-            speedRoll.SetSpeed(Centering_Speed_Roll);
-            speedRoll.SetBounceGain(Dampening_Roll);
-            speedYaw.SetSpeed(Centering_Speed_Yaw);
-            speedYaw.SetBounceGain(Dampening_Yaw);
+           
 
 
             if (Properties.Settings.Default.AutoConnect && firstTime)
             {
-                connectToProSim(firstTime);
-            }
+                // Values from settings
+                speedPitch.SetSpeed(Centering_Speed_Pitch);
+                speedPitch.SetBounceGain(Dampening_Pitch);
+                speedRoll.SetSpeed(Centering_Speed_Roll);
+                speedRoll.SetBounceGain(Dampening_Roll);
+                speedYaw.SetSpeed(Centering_Speed_Yaw);
+                speedYaw.SetBounceGain(Dampening_Yaw);
 
+                connectToProSim();
+            }
            
         }
 
@@ -289,20 +290,15 @@ namespace ACLSim
             // Save
             Properties.Settings.Default.ProSimIP = hostnameInput.Text;
             Properties.Settings.Default.Save();
-            connectToProSim(false);
+            connectToProSim();
         }
 
 
-        void connectToProSim(bool firstTime)
+        void connectToProSim()
         {
             try
             {
                 connection.Connect(hostnameInput.Text);
-                updateStatusLabel();
-                if (Properties.Settings.Default.Auto_Center_On_Start && firstTime)
-                {
-                    centerAllAxis();
-                }
             }
             catch (Exception ex)
             {
@@ -314,7 +310,6 @@ namespace ACLSim
         void connection_onDisconnect()
         {
             Invoke(new MethodInvoker(updateStatusLabel));
-            port.Close();
         }
 
         // When we connect to ProSim737 system, update the status label and start filling the table
@@ -322,16 +317,33 @@ namespace ACLSim
         {
             Invoke(new MethodInvoker(updateStatusLabel));
             Invoke(new MethodInvoker(fillDataRefTable));
+            Invoke(new MethodInvoker(shouldRecenterAxis));
 
+        }
+
+        void shouldRecenterAxis()
+        {
+            if (Properties.Settings.Default.Auto_Center_On_Start && (!axisPitch.AxisCentered || !axisRoll.AxisCentered || !axisYaw.AxisCentered))
+            {
+                errorh.DisplayInfo("Center axis after connection");
+                centerAllAxis();
+            }
         }
 
         void updateStatusLabel()
         {
-            connectionStatusLabel.Text = connection.isConnected ? "Connected" : "Disconnected";
-            connectionStatusLabel.ForeColor = connection.isConnected ?  Color.LimeGreen : Color.Red;
-            connectButton.Enabled = !connection.isConnected;
+            if (connection.isConnected)
+            {
+                connectionStatusLabel.Text = "Connected";
+                connectionStatusLabel.ForeColor = Color.LimeGreen;
+                errorh.DisplayInfo("Connected to Prosim");
+            } else
+            {
+                connectionStatusLabel.Text = "Disconnected";
+                connectionStatusLabel.ForeColor = Color.Red;
+                errorh.DisplayError("Disconnected from Prosim");
+            }
         }
-
 
         void fillDataRefTable()
         {
@@ -767,13 +779,6 @@ namespace ACLSim
             return false;
         }
 
-        // Pitch Speed
-        private void changeSpeedPitch(double value)
-        {
-            string arduLine = "<PITCH_SPEED, 0, " + value + ">";
-            port.Write(arduLine);
-            Debug.WriteLine("updated pitch speed " + value);
-        }
 
         private void UpdateTorquePitchLabelBack(int value)
         {

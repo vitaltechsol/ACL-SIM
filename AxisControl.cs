@@ -35,12 +35,19 @@ namespace ACLSim
             this.movePrefix = movePrefix;
             this.direction = direction;
             this.hydOffPosition = hydOffPosition;
+            // If not enabled always make it centered
+            if (!enabled)
+            {
+                axisCentered = true;
+            }
         }
 
         public void SetPort(SerialPort port, ProSimConnect connection)
         {
-            this.port = port;
-            this.connection = connection;
+            if (enabled) { 
+                this.port = port;
+                this.connection = connection;
+            }
         }
 
         public bool HydraulicPower
@@ -71,6 +78,11 @@ namespace ACLSim
 
         public void MoveToHome()
         {
+            if (!enabled)
+            {
+                return;
+            }
+
             string arduLine = "<" + movePrefix + ", 0, " + 0 + ">";
             try
             {
@@ -84,6 +96,11 @@ namespace ACLSim
 
         public void MoveToHydPos()
         {
+            if (!enabled)
+            {
+                return;
+            }
+
             if (hydraulicPower)
             {
                 errorLog.DisplayInfo("Hydraulics On, moving " + axisName);
@@ -102,6 +119,11 @@ namespace ACLSim
 
         public async void CenterAxis(string refName, int additionalOffset, int moveFactor)
         {
+            if (!enabled)
+            {
+                axisCentered = true;
+                return;
+            }
 
             axisOfset = 0;
             int posOffset = 0;
