@@ -449,12 +449,12 @@ namespace ACLSim
 
                                 if (sendDataX == true)
                                 {
-                                    double rollValue = Math.Round(item.Value * trimFactorAileron);
+                                    double rollValue = Math.Round(item.Value * trimFactorAileron) * Direction_Axis_Roll;
                                     // Skip sudden jumps to 0
                                     if (rollValue != 0)
                                     {
-                                        item.valueAdjusted = rollValue * -1 * Direction_Axis_Roll;
-                                        moveToX(rollValue * -1 * Direction_Axis_Roll);
+                                        item.valueAdjusted = rollValue;
+                                        moveToX(rollValue);
                                         sendDataX = false;
                                     }
                                     
