@@ -538,5 +538,17 @@ namespace ACLSim.Properties {
                 this["AP_Position_Pitch_Factor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Arduino_COM_Port {
+            get {
+                return ((int)(this["Arduino_COM_Port"]));
+            }
+            set {
+                this["Arduino_COM_Port"] = value;
+            }
+        }
     }
 }

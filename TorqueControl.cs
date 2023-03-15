@@ -80,12 +80,9 @@ namespace ACLSim
 
                 try
                 {
-                    if (!mbc.Connected) { 
-                        mbc.Connect();
-                    }
+                    mbc.Connect();
                     mbc.WriteSingleRegister(8, cwValue);
                     mbc.WriteSingleRegister(9, ccwValue * -1);
-                    mbc.Disconnect();
                     UpdateStatusCW(cwValue);
                     UpdateStatusCCW(ccwValue);
                    // Debug.WriteLine("updated torques. cw: " + cwValue + "- ccw: " + ccwValue);
@@ -93,9 +90,12 @@ namespace ACLSim
                 }
                 catch (Exception ex)
                 {
-                    mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
                     errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                }
+                finally
+                {
+                    mbc.Disconnect();
                 }
             }
         }
@@ -112,15 +112,17 @@ namespace ACLSim
                 {
                     mbc.Connect();
                     mbc.WriteSingleRegister(8, value);
-                    mbc.Disconnect();
                     UpdateStatusCW(value);
                   //  Debug.WriteLine("updated torque CW " + value);
                 }
                 catch (Exception ex)
                 {
-                    mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
                     errorLog.DisplayError("Failed to update torque CW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                }
+                finally
+                {
+                    mbc.Disconnect();
                 }
             }
         }
@@ -137,16 +139,18 @@ namespace ACLSim
                 {
                     mbc.Connect();
                     mbc.WriteSingleRegister(9, value * -1);
-                    mbc.Disconnect();
                     UpdateStatusCCW(value);
                     Debug.WriteLine("updated torque CCW " + value);
 
                 }
                 catch (Exception ex)
                 {
-                    mbc.Disconnect();
                     Debug.WriteLine("ERROR: failed update torque CCW: " + ex.Message);
                     errorLog.DisplayError("Failed to update torque CCW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                }
+                finally
+                {
+                    mbc.Disconnect();
                 }
             }
         }

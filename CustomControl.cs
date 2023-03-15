@@ -58,13 +58,15 @@ namespace ACLSim
                 {
                     mbc.Connect();
                     int[] values = mbc.ReadHoldingRegisters(pn, 1);
-                    mbc.Disconnect();
                     return values[0];
                 }
                 catch (Exception ex)
                 {
-                    mbc.Disconnect();
                     errorLog.DisplayError("failed get value (Servo " + mbc.UnitIdentifier + ") : " + ex.Message);
+                }
+                finally
+                {
+                    mbc.Disconnect();
                 }
             }
 
@@ -84,15 +86,17 @@ namespace ACLSim
                 {
                     mbc.Connect();
                     mbc.WriteSingleRegister(pn, value);
-                    mbc.Disconnect();
                 }
                 catch (Exception ex)
                 {
                     mbc.Disconnect();
                     errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value  + " | " + ex.Message);
-                    mbc.Disconnect();
-
                 }
+                finally
+                {
+                    mbc.Disconnect();
+                }
+
             }
         }
 

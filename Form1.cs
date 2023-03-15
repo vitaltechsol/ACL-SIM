@@ -32,7 +32,6 @@ namespace ACLSim
         static int torqueRollHigh = 65;
         static int additionalAirSpeedTorque = 0;
         static int additionalElevatorTorque = 0;
-        static string mbusPort = "COM4";
 
         int torqueFactorAirSpeed = 10;
         int trimFactorAileron = 1000;
@@ -73,19 +72,19 @@ namespace ACLSim
         static bool sendDataY = false;
         static bool sendDataZ = false;
 
-        TorqueControl torquePitch = new TorqueControl(mbusPort, 
+        TorqueControl torquePitch = new TorqueControl(getRS485Port(), 
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID));
-        TorqueControl torqueRoll = new TorqueControl(mbusPort,
+        TorqueControl torqueRoll = new TorqueControl(getRS485Port(),
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
-        TorqueControl torqueYaw = new TorqueControl(mbusPort,
+        TorqueControl torqueYaw = new TorqueControl(getRS485Port(),
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), 
             Properties.Settings.Default.Enable_Yaw_ACL);
 
-        CustomControl speedPitch = new CustomControl(mbusPort,
+        CustomControl speedPitch = new CustomControl(getRS485Port(),
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID));
-        CustomControl speedRoll = new CustomControl(mbusPort,
+        CustomControl speedRoll = new CustomControl(getRS485Port(),
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID));
-        CustomControl speedYaw = new CustomControl(mbusPort,
+        CustomControl speedYaw = new CustomControl(getRS485Port(),
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
             Properties.Settings.Default.Enable_Yaw_ACL);
 
@@ -157,22 +156,15 @@ namespace ACLSim
             timerAPdiconnect.Interval = 2000;
             timerAPdiconnect.Elapsed += sendDataAPDisconnectOK;
 
-            //if (SerialPort.GetPortNames().Count() >= 0)
-            //{
-            //    foreach (string p in SerialPort.GetPortNames())
-            //    {
-            //        Debug.WriteLine(p);
-            //    }
-            //}
-
-            BeginSerial(baud, portName);
+            BeginSerial(baud, getArduinoPort());
             try
             {
                 port.Open();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Cannot initially connect to com port. " + ex.Message);
+                Debug.WriteLine("Cannot open connection to Arduino COM port. " + getArduinoPort() + ": " + ex.Message);
+                port.Close();
             }
 
             axisRoll.SetPort(port, connection);
@@ -188,6 +180,16 @@ namespace ACLSim
             propertyGridSettings.BrowsableAttributes = new AttributeCollection(new UserScopedSettingAttribute());
 
             SetAppSettings(true);
+        }
+
+        static string getRS485Port()
+        {
+            return "COM" + Properties.Settings.Default.RS485COM_Port;
+        }
+
+        static string getArduinoPort()
+        {
+            return "COM" + Properties.Settings.Default.Arduino_COM_Port;
         }
 
         private void SetAppSettings(bool firstTime)
