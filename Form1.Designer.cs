@@ -37,9 +37,7 @@ namespace ACLSim
             this.hostnameInput = new System.Windows.Forms.TextBox();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.dataRefView = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.valueAdjusted = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.value = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.valueConverted = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -59,6 +57,11 @@ namespace ACLSim
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.propertyGridSettings = new System.Windows.Forms.PropertyGrid();
             this.tabTest = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txbBounceTiller = new System.Windows.Forms.TextBox();
+            this.txbTillerSpeedTest = new System.Windows.Forms.TextBox();
+            this.txbTillerTorque = new System.Windows.Forms.TextBox();
+            this.txtbxTillerPosition = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.txbBounceYaw = new System.Windows.Forms.TextBox();
             this.txbYawSpeedTest = new System.Windows.Forms.TextBox();
@@ -80,7 +83,6 @@ namespace ACLSim
             this.txbPitchTorque = new System.Windows.Forms.TextBox();
             this.lblTorquePitchFwd = new System.Windows.Forms.Label();
             this.lblTorquePitchBack = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.lblACLSIMVersion = new System.Windows.Forms.Label();
             this.rtxtLog = new System.Windows.Forms.RichTextBox();
@@ -89,13 +91,19 @@ namespace ACLSim
             this.chkAutoCenter = new System.Windows.Forms.CheckBox();
             this.label11 = new System.Windows.Forms.Label();
             this.lblHydPower = new System.Windows.Forms.Label();
+            this.lblTorqueRollAft = new System.Windows.Forms.Label();
+            this.lblTorqueRollFwd = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.valueDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataRefTableItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabStatus.SuspendLayout();
             this.tabConfig.SuspendLayout();
             this.tabTest.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // connectButton
@@ -147,35 +155,24 @@ namespace ACLSim
             this.dataRefView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataRefView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
-            this.valueDataGridViewTextBoxColumn});
+            this.valueDataGridViewTextBoxColumn,
+            this.valueAdjusted});
             this.dataRefView.DataSource = this.dataRefTableItemBindingSource;
             this.dataRefView.Location = new System.Drawing.Point(6, 17);
             this.dataRefView.Name = "dataRefView";
             this.dataRefView.ReadOnly = true;
             this.dataRefView.RowHeadersVisible = false;
             this.dataRefView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataRefView.Size = new System.Drawing.Size(543, 252);
+            this.dataRefView.Size = new System.Drawing.Size(627, 252);
             this.dataRefView.TabIndex = 5;
             // 
-            // nameDataGridViewTextBoxColumn
+            // valueAdjusted
             // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // valueDataGridViewTextBoxColumn
-            // 
-            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
-            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
-            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
-            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // dataRefTableItemBindingSource
-            // 
-            this.dataRefTableItemBindingSource.AllowNew = false;
-            this.dataRefTableItemBindingSource.DataSource = typeof(ACLSim.DataRefTableItem);
-            this.dataRefTableItemBindingSource.Filter = "";
+            this.valueAdjusted.DataPropertyName = "valueAdjusted";
+            this.valueAdjusted.FillWeight = 121.8274F;
+            this.valueAdjusted.HeaderText = "Factored";
+            this.valueAdjusted.Name = "valueAdjusted";
+            this.valueAdjusted.ReadOnly = true;
             // 
             // name
             // 
@@ -196,7 +193,7 @@ namespace ACLSim
             // 
             // btnGoTo
             // 
-            this.btnGoTo.Location = new System.Drawing.Point(377, 49);
+            this.btnGoTo.Location = new System.Drawing.Point(406, 47);
             this.btnGoTo.Name = "btnGoTo";
             this.btnGoTo.Size = new System.Drawing.Size(60, 23);
             this.btnGoTo.TabIndex = 3;
@@ -206,7 +203,7 @@ namespace ACLSim
             // 
             // txtbxPitchPosition
             // 
-            this.txtbxPitchPosition.Location = new System.Drawing.Point(142, 49);
+            this.txtbxPitchPosition.Location = new System.Drawing.Point(103, 48);
             this.txtbxPitchPosition.Name = "txtbxPitchPosition";
             this.txtbxPitchPosition.Size = new System.Drawing.Size(65, 20);
             this.txtbxPitchPosition.TabIndex = 1;
@@ -214,9 +211,9 @@ namespace ACLSim
             // 
             // btnCenterOut
             // 
-            this.btnCenterOut.Location = new System.Drawing.Point(450, 49);
+            this.btnCenterOut.Location = new System.Drawing.Point(476, 47);
             this.btnCenterOut.Name = "btnCenterOut";
-            this.btnCenterOut.Size = new System.Drawing.Size(75, 23);
+            this.btnCenterOut.Size = new System.Drawing.Size(57, 23);
             this.btnCenterOut.TabIndex = 4;
             this.btnCenterOut.Text = "Center ";
             this.btnCenterOut.UseVisualStyleBackColor = true;
@@ -224,7 +221,7 @@ namespace ACLSim
             // 
             // txtbxRollPosition
             // 
-            this.txtbxRollPosition.Location = new System.Drawing.Point(220, 50);
+            this.txtbxRollPosition.Location = new System.Drawing.Point(181, 48);
             this.txtbxRollPosition.Name = "txtbxRollPosition";
             this.txtbxRollPosition.Size = new System.Drawing.Size(65, 20);
             this.txtbxRollPosition.TabIndex = 2;
@@ -233,7 +230,7 @@ namespace ACLSim
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(139, 25);
+            this.label2.Location = new System.Drawing.Point(122, 25);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(31, 13);
             this.label2.TabIndex = 11;
@@ -242,7 +239,7 @@ namespace ACLSim
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(218, 25);
+            this.label3.Location = new System.Drawing.Point(201, 25);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(25, 13);
             this.label3.TabIndex = 12;
@@ -262,14 +259,14 @@ namespace ACLSim
             // 
             // txbRollTorque
             // 
-            this.txbRollTorque.Location = new System.Drawing.Point(220, 90);
+            this.txbRollTorque.Location = new System.Drawing.Point(181, 89);
             this.txbRollTorque.Name = "txbRollTorque";
             this.txbRollTorque.Size = new System.Drawing.Size(65, 20);
             this.txbRollTorque.TabIndex = 6;
             // 
             // btnTorqueTest
             // 
-            this.btnTorqueTest.Location = new System.Drawing.Point(377, 90);
+            this.btnTorqueTest.Location = new System.Drawing.Point(406, 88);
             this.btnTorqueTest.Name = "btnTorqueTest";
             this.btnTorqueTest.Size = new System.Drawing.Size(60, 23);
             this.btnTorqueTest.TabIndex = 7;
@@ -282,10 +279,10 @@ namespace ACLSim
             this.tabControl1.Controls.Add(this.tabStatus);
             this.tabControl1.Controls.Add(this.tabConfig);
             this.tabControl1.Controls.Add(this.tabTest);
-            this.tabControl1.Location = new System.Drawing.Point(16, 147);
+            this.tabControl1.Location = new System.Drawing.Point(16, 185);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(553, 323);
+            this.tabControl1.Size = new System.Drawing.Size(647, 323);
             this.tabControl1.TabIndex = 17;
             // 
             // tabStatus
@@ -295,7 +292,7 @@ namespace ACLSim
             this.tabStatus.Location = new System.Drawing.Point(4, 22);
             this.tabStatus.Name = "tabStatus";
             this.tabStatus.Padding = new System.Windows.Forms.Padding(3);
-            this.tabStatus.Size = new System.Drawing.Size(545, 297);
+            this.tabStatus.Size = new System.Drawing.Size(639, 297);
             this.tabStatus.TabIndex = 0;
             this.tabStatus.Text = "Status";
             this.tabStatus.UseVisualStyleBackColor = true;
@@ -317,21 +314,26 @@ namespace ACLSim
             this.tabConfig.Location = new System.Drawing.Point(4, 22);
             this.tabConfig.Name = "tabConfig";
             this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(545, 297);
+            this.tabConfig.Size = new System.Drawing.Size(639, 297);
             this.tabConfig.TabIndex = 2;
             this.tabConfig.Text = "Custom Config";
             this.tabConfig.UseVisualStyleBackColor = true;
             // 
             // propertyGridSettings
             // 
-            this.propertyGridSettings.Location = new System.Drawing.Point(6, 21);
+            this.propertyGridSettings.Location = new System.Drawing.Point(6, 11);
             this.propertyGridSettings.Name = "propertyGridSettings";
-            this.propertyGridSettings.Size = new System.Drawing.Size(528, 286);
+            this.propertyGridSettings.Size = new System.Drawing.Size(627, 286);
             this.propertyGridSettings.TabIndex = 0;
             this.propertyGridSettings.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGridSettings_PropertyValueChanged_1);
             // 
             // tabTest
             // 
+            this.tabTest.Controls.Add(this.label12);
+            this.tabTest.Controls.Add(this.txbBounceTiller);
+            this.tabTest.Controls.Add(this.txbTillerSpeedTest);
+            this.tabTest.Controls.Add(this.txbTillerTorque);
+            this.tabTest.Controls.Add(this.txtbxTillerPosition);
             this.tabTest.Controls.Add(this.label10);
             this.tabTest.Controls.Add(this.txbBounceYaw);
             this.tabTest.Controls.Add(this.txbYawSpeedTest);
@@ -362,15 +364,53 @@ namespace ACLSim
             this.tabTest.Location = new System.Drawing.Point(4, 22);
             this.tabTest.Name = "tabTest";
             this.tabTest.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTest.Size = new System.Drawing.Size(545, 297);
+            this.tabTest.Size = new System.Drawing.Size(639, 297);
             this.tabTest.TabIndex = 1;
             this.tabTest.Text = "Servo Test/Config";
             this.tabTest.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(350, 25);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(29, 13);
+            this.label12.TabIndex = 40;
+            this.label12.Text = "Tiller";
+            // 
+            // txbBounceTiller
+            // 
+            this.txbBounceTiller.Location = new System.Drawing.Point(334, 169);
+            this.txbBounceTiller.Name = "txbBounceTiller";
+            this.txbBounceTiller.Size = new System.Drawing.Size(65, 20);
+            this.txbBounceTiller.TabIndex = 39;
+            // 
+            // txbTillerSpeedTest
+            // 
+            this.txbTillerSpeedTest.Location = new System.Drawing.Point(334, 130);
+            this.txbTillerSpeedTest.Name = "txbTillerSpeedTest";
+            this.txbTillerSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbTillerSpeedTest.TabIndex = 38;
+            // 
+            // txbTillerTorque
+            // 
+            this.txbTillerTorque.Location = new System.Drawing.Point(334, 89);
+            this.txbTillerTorque.Name = "txbTillerTorque";
+            this.txbTillerTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbTillerTorque.TabIndex = 37;
+            // 
+            // txtbxTillerPosition
+            // 
+            this.txtbxTillerPosition.Location = new System.Drawing.Point(334, 48);
+            this.txtbxTillerPosition.Name = "txtbxTillerPosition";
+            this.txtbxTillerPosition.Size = new System.Drawing.Size(65, 20);
+            this.txtbxTillerPosition.TabIndex = 36;
+            this.txtbxTillerPosition.Text = "0";
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(293, 25);
+            this.label10.Location = new System.Drawing.Point(276, 25);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(28, 13);
             this.label10.TabIndex = 35;
@@ -378,28 +418,28 @@ namespace ACLSim
             // 
             // txbBounceYaw
             // 
-            this.txbBounceYaw.Location = new System.Drawing.Point(296, 162);
+            this.txbBounceYaw.Location = new System.Drawing.Point(257, 169);
             this.txbBounceYaw.Name = "txbBounceYaw";
             this.txbBounceYaw.Size = new System.Drawing.Size(65, 20);
             this.txbBounceYaw.TabIndex = 34;
             // 
             // txbYawSpeedTest
             // 
-            this.txbYawSpeedTest.Location = new System.Drawing.Point(296, 131);
+            this.txbYawSpeedTest.Location = new System.Drawing.Point(257, 130);
             this.txbYawSpeedTest.Name = "txbYawSpeedTest";
             this.txbYawSpeedTest.Size = new System.Drawing.Size(65, 20);
             this.txbYawSpeedTest.TabIndex = 33;
             // 
             // txbYawTorque
             // 
-            this.txbYawTorque.Location = new System.Drawing.Point(296, 91);
+            this.txbYawTorque.Location = new System.Drawing.Point(257, 89);
             this.txbYawTorque.Name = "txbYawTorque";
             this.txbYawTorque.Size = new System.Drawing.Size(65, 20);
             this.txbYawTorque.TabIndex = 32;
             // 
             // txtbxYawPosition
             // 
-            this.txtbxYawPosition.Location = new System.Drawing.Point(296, 51);
+            this.txtbxYawPosition.Location = new System.Drawing.Point(257, 48);
             this.txtbxYawPosition.Name = "txtbxYawPosition";
             this.txtbxYawPosition.Size = new System.Drawing.Size(65, 20);
             this.txtbxYawPosition.TabIndex = 31;
@@ -407,9 +447,9 @@ namespace ACLSim
             // 
             // btnBounceGet
             // 
-            this.btnBounceGet.Location = new System.Drawing.Point(450, 159);
+            this.btnBounceGet.Location = new System.Drawing.Point(476, 168);
             this.btnBounceGet.Name = "btnBounceGet";
-            this.btnBounceGet.Size = new System.Drawing.Size(75, 23);
+            this.btnBounceGet.Size = new System.Drawing.Size(57, 23);
             this.btnBounceGet.TabIndex = 30;
             this.btnBounceGet.Text = "Read";
             this.btnBounceGet.UseVisualStyleBackColor = true;
@@ -418,7 +458,7 @@ namespace ACLSim
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(68, 165);
+            this.label7.Location = new System.Drawing.Point(26, 173);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(61, 13);
             this.label7.TabIndex = 29;
@@ -427,21 +467,21 @@ namespace ACLSim
             // 
             // txbBouncePitch
             // 
-            this.txbBouncePitch.Location = new System.Drawing.Point(142, 162);
+            this.txbBouncePitch.Location = new System.Drawing.Point(103, 169);
             this.txbBouncePitch.Name = "txbBouncePitch";
             this.txbBouncePitch.Size = new System.Drawing.Size(65, 20);
             this.txbBouncePitch.TabIndex = 28;
             // 
             // txbBounceRoll
             // 
-            this.txbBounceRoll.Location = new System.Drawing.Point(220, 162);
+            this.txbBounceRoll.Location = new System.Drawing.Point(181, 169);
             this.txbBounceRoll.Name = "txbBounceRoll";
             this.txbBounceRoll.Size = new System.Drawing.Size(65, 20);
             this.txbBounceRoll.TabIndex = 26;
             // 
             // btnBounceSet
             // 
-            this.btnBounceSet.Location = new System.Drawing.Point(377, 159);
+            this.btnBounceSet.Location = new System.Drawing.Point(406, 168);
             this.btnBounceSet.Name = "btnBounceSet";
             this.btnBounceSet.Size = new System.Drawing.Size(60, 23);
             this.btnBounceSet.TabIndex = 27;
@@ -451,9 +491,9 @@ namespace ACLSim
             // 
             // btnRecenterSpeedRead
             // 
-            this.btnRecenterSpeedRead.Location = new System.Drawing.Point(450, 130);
+            this.btnRecenterSpeedRead.Location = new System.Drawing.Point(476, 129);
             this.btnRecenterSpeedRead.Name = "btnRecenterSpeedRead";
-            this.btnRecenterSpeedRead.Size = new System.Drawing.Size(75, 23);
+            this.btnRecenterSpeedRead.Size = new System.Drawing.Size(57, 23);
             this.btnRecenterSpeedRead.TabIndex = 25;
             this.btnRecenterSpeedRead.Text = "Read";
             this.btnRecenterSpeedRead.UseVisualStyleBackColor = true;
@@ -462,7 +502,7 @@ namespace ACLSim
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(44, 134);
+            this.label6.Location = new System.Drawing.Point(2, 134);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(88, 13);
             this.label6.TabIndex = 24;
@@ -472,7 +512,7 @@ namespace ACLSim
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(88, 93);
+            this.label5.Location = new System.Drawing.Point(46, 93);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(41, 13);
             this.label5.TabIndex = 23;
@@ -482,7 +522,7 @@ namespace ACLSim
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(85, 52);
+            this.label4.Location = new System.Drawing.Point(43, 52);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 13);
             this.label4.TabIndex = 22;
@@ -491,21 +531,21 @@ namespace ACLSim
             // 
             // txbPitchSpeedTest
             // 
-            this.txbPitchSpeedTest.Location = new System.Drawing.Point(142, 131);
+            this.txbPitchSpeedTest.Location = new System.Drawing.Point(103, 130);
             this.txbPitchSpeedTest.Name = "txbPitchSpeedTest";
             this.txbPitchSpeedTest.Size = new System.Drawing.Size(65, 20);
             this.txbPitchSpeedTest.TabIndex = 20;
             // 
             // txbRollSpeedTest
             // 
-            this.txbRollSpeedTest.Location = new System.Drawing.Point(220, 131);
+            this.txbRollSpeedTest.Location = new System.Drawing.Point(181, 130);
             this.txbRollSpeedTest.Name = "txbRollSpeedTest";
             this.txbRollSpeedTest.Size = new System.Drawing.Size(65, 20);
             this.txbRollSpeedTest.TabIndex = 18;
             // 
             // btnSpeedSet
             // 
-            this.btnSpeedSet.Location = new System.Drawing.Point(377, 130);
+            this.btnSpeedSet.Location = new System.Drawing.Point(406, 129);
             this.btnSpeedSet.Name = "btnSpeedSet";
             this.btnSpeedSet.Size = new System.Drawing.Size(60, 23);
             this.btnSpeedSet.TabIndex = 19;
@@ -515,9 +555,9 @@ namespace ACLSim
             // 
             // btnTorqueDefault
             // 
-            this.btnTorqueDefault.Location = new System.Drawing.Point(450, 90);
+            this.btnTorqueDefault.Location = new System.Drawing.Point(476, 88);
             this.btnTorqueDefault.Name = "btnTorqueDefault";
-            this.btnTorqueDefault.Size = new System.Drawing.Size(75, 23);
+            this.btnTorqueDefault.Size = new System.Drawing.Size(57, 23);
             this.btnTorqueDefault.TabIndex = 8;
             this.btnTorqueDefault.Text = "Revert";
             this.btnTorqueDefault.UseVisualStyleBackColor = true;
@@ -525,7 +565,7 @@ namespace ACLSim
             // 
             // txbPitchTorque
             // 
-            this.txbPitchTorque.Location = new System.Drawing.Point(142, 90);
+            this.txbPitchTorque.Location = new System.Drawing.Point(103, 89);
             this.txbPitchTorque.Name = "txbPitchTorque";
             this.txbPitchTorque.Size = new System.Drawing.Size(65, 20);
             this.txbPitchTorque.TabIndex = 5;
@@ -536,7 +576,7 @@ namespace ACLSim
             this.lblTorquePitchFwd.BackColor = System.Drawing.Color.Transparent;
             this.lblTorquePitchFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorquePitchFwd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
-            this.lblTorquePitchFwd.Location = new System.Drawing.Point(362, 20);
+            this.lblTorquePitchFwd.Location = new System.Drawing.Point(379, 27);
             this.lblTorquePitchFwd.Name = "lblTorquePitchFwd";
             this.lblTorquePitchFwd.Size = new System.Drawing.Size(36, 39);
             this.lblTorquePitchFwd.TabIndex = 18;
@@ -548,54 +588,43 @@ namespace ACLSim
             this.lblTorquePitchBack.BackColor = System.Drawing.Color.Transparent;
             this.lblTorquePitchBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorquePitchBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(184)))));
-            this.lblTorquePitchBack.Location = new System.Drawing.Point(481, 20);
+            this.lblTorquePitchBack.Location = new System.Drawing.Point(433, 27);
             this.lblTorquePitchBack.Name = "lblTorquePitchBack";
             this.lblTorquePitchBack.Size = new System.Drawing.Size(36, 39);
             this.lblTorquePitchBack.TabIndex = 19;
             this.lblTorquePitchBack.Text = "0";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
-            this.label8.Location = new System.Drawing.Point(485, 57);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(60, 13);
-            this.label8.TabIndex = 20;
-            this.label8.Text = "Fwd torque";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
-            this.label9.Location = new System.Drawing.Point(366, 57);
+            this.label9.Location = new System.Drawing.Point(383, 66);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(65, 13);
+            this.label9.Size = new System.Drawing.Size(31, 13);
             this.label9.TabIndex = 21;
-            this.label9.Text = "Back torque";
+            this.label9.Text = "Pitch";
             // 
             // lblACLSIMVersion
             // 
             this.lblACLSIMVersion.AutoSize = true;
             this.lblACLSIMVersion.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.lblACLSIMVersion.Location = new System.Drawing.Point(534, 9);
+            this.lblACLSIMVersion.Location = new System.Drawing.Point(622, 9);
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
             this.lblACLSIMVersion.Size = new System.Drawing.Size(31, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.5.0";
+            this.lblACLSIMVersion.Text = "1.6.0";
             // 
             // rtxtLog
             // 
             this.rtxtLog.BackColor = System.Drawing.Color.Black;
             this.rtxtLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtxtLog.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.rtxtLog.Location = new System.Drawing.Point(16, 477);
+            this.rtxtLog.Location = new System.Drawing.Point(14, 512);
             this.rtxtLog.Margin = new System.Windows.Forms.Padding(1);
             this.rtxtLog.Name = "rtxtLog";
             this.rtxtLog.ReadOnly = true;
-            this.rtxtLog.Size = new System.Drawing.Size(549, 114);
+            this.rtxtLog.Size = new System.Drawing.Size(649, 114);
             this.rtxtLog.TabIndex = 0;
             this.rtxtLog.Text = "";
             // 
@@ -615,7 +644,7 @@ namespace ACLSim
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(6, 10);
+            this.pictureBox1.Location = new System.Drawing.Point(6, 23);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(128, 100);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -640,7 +669,7 @@ namespace ACLSim
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
-            this.label11.Location = new System.Drawing.Point(366, 91);
+            this.label11.Location = new System.Drawing.Point(383, 109);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(84, 13);
             this.label11.TabIndex = 27;
@@ -653,18 +682,78 @@ namespace ACLSim
             this.lblHydPower.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblHydPower.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHydPower.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
-            this.lblHydPower.Location = new System.Drawing.Point(457, 88);
+            this.lblHydPower.Location = new System.Drawing.Point(474, 106);
             this.lblHydPower.Name = "lblHydPower";
             this.lblHydPower.Size = new System.Drawing.Size(18, 18);
             this.lblHydPower.TabIndex = 28;
             this.lblHydPower.Text = "--";
+            // 
+            // lblTorqueRollAft
+            // 
+            this.lblTorqueRollAft.AutoSize = true;
+            this.lblTorqueRollAft.BackColor = System.Drawing.Color.Transparent;
+            this.lblTorqueRollAft.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorqueRollAft.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(184)))));
+            this.lblTorqueRollAft.Location = new System.Drawing.Point(574, 27);
+            this.lblTorqueRollAft.Name = "lblTorqueRollAft";
+            this.lblTorqueRollAft.Size = new System.Drawing.Size(36, 39);
+            this.lblTorqueRollAft.TabIndex = 30;
+            this.lblTorqueRollAft.Text = "0";
+            // 
+            // lblTorqueRollFwd
+            // 
+            this.lblTorqueRollFwd.AutoSize = true;
+            this.lblTorqueRollFwd.BackColor = System.Drawing.Color.Transparent;
+            this.lblTorqueRollFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorqueRollFwd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
+            this.lblTorqueRollFwd.Location = new System.Drawing.Point(519, 27);
+            this.lblTorqueRollFwd.Name = "lblTorqueRollFwd";
+            this.lblTorqueRollFwd.Size = new System.Drawing.Size(36, 39);
+            this.lblTorqueRollFwd.TabIndex = 29;
+            this.lblTorqueRollFwd.Text = "0";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
+            this.label8.Location = new System.Drawing.Point(523, 66);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(25, 13);
+            this.label8.TabIndex = 31;
+            this.label8.Text = "Roll";
+            // 
+            // nameDataGridViewTextBoxColumn
+            // 
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.FillWeight = 89.0863F;
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // valueDataGridViewTextBoxColumn
+            // 
+            this.valueDataGridViewTextBoxColumn.DataPropertyName = "Value";
+            this.valueDataGridViewTextBoxColumn.FillWeight = 89.0863F;
+            this.valueDataGridViewTextBoxColumn.HeaderText = "Value";
+            this.valueDataGridViewTextBoxColumn.Name = "valueDataGridViewTextBoxColumn";
+            this.valueDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dataRefTableItemBindingSource
+            // 
+            this.dataRefTableItemBindingSource.AllowNew = false;
+            this.dataRefTableItemBindingSource.DataSource = typeof(ACLSim.DataRefTableItem);
+            this.dataRefTableItemBindingSource.Filter = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.ClientSize = new System.Drawing.Size(581, 603);
+            this.ClientSize = new System.Drawing.Size(673, 636);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.lblTorqueRollAft);
+            this.Controls.Add(this.lblTorqueRollFwd);
             this.Controls.Add(this.lblHydPower);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.chkAutoCenter);
@@ -673,7 +762,6 @@ namespace ACLSim
             this.Controls.Add(this.rtxtLog);
             this.Controls.Add(this.lblACLSIMVersion);
             this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorquePitchBack);
             this.Controls.Add(this.lblTorquePitchFwd);
             this.Controls.Add(this.tabControl1);
@@ -690,7 +778,6 @@ namespace ACLSim
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.tabControl1.ResumeLayout(false);
             this.tabStatus.ResumeLayout(false);
             this.tabStatus.PerformLayout();
@@ -698,6 +785,7 @@ namespace ACLSim
             this.tabTest.ResumeLayout(false);
             this.tabTest.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -737,7 +825,6 @@ namespace ACLSim
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lblTorquePitchFwd;
         private System.Windows.Forms.Label lblTorquePitchBack;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox chkBoxStatus;
         private System.Windows.Forms.PropertyGrid propertyGridSettings;
@@ -749,8 +836,6 @@ namespace ACLSim
         private System.Windows.Forms.TextBox txbBouncePitch;
         private System.Windows.Forms.TextBox txbBounceRoll;
         private System.Windows.Forms.Button btnBounceSet;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn valueConvertedDataGridViewTextBoxColumn;
         private System.Windows.Forms.RichTextBox rtxtLog;
         private System.Windows.Forms.TextBox txbBounceYaw;
@@ -763,6 +848,17 @@ namespace ACLSim
         private System.Windows.Forms.CheckBox chkAutoCenter;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label lblHydPower;
+        private System.Windows.Forms.TextBox txbBounceTiller;
+        private System.Windows.Forms.TextBox txbTillerSpeedTest;
+        private System.Windows.Forms.TextBox txbTillerTorque;
+        private System.Windows.Forms.TextBox txtbxTillerPosition;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn valueAdjusted;
+        private System.Windows.Forms.Label lblTorqueRollAft;
+        private System.Windows.Forms.Label lblTorqueRollFwd;
+        private System.Windows.Forms.Label label8;
     }
 }
 

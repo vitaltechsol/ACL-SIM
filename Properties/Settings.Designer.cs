@@ -12,7 +12,7 @@ namespace ACLSim.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.6.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -548,6 +548,138 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Arduino_COM_Port"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int Torque_Tiller_Max {
+            get {
+                return ((int)(this["Torque_Tiller_Max"]));
+            }
+            set {
+                this["Torque_Tiller_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int Torque_Tiller_Add_Hyd_Off {
+            get {
+                return ((int)(this["Torque_Tiller_Add_Hyd_Off"]));
+            }
+            set {
+                this["Torque_Tiller_Add_Hyd_Off"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Enable_Tiller_ACL {
+            get {
+                return ((bool)(this["Enable_Tiller_ACL"]));
+            }
+            set {
+                this["Enable_Tiller_ACL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Driver_Tiller_ID {
+            get {
+                return ((int)(this["Driver_Tiller_ID"]));
+            }
+            set {
+                this["Driver_Tiller_ID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Dampening_Tiller {
+            get {
+                return ((int)(this["Dampening_Tiller"]));
+            }
+            set {
+                this["Dampening_Tiller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public int Center_Calibration_Speed_Tiller {
+            get {
+                return ((int)(this["Center_Calibration_Speed_Tiller"]));
+            }
+            set {
+                this["Center_Calibration_Speed_Tiller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Direction_Axis_Tiller {
+            get {
+                return ((int)(this["Direction_Axis_Tiller"]));
+            }
+            set {
+                this["Direction_Axis_Tiller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int Centering_Speed_Tiller {
+            get {
+                return ((int)(this["Centering_Speed_Tiller"]));
+            }
+            set {
+                this["Centering_Speed_Tiller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Centered_Position_Tiller {
+            get {
+                return ((int)(this["Centered_Position_Tiller"]));
+            }
+            set {
+                this["Centered_Position_Tiller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Torque_Tiller_Diff_Offset {
+            get {
+                return ((int)(this["Torque_Tiller_Diff_Offset"]));
+            }
+            set {
+                this["Torque_Tiller_Diff_Offset"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public int Torque_Tiller_Min {
+            get {
+                return ((int)(this["Torque_Tiller_Min"]));
+            }
+            set {
+                this["Torque_Tiller_Min"] = value;
             }
         }
     }

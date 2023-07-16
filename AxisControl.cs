@@ -94,7 +94,7 @@ namespace ACLSim
             }
         }
 
-        public void MoveToHydPos()
+        public void MoveToHydPos(bool axisDroppedByWind)
         {
             if (!enabled)
             {
@@ -106,7 +106,7 @@ namespace ACLSim
                 errorLog.DisplayInfo("Hydraulics On, moving " + axisName);
                 MoveTo(0);
             } else {
-                if (hydOffPosition != 0)
+                if (hydOffPosition != 0 && axisDroppedByWind)
                 {
                     errorLog.DisplayInfo("Hydraulics Off, moving " + axisName);
                     MoveTo(hydOffPosition);
@@ -117,7 +117,7 @@ namespace ACLSim
 
 
 
-        public async void CenterAxis(string refName, int additionalOffset, int moveFactor)
+        public async void CenterAxis(string refName, int additionalOffset, int moveFactor, bool axisDroppedByWind)
         {
             if (!enabled)
             {
@@ -133,62 +133,73 @@ namespace ACLSim
             int target = 500;
             errorLog.DisplayInfo("Center calibration started " + axisName);
 
-            while (move)
+            try
             {
-                axisPosition = int.Parse(connection.ReadDataRef(refName).ToString());
-                
-                // errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
-                // delay for servo to move
-                await Task.Delay(100);
-                
-                //errorLog.DisplayInfo("posOffset " + posOffset);
 
-                MoveTo(posOffset * direction);
-
-                // Move on direction, if passes target move oposite directions
-                if (axisPosition > target)
+                while (move)
                 {
-                    if (directing != "CW")
+                    axisPosition = int.Parse(connection.ReadDataRef(refName).ToString());
+
+                    // errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
+                    // delay for servo to move
+                    await Task.Delay(100);
+
+                    //errorLog.DisplayInfo("posOffset " + posOffset);
+
+                    MoveTo(posOffset * direction);
+
+                    // Move on direction, if passes target move oposite directions
+                    if (axisPosition > target)
                     {
-                        directing = "CW";
-                        // If direction changes, reduce the moving amount for precission
-                        if (moveFactor > 1)
+                        if (directing != "CW")
                         {
-                            moveFactor -= 1;
-                        }
+                            directing = "CW";
+                            // If direction changes, reduce the moving amount for precission
+                            if (moveFactor > 1)
+                            {
+                                moveFactor -= 1;
+                            }
 
+                        }
+                        posOffset -= moveFactor;
                     }
-                    posOffset -= moveFactor;
-                }
-                else
-                {
-                    if (directing != "CCW")
+                    else
                     {
-                        directing = "CCW";
-                        if (moveFactor > 1)
+                        if (directing != "CCW")
                         {
-                            moveFactor -= 1;
+                            directing = "CCW";
+                            if (moveFactor > 1)
+                            {
+                                moveFactor -= 1;
+                            }
+
                         }
-
+                        posOffset += moveFactor;
                     }
-                    posOffset += moveFactor;
-                }
 
-                if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
-                {
-                    move = false;
-                    errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset);
-                    axisOfset = posOffset + additionalOffset;
-                    axisCentered = true;
-                    MoveToHydPos();
-                }
+                    if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
+                    {
+                        move = false;
+                        errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset);
+                        axisOfset = posOffset + additionalOffset;
+                        axisCentered = true;
+                        if (axisDroppedByWind)
+                        {
+                            MoveToHydPos(axisDroppedByWind);
+                        }
+                    }
 
-                if (posOffset > 35000 || posOffset < -35000)
-                {
-                    move = false;
-                    errorLog.DisplayError("Maximun reached, could not center " + axisName + " : " + posOffset);
-                }
+                    if (posOffset > 35000 || posOffset < -35000)
+                    {
+                        move = false;
+                        errorLog.DisplayError("Maximun reached, could not center " + axisName + " : " + posOffset);
+                    }
 
+                }
+            }
+            catch (Exception ex)
+            {
+                errorLog.DisplayError("Cannot center calibrate controls." + ex.Message);
             }
         }
 
@@ -205,6 +216,12 @@ namespace ACLSim
                 errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
             }
         }
+
+        public bool IsEnabled()
+        {
+            return enabled;
+        }
+
     }
    
 }
