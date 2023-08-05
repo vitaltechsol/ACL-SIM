@@ -407,7 +407,7 @@ namespace ACLSim
             // Get all of the DataRefs from ProSim737 System
             DataRefDescription[] descriptions = connection.getDataRefDescriptions().ToArray();
 
-            DataRef dataRef = new DataRef("", 100, connection);
+            DataRef dataRef = new DataRef("", 10, connection);
 
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
@@ -1112,30 +1112,31 @@ namespace ACLSim
                 torqueRoll.SetTorque(torqueRollHigh);
                 torqueYaw.SetTorque(torqueYawHigh);
                 torqueTiller.SetTorque(torqueTillerMax);
+               
 
-                axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN, 
+                await Task.Run(() => axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN,
                     Properties.Settings.Default.Centered_Position_Roll,
                     Properties.Settings.Default.Center_Calibration_Speed_Roll,
                     axisDroppedByWind
-                );
+                  ));
 
-                axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, 
+                await Task.Run(() => axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, 
                     Properties.Settings.Default.Centered_Position_Pitch,
                     Properties.Settings.Default.Center_Calibration_Speed_Pitch,
                     axisDroppedByWind
-                );
+                ));
 
-                axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 
+                await Task.Run(() => axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 
                     Properties.Settings.Default.Centered_Position_Yaw,
                     Properties.Settings.Default.Center_Calibration_Speed_Yaw,
                     axisDroppedByWind
-                );
+                ));
 
-                axisTiller.CenterAxis(DayaRefNames.TILLER_CAPT,
+                await Task.Run(() => axisTiller.CenterAxis(DayaRefNames.TILLER_CAPT,
                    Properties.Settings.Default.Centered_Position_Tiller,
                    Properties.Settings.Default.Center_Calibration_Speed_Tiller,
                    axisDroppedByWind
-               );
+               ));
 
                 UpdateTorques();
                 UpdatePitchTorques();

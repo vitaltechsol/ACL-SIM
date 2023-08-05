@@ -103,15 +103,17 @@ namespace ACLSim
 
             if (hydraulicPower)
             {
-                errorLog.DisplayInfo("Hydraulics On, moving " + axisName);
+                errorLog.DisplayInfo("Hydraulics On, moving " + axisName + "To 0");
                 MoveTo(0);
-            } else {
+            }
+            else
+            {
                 if (hydOffPosition != 0 && axisDroppedByWind)
                 {
                     errorLog.DisplayInfo("Hydraulics Off, moving " + axisName);
                     MoveTo(hydOffPosition);
                 }
-               
+
             }
         }
 
@@ -130,7 +132,7 @@ namespace ACLSim
             string directing = "CW";
             int axisPosition;
             bool move = true;
-            int target = 500;
+            int target = 512;
             errorLog.DisplayInfo("Center calibration started " + axisName);
 
             try
@@ -192,6 +194,7 @@ namespace ACLSim
                     if (posOffset > 35000 || posOffset < -35000)
                     {
                         move = false;
+                        axisCentered = true;
                         errorLog.DisplayError("Maximun reached, could not center " + axisName + " : " + posOffset);
                     }
 
