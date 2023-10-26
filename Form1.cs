@@ -37,8 +37,8 @@ namespace ACLSim
         int torqueFactorAirSpeed = 10;
         int trimFactorAileron = 1000;
         int trimFactorRudder = 1000;
-        int torquePitchLow = 25;
-        int torquePitchHigh = 55;
+        int torquePitchLow = 1;
+        int torquePitchHigh = 0;
         int torquePitchMax = 70;
         int torqueYawHigh = 40;
         int torqueYawLow = 20;
@@ -47,6 +47,7 @@ namespace ACLSim
         int torqueTillerAddHydOff = 5;
         int torquePithAxisFactor = 0;
         bool autoCenterOnStatart = false;
+        bool centeringPitch = false;
 
         int Centering_Speed_Pitch = 0;
         int Centering_Speed_Roll = 0;
@@ -176,7 +177,7 @@ namespace ACLSim
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
             timerX = new Timer();
-            timerX.Interval = 100;
+            timerX.Interval = 25;
             timerX.Start();
             timerX.Elapsed += sendDataOK_X;
             timerX.AutoReset = true;
@@ -443,7 +444,7 @@ namespace ACLSim
             if (!dataRefs.ContainsKey(dataRefName))
             {
                 // Request a new DataRef from ProSim737 System with 100 msec update interval
-                DataRef dataRef = new DataRef(dataRefName, 100, connection);
+                DataRef dataRef = new DataRef(dataRefName, 20, connection);
 
                 // Register to receive updates of the value of the DataRef
                 dataRef.onDataChange += dataRef_onDataChange;
@@ -537,18 +538,18 @@ namespace ACLSim
 
                         case DayaRefNames.ELEVATOR:
                             {
-                                int newVal = ((int)(torquePithAxisFactor * item.Value));
-                                if (newVal < 0)
-                                {
-                                    newVal = newVal * -1;
-                                }
-                                double diff = (newVal - additionalElevatorTorque);
+                                //int newVal = ((int)(torquePithAxisFactor * item.Value));
+                                //if (newVal < 0)
+                                //{
+                                //    newVal = newVal * -1;
+                                //}
+                                //double diff = (newVal - additionalElevatorTorque);
 
-                                if (diff >= 2 || diff <= -2)
-                                {
-                                    additionalElevatorTorque = newVal;
-                                    UpdatePitchTorques();
-                                }
+                                //if (diff >= 2 || diff <= -2)
+                                //{
+                                //    additionalElevatorTorque = newVal;
+                                //    UpdatePitchTorques();
+                                //}
 
                                 if (isPitchCMD == true && sendDataY == true)
                                 {
@@ -630,7 +631,15 @@ namespace ACLSim
 
                         case DayaRefNames.PITCH_CMD:
                             {
+                                bool oldisPitchCMD = isPitchCMD;
+
                                 isPitchCMD = Convert.ToBoolean(dataRef.value);
+
+                                if (isPitchCMD == true && oldisPitchCMD == false)
+                                {
+                                    // turned on
+                                    torquePitch.SetTorque(torquePitchHigh);
+                                }
 
                                 if (isPitchCMD == false)
                                 {
@@ -749,8 +758,56 @@ namespace ACLSim
                                     lastPitchMoved = value;
                                     sendDataY = false;
 
+                                } else
+                                {
+                                    int pos = (int)(item.Value);
+                                    int newVal = (pos / 100);
+                                    if (newVal < 0)
+                                    {
+                                        newVal = newVal * -1;
+                                    }
+
+                                    if (pos < 525)
+                                    {
+                                        pos = 1024 - pos;
+                                    }
+
+                                    if (pos >= 525) { newVal = 7; };
+                                    if (pos > 540) { newVal = 10; };
+                                    if (pos > 600) { newVal = 14; };
+                                    if (pos > 625) { newVal = 18; };
+                                    if (pos > 650) { newVal = 22; };
+                                    if (pos > 700) { newVal = 24; };
+                                    if (pos > 750) { newVal = 26; };
+                                    if (pos > 800) { newVal = 30; };
+                                    if (pos > 850) { newVal = 32; };
+                                    if (pos > 900) { newVal = 35; };
+                                    if (pos > 1000) { newVal = 40; };
+                                 
+
+                                    double diff = (newVal - additionalElevatorTorque);
+
+                                    if (diff >= 2 || diff <= -2)
+                                    {
+                                        additionalElevatorTorque = newVal;
+                                        UpdatePitchTorques();
+                                    }
+
+                                    if (isPitchCMD == true && sendDataY == true)
+                                    {
+                                        double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
+                                        // Skip sudden jumps to 0
+                                        if (yValue != 0)
+                                        {
+                                            item.valueAdjusted = yValue;
+                                            moveToY(yValue);
+                                            sendDataY = false;
+                                        }
+
+                                    }
+
                                 }
-                               
+
                                 break;
                             }
 
@@ -791,11 +848,24 @@ namespace ACLSim
 
         private void UpdatePitchTorques()
         {
+            if (centeringPitch)
+            {
+                return;
+            }
             try
             {
-                int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
-                int newAdditionalPitchTorque = torqueBase + additionalElevatorTorque + additionalAirSpeedTorque;
-                torquePitch.SetTorques(GetMaxMinPitchTorque(newAdditionalPitchTorque), GetMaxMinPitchTorque(newAdditionalPitchTorque));
+                // int torqueBase = 1; //
+                int newAdditionalPitchTorque = 0;
+                if (isHydAvail)
+                {
+                    newAdditionalPitchTorque = 1 + additionalElevatorTorque; // + additionalAirSpeedTorque;
+                }
+                else
+                {
+                    newAdditionalPitchTorque = torquePitchHigh;
+                }
+         
+                torquePitch.SetTorque(newAdditionalPitchTorque);
             }
             catch (Exception ex)
             {
@@ -1094,6 +1164,11 @@ namespace ACLSim
 
         private async void centerAllAxis()
         {
+            centeringPitch = true;
+            torquePitch.SetTorque(torquePitchHigh);
+            torqueRoll.SetTorque(torqueRollHigh);
+            torqueYaw.SetTorque(torqueYawHigh);
+            torqueTiller.SetTorque(torqueTillerMax);
 
             axisRoll.MoveToHome();
             errorh.DisplayInfo("Moved Roll to home");
@@ -1108,11 +1183,6 @@ namespace ACLSim
 
             if (connection.isConnected)
             {
-                torquePitch.SetTorque(torquePitchHigh);
-                torqueRoll.SetTorque(torqueRollHigh);
-                torqueYaw.SetTorque(torqueYawHigh);
-                torqueTiller.SetTorque(torqueTillerMax);
-               
 
                 await Task.Run(() => axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN,
                     Properties.Settings.Default.Centered_Position_Roll,
@@ -1138,13 +1208,18 @@ namespace ACLSim
                    axisDroppedByWind
                ));
 
-                UpdateTorques();
-                UpdatePitchTorques();
+                await Task.Delay(8000);
+
             } else
             {
                 errorh.DisplayError("Cannot center axes when Prosim is not connected");
             }
-           
+
+            centeringPitch = false;
+            errorh.DisplayInfo("Reset Torque");
+            UpdateTorques();
+            UpdatePitchTorques();
+
         }
 
         private void chkAutoCenter_CheckedChanged(object sender, EventArgs e)
