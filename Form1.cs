@@ -571,7 +571,7 @@ namespace ACLSim
                             {
                                 item.valueAdjusted = Math.Round((item.Value - 90) / torqueFactorAirSpeed);
 
-                                if (additionalAirSpeedTorque != item.valueAdjusted)
+                                if (isPitchCMD == false && additionalAirSpeedTorque != item.valueAdjusted)
                                 {
                                     if (Convert.ToInt32(item.valueAdjusted) > 0)
                                     {
@@ -774,14 +774,16 @@ namespace ACLSim
 
                                     if (pos >= 525) { newVal = 7; };
                                     if (pos > 540) { newVal = 10; };
-                                    if (pos > 600) { newVal = 14; };
-                                    if (pos > 625) { newVal = 18; };
-                                    if (pos > 650) { newVal = 22; };
-                                    if (pos > 700) { newVal = 24; };
-                                    if (pos > 750) { newVal = 26; };
-                                    if (pos > 800) { newVal = 30; };
-                                    if (pos > 850) { newVal = 32; };
-                                    if (pos > 900) { newVal = 35; };
+                                    if (pos > 600) { newVal = 11; };
+                                    if (pos > 625) { newVal = 14; };
+                                    if (pos > 650) { newVal = 16; };
+                                    if (pos > 675) { newVal = 18; };
+                                    if (pos > 700) { newVal = 22; };
+                                    if (pos > 750) { newVal = 24; };
+                                    if (pos > 800) { newVal = 26; };
+                                    if (pos > 850) { newVal = 28; };
+                                    if (pos > 900) { newVal = 30; };
+                                    if (pos > 950) { newVal = 35; };
                                     if (pos > 1000) { newVal = 40; };
                                  
 
@@ -790,7 +792,9 @@ namespace ACLSim
                                     if (diff >= 2 || diff <= -2)
                                     {
                                         additionalElevatorTorque = newVal;
-                                        UpdatePitchTorques();
+                                        if (isPitchCMD == false) { 
+                                            UpdatePitchTorques();
+                                        }
                                     }
 
                                     if (isPitchCMD == true && sendDataY == true)
@@ -811,21 +815,21 @@ namespace ACLSim
                                 break;
                             }
 
-                        case DayaRefNames.WIND_SPEED:
-                            {
-                                // When winds exceed 19 knots and no Hyd power is available, the axis drop due to winds
-                                if (item.Value > 19 && !isHydAvail)
-                                    {
-                                        errorh.DisplayInfo("Winds " + Convert.ToInt32(item.Value) + ", and Hyd Off dropping axis");
-                                        axisDroppedByWind = true;
-                                        DropAxisFromWind();
-                                    }
-                                else
-                                    {
-                                        axisDroppedByWind = false;
-                                    }
-                                break;
-                            }
+                        //case DayaRefNames.WIND_SPEED:
+                        //    {
+                        //        // When winds exceed 19 knots and no Hyd power is available, the axis drop due to winds
+                        //        if (item.Value > 19 && !isHydAvail)
+                        //            {
+                        //                errorh.DisplayInfo("Winds " + Convert.ToInt32(item.Value) + ", and Hyd Off dropping axis");
+                        //                axisDroppedByWind = true;
+                        //                DropAxisFromWind();
+                        //            }
+                        //        else
+                        //            {
+                        //                axisDroppedByWind = false;
+                        //            }
+                        //        break;
+                        //    }
 
                     }
 
@@ -858,13 +862,19 @@ namespace ACLSim
                 int newAdditionalPitchTorque = 0;
                 if (isHydAvail)
                 {
-                    newAdditionalPitchTorque = 1 + additionalElevatorTorque; // + additionalAirSpeedTorque;
+                    newAdditionalPitchTorque = 1 + additionalElevatorTorque + additionalAirSpeedTorque;
                 }
-                else
+                
+                if (!isHydAvail)
                 {
                     newAdditionalPitchTorque = torquePitchHigh;
                 }
-         
+
+                if (isPitchCMD)
+                {
+                    newAdditionalPitchTorque = torquePitchHigh - 10;
+                }
+
                 torquePitch.SetTorque(newAdditionalPitchTorque);
             }
             catch (Exception ex)
