@@ -64,15 +64,17 @@ namespace ACLSim
 
         public void MoveTo(double value)
         {
-            string arduLine =  "<" + movePrefix + ", 0, " + (value + ((axisOfset) * direction)) + ">";
-            try
-            {
-                port.Write(arduLine);
-              //  errorLog.DisplayInfo("Move axis " + axisName + " to " + value);
-            }
-            catch (Exception ex)
-            {
-                errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
+            if (enabled) { 
+                try
+                {
+                    string arduLine = "<" + movePrefix + ", 0, " + (value + ((axisOfset) * direction)) + ">";
+                    port.Write(arduLine);
+                  //  errorLog.DisplayInfo("Move axis " + axisName + " to " + value);
+                }
+                catch (Exception ex)
+                {
+                    errorLog.DisplayError("Cannot write to Arduino. Axis:"  + movePrefix + " Error:" + ex.Message);
+                }
             }
         }
 
