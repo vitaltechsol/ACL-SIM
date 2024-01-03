@@ -10,22 +10,14 @@ namespace ACLSim
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
         public bool enabled = true;
+        byte driverID = 0;
 
-        public CustomControl(string port, byte driverID, bool enabled) : this(port, driverID)
+        public CustomControl(ModbusClient mbc, byte driverID, bool enabled)
         {
             this.enabled = enabled;
-        }
-        public CustomControl(string port, byte driverID)
-        {
+            this.mbc = mbc;
+            this.driverID = driverID;
             errorLog.onError += (message) => onError(message);
-
-            mbc = new ModbusClient(port)
-            {
-                Baudrate = 115200,
-                UnitIdentifier = driverID,
-                StopBits = StopBits.One,
-                Parity = Parity.None
-            };
         }
 
         // 51 - Motor running top speed
@@ -56,17 +48,13 @@ namespace ACLSim
             {
                 try
                 {
-                    mbc.Connect();
+                    mbc.UnitIdentifier = driverID;
                     int[] values = mbc.ReadHoldingRegisters(pn, 1);
                     return values[0];
                 }
                 catch (Exception ex)
                 {
                     errorLog.DisplayError("failed get value (Servo " + mbc.UnitIdentifier + ") : " + ex.Message);
-                }
-                finally
-                {
-                    mbc.Disconnect();
                 }
             }
 
@@ -84,17 +72,12 @@ namespace ACLSim
                 }
                 try
                 {
-                    mbc.Connect();
+                    mbc.UnitIdentifier = driverID;
                     mbc.WriteSingleRegister(pn, value);
                 }
                 catch (Exception ex)
                 {
-                    mbc.Disconnect();
                     errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value  + " | " + ex.Message);
-                }
-                finally
-                {
-                    mbc.Disconnect();
                 }
 
             }

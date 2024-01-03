@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using EasyModbus;
 using ProSimSDK;
 using static ACLSim.ErrorHandler;
 using Timer = System.Timers.Timer;
@@ -32,21 +33,20 @@ namespace ACLSim
         static int additionalAirSpeedTorque = 0;
         static int tillerTorqueReduction = 0;
 
-        static int additionalElevatorTorque = 0;
-
+        int pitchTorqueFromPos;
         int torqueFactorAirSpeed = 10;
         int trimFactorAileron = 1000;
         int trimFactorRudder = 1000;
-        int torquePitchLow = 25;
-        int torquePitchHigh = 55;
+        int torquePitchLow = 1;
+        int torquePitchHigh = 0;
         int torquePitchMax = 70;
         int torqueYawHigh = 40;
         int torqueYawLow = 20;
         int torqueTillerMax = 20;
         int torqueTillerMin = 0;
         int torqueTillerAddHydOff = 5;
-        int torquePithAxisFactor = 0;
         bool autoCenterOnStatart = false;
+        bool centeringPitch = false;
 
         int Centering_Speed_Pitch = 0;
         int Centering_Speed_Roll = 0;
@@ -62,7 +62,6 @@ namespace ACLSim
         int Direction_Axis_Roll;
         int Direction_Axis_Yaw;
         int Direction_Axis_Tiller;
-
 
         static SerialPort port;
         int baud = 115200;
@@ -82,35 +81,42 @@ namespace ACLSim
         static bool sendDataY = false;
         static bool sendDataZ = false;
 
-        TorqueControl torquePitch = new TorqueControl(getRS485Port(), 
+        static ModbusClient mbc = new ModbusClient(getRS485Port())
+        {
+            Baudrate = 115200,
+                StopBits = StopBits.One,
+                Parity = Parity.None
+            };
+
+        TorqueControl torquePitch = new TorqueControl(mbc,  
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID),
              Properties.Settings.Default.Enable_Pitch_ACL, 0);
 
-        TorqueControl torqueRoll = new TorqueControl(getRS485Port(),
+        TorqueControl torqueRoll = new TorqueControl(mbc,
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID),
              Properties.Settings.Default.Enable_Roll_ACL, 0);
 
-        TorqueControl torqueYaw = new TorqueControl(getRS485Port(),
+        TorqueControl torqueYaw = new TorqueControl(mbc,
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID), 
             Properties.Settings.Default.Enable_Yaw_ACL, 0);
 
-        TorqueControl torqueTiller = new TorqueControl(getRS485Port(),
+        TorqueControl torqueTiller = new TorqueControl(mbc, 
           Convert.ToByte(Properties.Settings.Default.Driver_Tiller_ID),
           Properties.Settings.Default.Enable_Tiller_ACL, Properties.Settings.Default.Torque_Tiller_Diff_Offset);
 
-        CustomControl speedPitch = new CustomControl(getRS485Port(),
+        CustomControl speedPitch = new CustomControl(mbc,
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID),
             Properties.Settings.Default.Enable_Pitch_ACL);
 
-        CustomControl speedRoll = new CustomControl(getRS485Port(),
+        CustomControl speedRoll = new CustomControl(mbc,
             Convert.ToByte(Properties.Settings.Default.Driver_Roll_ID),
            Properties.Settings.Default.Enable_Roll_ACL);
 
-        CustomControl speedYaw = new CustomControl(getRS485Port(),
+        CustomControl speedYaw = new CustomControl(mbc,
             Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
             Properties.Settings.Default.Enable_Yaw_ACL);
 
-        CustomControl speedTiller = new CustomControl(getRS485Port(),
+        CustomControl speedTiller = new CustomControl(mbc,
           Convert.ToByte(Properties.Settings.Default.Driver_Tiller_ID),
          Properties.Settings.Default.Enable_Tiller_ACL);
 
@@ -148,6 +154,7 @@ namespace ACLSim
 
         public Form1()
         {
+            mbc.Connect();
             InitializeComponent();
             errorh.onError += (msg) => ShowFormError(msg);
             torquePitch.onError += (msg) => ShowFormError(msg);
@@ -176,7 +183,7 @@ namespace ACLSim
             connection.onConnect += connection_onConnect;
             connection.onDisconnect += connection_onDisconnect;
             timerX = new Timer();
-            timerX.Interval = 100;
+            timerX.Interval = 25;
             timerX.Start();
             timerX.Elapsed += sendDataOK_X;
             timerX.AutoReset = true;
@@ -244,7 +251,6 @@ namespace ACLSim
             torquePitchLow = Properties.Settings.Default.Torque_Pitch_Low;
             torquePitchHigh = Properties.Settings.Default.Torque_Pitch_High;
             torquePitchMax = Properties.Settings.Default.Torque_Pitch_Max;
-            torquePithAxisFactor = Properties.Settings.Default.Torque_Pitch_Axis_Factor;
 
             torqueRollLow = Properties.Settings.Default.Torque_Roll_Low;
             torqueRollHigh = Properties.Settings.Default.Torque_Roll_High;
@@ -443,7 +449,7 @@ namespace ACLSim
             if (!dataRefs.ContainsKey(dataRefName))
             {
                 // Request a new DataRef from ProSim737 System with 100 msec update interval
-                DataRef dataRef = new DataRef(dataRefName, 100, connection);
+                DataRef dataRef = new DataRef(dataRefName, 20, connection);
 
                 // Register to receive updates of the value of the DataRef
                 dataRef.onDataChange += dataRef_onDataChange;
@@ -537,19 +543,6 @@ namespace ACLSim
 
                         case DayaRefNames.ELEVATOR:
                             {
-                                int newVal = ((int)(torquePithAxisFactor * item.Value));
-                                if (newVal < 0)
-                                {
-                                    newVal = newVal * -1;
-                                }
-                                double diff = (newVal - additionalElevatorTorque);
-
-                                if (diff >= 2 || diff <= -2)
-                                {
-                                    additionalElevatorTorque = newVal;
-                                    UpdatePitchTorques();
-                                }
-
                                 if (isPitchCMD == true && sendDataY == true)
                                 {
                                     double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
@@ -560,22 +553,31 @@ namespace ACLSim
                                         moveToY(yValue);
                                         sendDataY = false;
                                     }
-
                                 }
-
                                 break;
                             }
 
                         case DayaRefNames.SPEED_IAS:
                             {
-                                item.valueAdjusted = Math.Round((item.Value - 90) / torqueFactorAirSpeed);
+                                int speedVal = Convert.ToInt32((Math.Round((item.Value - 160) / torqueFactorAirSpeed)));
 
-                                if (additionalAirSpeedTorque != item.valueAdjusted)
+                                if (isPitchCMD == false)
                                 {
-                                    if (Convert.ToInt32(item.valueAdjusted) > 0)
+                                    if (speedVal > 0)
                                     {
-                                        additionalAirSpeedTorque = Convert.ToInt32(item.valueAdjusted);
-                                        UpdatePitchTorques();
+                                        additionalAirSpeedTorque = speedVal;
+                                    }
+                                    else
+                                    {
+                                        speedVal = 0;
+                                    }
+
+                                    if (additionalAirSpeedTorque != speedVal)
+                                    {
+                                        // Debug.WriteLine("additionalAirSpeedTorque " + additionalAirSpeedTorque);
+                                        item.valueAdjusted = speedVal;
+                                        additionalAirSpeedTorque = speedVal;
+                                        UpdatePitchTorques(true);
                                     }
                                 }
 
@@ -586,9 +588,7 @@ namespace ACLSim
                         case DayaRefNames.SPEED_GROUND:
                             {
                                 if (axisTiller.IsEnabled() && item.Value > 0 && item.Value < 20) {
-
-                                    // Z = ((Y - X) / 40) * speed + X
-                                    
+                                   
                                     item.valueAdjusted =  Convert.ToInt32(((((double)torqueTillerMax - (double)torqueTillerMin) / 20) * item.Value));
 
                                     if (tillerTorqueReduction != item.valueAdjusted)
@@ -617,8 +617,8 @@ namespace ACLSim
                                 } else
                                 {
                                     // This timer is used to avoid disconnecting
-                                    // inmediatly after first connecting
-                                    Debug.WriteLine("Don't allow mnual AP disc " + isRollCMD);
+                                    // immediately after first connecting
+                                    Debug.WriteLine("Don't allow manual AP disc " + isRollCMD);
                                     sendDataAPDisconnect = false;
                                     timerAPdiconnect.Start();
                                 }
@@ -630,7 +630,15 @@ namespace ACLSim
 
                         case DayaRefNames.PITCH_CMD:
                             {
+                                bool oldisPitchCMD = isPitchCMD;
+
                                 isPitchCMD = Convert.ToBoolean(dataRef.value);
+
+                                if (isPitchCMD == true && oldisPitchCMD == false)
+                                {
+                                    // turned on
+                                    torquePitch.SetTorque(torquePitchHigh);
+                                }
 
                                 if (isPitchCMD == false)
                                 {
@@ -642,13 +650,13 @@ namespace ACLSim
                                 }
                                 {
                                     // This timer is used to avoid disconnecting
-                                    // inmediatly after first connecting
+                                    // immediately after first connecting
                                     Debug.WriteLine("Don't allow mnual AP disc " + isRollCMD);
                                     sendDataAPDisconnect = false;
                                     timerAPdiconnect.Start();
                                 }
 
-                                UpdatePitchTorques();
+                                UpdatePitchTorques(false);
                                 Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
                                 break;
                             }
@@ -695,7 +703,7 @@ namespace ACLSim
                                 // move if on ground
                                 DropAxisFromWind();
                                 UpdateTorques();
-                                UpdatePitchTorques();
+                                UpdatePitchTorques(false);
 
                                 break;
                             }
@@ -718,7 +726,7 @@ namespace ACLSim
                                     {
                                         item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
-                                        errorh.DisplayInfo("A/P overriden by roll. Disconnecting: | " + diff1 + " | " + diff2 + " | value: " + value + " | Previous value: " + lastRollMoved);
+                                        errorh.DisplayInfo("A/P overridden by roll. Disconnecting: | " + diff1 + " | " + diff2 + " | value: " + value + " | Previous value: " + lastRollMoved);
                                         DisconnectAPWithTimer();                                  
                                     }
                                     lastRollMoved = value;
@@ -741,7 +749,7 @@ namespace ACLSim
                                     {
                                         item.valueAdjusted = diff1 * 1000;
                                         // Disconnect
-                                        errorh.DisplayInfo("A/P overriden by pitch. Disconnecting: | " + diff1 + " | " + diff2 + " | Value: " + value + " | Previous value: " + lastPitchMoved);
+                                        errorh.DisplayInfo("A/P overridden by pitch. Disconnecting: | " + diff1 + " | " + diff2 + " | Value: " + value + " | Previous value: " + lastPitchMoved);
                                         DisconnectAPWithTimer();
                                     }
 
@@ -749,30 +757,82 @@ namespace ACLSim
                                     lastPitchMoved = value;
                                     sendDataY = false;
 
+                                } else
+                                {
+                                    int pos = (int)(item.Value);
+                                    int newVal = (pos / 100);
+                                    int pos_min = 512;
+                                    int pos_max = 1024;
+                                    int newval_min = torquePitchLow;
+                                    int newval_max = torquePitchHigh;
+
+                                    if (newVal < 0)
+                                    {
+                                        newVal = newVal * -1;
+                                    }
+
+                                    if (pos < 512)
+                                    {
+                                        pos = 1024 - pos;
+                                    }
+
+                                    pos = Math.Max(pos_min, Math.Min(pos, pos_max));
+                                    // ap pos from the input range to the output range
+                                    double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
+                                    newVal = (int)(proportion * (newval_max - newval_min) + newval_min);
+                                  
+                                    // bring to 2 towards very center
+                                    if (pos <= 519)
+                                    {
+                                        newVal = 2;
+                                    }
+
+                                 //   double diff = (newVal - pitchTorqueFromPos);
+                                
+                                    if (newVal != pitchTorqueFromPos)
+                                    {
+                                        pitchTorqueFromPos = newVal;
+                                        if (isPitchCMD == false)
+                                        {
+                                            UpdatePitchTorques(true);
+                                        }
+                                    }
+
+                                    if (isPitchCMD == true && sendDataY == true)
+                                    {
+                                        double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
+                                        // Skip sudden jumps to 0
+                                        if (yValue != 0)
+                                        {
+                                            item.valueAdjusted = yValue;
+                                            moveToY(yValue);
+                                            sendDataY = false;
+                                        }
+
+                                    }
+
                                 }
-                               
+
                                 break;
                             }
 
-                        case DayaRefNames.WIND_SPEED:
-                            {
-                                // When winds exceed 19 knots and no Hyd power is available, the axis drop due to winds
-                                if (item.Value > 19 && !isHydAvail)
-                                    {
-                                        errorh.DisplayInfo("Winds " + Convert.ToInt32(item.Value) + ", and Hyd Off dropping axis");
-                                        axisDroppedByWind = true;
-                                        DropAxisFromWind();
-                                    }
-                                else
-                                    {
-                                        axisDroppedByWind = false;
-                                    }
-                                break;
-                            }
+                        //case DayaRefNames.WIND_SPEED:
+                        //    {
+                        //        // When winds exceed 19 knots and no Hyd power is available, the axis drop due to winds
+                        //        if (item.Value > 19 && !isHydAvail)
+                        //            {
+                        //                errorh.DisplayInfo("Winds " + Convert.ToInt32(item.Value) + ", and Hyd Off dropping axis");
+                        //                axisDroppedByWind = true;
+                        //                DropAxisFromWind();
+                        //            }
+                        //        else
+                        //            {
+                        //                axisDroppedByWind = false;
+                        //            }
+                        //        break;
+                        //    }
 
                     }
-
-
                 }
                 catch (Exception ex)
                 {
@@ -789,13 +849,40 @@ namespace ACLSim
             }
         }
 
-        private void UpdatePitchTorques()
+        private async void UpdatePitchTorques(bool async)
         {
+            if (centeringPitch)
+            {
+                return;
+            }
             try
             {
-                int torqueBase = isHydAvail ? torquePitchLow : torquePitchHigh;
-                int newAdditionalPitchTorque = torqueBase + additionalElevatorTorque + additionalAirSpeedTorque;
-                torquePitch.SetTorques(GetMaxMinPitchTorque(newAdditionalPitchTorque), GetMaxMinPitchTorque(newAdditionalPitchTorque));
+                int newAdditionalPitchTorque = 0;
+                if (isHydAvail)
+                {
+                    Debug.WriteLine("additionalElevatorTorque " + pitchTorqueFromPos);
+                    newAdditionalPitchTorque = pitchTorqueFromPos + additionalAirSpeedTorque;
+                }
+                
+                if (!isHydAvail)
+                {
+                    newAdditionalPitchTorque = torquePitchHigh;
+                }
+
+                if (isPitchCMD)
+                {
+                    newAdditionalPitchTorque = torquePitchHigh - 10;
+                }
+
+                if (async)
+                {
+                    await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
+                }
+                else
+                {
+                    torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
+                }
+
             }
             catch (Exception ex)
             {
@@ -812,27 +899,31 @@ namespace ACLSim
                 return torquePitchMax;
             }
 
-            if (torque < torquePitchLow)
+            if (torque <=0)
             {
-                return torquePitchLow;
+                return 0;
             }
 
             return torque;
         } 
 
-        private void updateTillerTorque()
+        private async void updateTillerTorque()
         {
             int torqueTillerBase = isHydAvail ? torqueTillerMax : torqueTillerMax + torqueTillerAddHydOff;
-            torqueTiller.SetTorque(torqueTillerBase - tillerTorqueReduction);
+            await Task.Run(() => torqueTiller.SetTorque(torqueTillerBase - tillerTorqueReduction));
         }
 
-        private void UpdateTorques()
+        private async void UpdateTorques()
         {
             int torqueRollBase = !isHydAvail || isRollCMD ? torqueRollHigh : torqueRollLow;
             torqueRoll.SetTorque(torqueRollBase);
 
+            // await Task.Run(() => torqueRoll.SetTorque(torqueRollBase));
+
             int torqueYawBase = isHydAvail ? torqueYawLow : torqueYawHigh;
             torqueYaw.SetTorque(torqueYawBase);
+
+            // await Task.Run(() => torqueYaw.SetTorque(torqueYawBase));
 
             updateTillerTorque();
         }
@@ -907,7 +998,7 @@ namespace ACLSim
 
         // Disconnect the AP when the wheel/Column is moved.
         // Wait two seconds before this check can happen again to 
-        // avoid inmediate second disconnection
+        // avoid immediate second disconnection
         private void DisconnectAPWithTimer()
         {
             if (sendDataAPDisconnect)
@@ -938,6 +1029,7 @@ namespace ACLSim
 
         private void btnGoTo_Click(object sender, EventArgs e)
         {
+            torquePitch.SetTorque(torquePitchHigh);
             axisRoll.MoveTo(Convert.ToDouble(txtbxRollPosition.Text));
             axisPitch.MoveTo(Convert.ToDouble(txtbxPitchPosition.Text));
             axisYaw.MoveTo(Convert.ToDouble(txtbxYawPosition.Text));
@@ -1086,7 +1178,7 @@ namespace ACLSim
         }
 
     
-        // Sef center flgiht controls bases on prosim control position
+        // Sef center flight controls bases on prosim control position
         private void btnCenterControls_Click(object sender, EventArgs e)
         {
             centerAllAxis();
@@ -1094,6 +1186,11 @@ namespace ACLSim
 
         private async void centerAllAxis()
         {
+            centeringPitch = true;
+            torquePitch.SetTorque(torquePitchHigh);
+            torqueRoll.SetTorque(torqueRollHigh);
+            torqueYaw.SetTorque(torqueYawHigh);
+            torqueTiller.SetTorque(torqueTillerMax);
 
             axisRoll.MoveToHome();
             errorh.DisplayInfo("Moved Roll to home");
@@ -1108,11 +1205,6 @@ namespace ACLSim
 
             if (connection.isConnected)
             {
-                torquePitch.SetTorque(torquePitchHigh);
-                torqueRoll.SetTorque(torqueRollHigh);
-                torqueYaw.SetTorque(torqueYawHigh);
-                torqueTiller.SetTorque(torqueTillerMax);
-               
 
                 await Task.Run(() => axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN,
                     Properties.Settings.Default.Centered_Position_Roll,
@@ -1138,13 +1230,18 @@ namespace ACLSim
                    axisDroppedByWind
                ));
 
-                UpdateTorques();
-                UpdatePitchTorques();
+                await Task.Delay(8000);
+
             } else
             {
                 errorh.DisplayError("Cannot center axes when Prosim is not connected");
             }
-           
+
+            centeringPitch = false;
+            errorh.DisplayInfo("Reset Torque");
+            UpdateTorques();
+            UpdatePitchTorques(false);
+
         }
 
         private void chkAutoCenter_CheckedChanged(object sender, EventArgs e)
