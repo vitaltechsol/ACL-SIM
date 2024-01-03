@@ -67,12 +67,17 @@ namespace ACLSim
             string arduLine =  "<" + movePrefix + ", 0, " + (value + ((axisOfset) * direction)) + ">";
             try
             {
-                port.Write(arduLine);
-              //  errorLog.DisplayInfo("Move axis " + axisName + " to " + value);
+                if (port != null) {
+                    port.Write(arduLine);
+                }
+                else
+                {
+                    errorLog.DisplayError("Arduino COM port is null " + movePrefix);
+                }
             }
             catch (Exception ex)
             {
-                errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
+                errorLog.DisplayError("Cannot connect to Arduino COM port. " + movePrefix + " " + ex.Message);
             }
         }
 

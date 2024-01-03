@@ -517,18 +517,6 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12")]
-        public int Torque_Pitch_Axis_Factor {
-            get {
-                return ((int)(this["Torque_Pitch_Axis_Factor"]));
-            }
-            set {
-                this["Torque_Pitch_Axis_Factor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int AP_Position_Pitch_Factor {
             get {
@@ -680,6 +668,18 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Torque_Tiller_Min"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("12")]
+        public int Torque_Pitch_Axis_Factor {
+            get {
+                return ((int)(this["Torque_Pitch_Axis_Factor"]));
+            }
+            set {
+                this["Torque_Pitch_Axis_Factor"] = value;
             }
         }
     }

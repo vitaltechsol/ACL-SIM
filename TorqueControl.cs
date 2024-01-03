@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace ACLSim
 {
@@ -13,28 +14,21 @@ namespace ACLSim
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
         public bool enabled = true;
+        byte driverID = 0;
 
         public int StatusTextCW { get; private set; }
         public int StatusTextCCW { get; private set; }
 
         public double torqueOffsetCW = 0;
 
-        public TorqueControl(string port, byte driverID, bool enabled, int torqueOffsetCW) : this(port, driverID)
+        public TorqueControl(ModbusClient mbc, byte driverID, bool enabled, int torqueOffsetCW) 
         {
             this.enabled = enabled;
             this.torqueOffsetCW = torqueOffsetCW * 0.01;
-        }
-        public TorqueControl(string port, byte driverID)
-        {
+            this.driverID = driverID;
+            this.mbc = mbc;
             errorLog.onError += (message) => onError(message);
 
-            mbc = new ModbusClient(port)
-            {
-                Baudrate = 115200,
-                UnitIdentifier = driverID,
-                StopBits = StopBits.One,
-                Parity = Parity.None
-            };
         }
 
         void UpdateStatusCW(int value)
@@ -63,10 +57,15 @@ namespace ACLSim
 
         public void SetTorque(int value)
         {
-            SetTorques(value, value);
+           SetTorques(value, value);
         }
 
-        public void SetTorques(int cwValue, int ccwValue)
+        public async void SetTorqueAsync(int value)
+        {
+            await Task.Run(() => SetTorques(value, value));
+        }
+
+        public async void SetTorques(int cwValue, int ccwValue)
         {
             int cwValueWithOffset = cwValue + Convert.ToInt32(torqueOffsetCW * cwValue);
             if (cwValueWithOffset < 0)
@@ -82,26 +81,22 @@ namespace ACLSim
             if (this.enabled && (StatusTextCCW != cwValueWithOffset || StatusTextCW != cwValue))
             {
 
-                try
-                {
-                    mbc.Connect();
+                try { 
+
+                    mbc.UnitIdentifier = driverID;
                     mbc.WriteSingleRegister(8, cwValueWithOffset);
                     mbc.WriteSingleRegister(9, ccwValue * -1);
                     UpdateStatusCW(cwValueWithOffset);
                     UpdateStatusCCW(ccwValue);
                     // errorLog.DisplayInfo("Update torque cwValueWithOffset: (Servo " + mbc.UnitIdentifier + ") " + cwValueWithOffset);
                     // errorLog.DisplayInfo("Update torque ccwValue: (Servo " + mbc.UnitIdentifier + ") " + ccwValue);
-                    // Debug.WriteLine("updated torques. cw: " + cwValue + "- ccw: " + ccwValue);
+                    // Debug.WriteLine("updated torques. " + driverID + " cw: " + cwValue + "- ccw: " + ccwValue);
 
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
                     errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
-                }
-                finally
-                {
-                    mbc.Disconnect();
                 }
             }
         }
@@ -119,7 +114,8 @@ namespace ACLSim
                 }
                 try
                 {
-                    mbc.Connect();
+                    mbc.UnitIdentifier = driverID;
+
                     mbc.WriteSingleRegister(8, cwValueWithOffset);
                     UpdateStatusCW(cwValueWithOffset);
                     //  Debug.WriteLine("updated torque CW " + value);
@@ -129,10 +125,7 @@ namespace ACLSim
                     Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
                     errorLog.DisplayError("Failed to update torque CW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
-                finally
-                {
-                    mbc.Disconnect();
-                }
+               
             }
         }
 
@@ -146,7 +139,7 @@ namespace ACLSim
                 }
                 try
                 {
-                    mbc.Connect();
+                    mbc.UnitIdentifier = driverID;
                     mbc.WriteSingleRegister(9, value * -1);
                     UpdateStatusCCW(value);
                     Debug.WriteLine("updated torque CCW " + value);
@@ -156,10 +149,6 @@ namespace ACLSim
                 {
                     Debug.WriteLine("ERROR: failed update torque CCW: " + ex.Message);
                     errorLog.DisplayError("Failed to update torque CCW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
-                }
-                finally
-                {
-                    mbc.Disconnect();
                 }
             }
         }
