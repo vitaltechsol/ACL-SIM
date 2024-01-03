@@ -64,20 +64,24 @@ namespace ACLSim
 
         public void MoveTo(double value)
         {
-            string arduLine =  "<" + movePrefix + ", 0, " + (value + ((axisOfset) * direction)) + ">";
-            try
+            if (enabled)
             {
-                if (port != null) {
-                    port.Write(arduLine);
-                }
-                else
+                string arduLine = "<" + movePrefix + ", 0, " + (value + ((axisOfset) * direction)) + ">";
+                try
                 {
-                    errorLog.DisplayError("Arduino COM port is null " + movePrefix);
+                    if (port != null)
+                    {
+                        port.Write(arduLine);
+                    }
+                    else
+                    {
+                        errorLog.DisplayError("Arduino COM port is null " + movePrefix);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                errorLog.DisplayError("Cannot connect to Arduino COM port. " + movePrefix + " " + ex.Message);
+                catch (Exception ex)
+                {
+                    errorLog.DisplayError("Cannot connect to Arduino COM port. " + movePrefix + " " + ex.Message);
+                }
             }
         }
 
