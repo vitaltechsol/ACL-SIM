@@ -64,6 +64,15 @@ namespace ACLSim
         {
             await Task.Run(() => SetTorques(value, value));
         }
+        public async void SetTorqueCWAsync(int value)
+        {
+            await Task.Run(() => SetTorqueCW(value));
+        }
+
+        public async void SetTorqueCCWAsync(int value)
+        {
+            await Task.Run(() => SetTorqueCCW(value));
+        }
 
         public async void SetTorques(int cwValue, int ccwValue)
         {
@@ -96,12 +105,12 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
+                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + cwValue  + " | " + ccwValue + " - " + ex.Message);
                 }
             }
         }
 
-        public void SetTorqueCW(int cwValue)
+        public async void SetTorqueCW(int cwValue)
         {
             int cwValueWithOffset = cwValue + Convert.ToInt32(torqueOffsetCW * cwValue);
     
@@ -129,7 +138,7 @@ namespace ACLSim
             }
         }
 
-        public void SetTorqueCCW(int value)
+        public async void SetTorqueCCW(int value)
         {
             if (this.enabled && StatusTextCCW != value)
             {

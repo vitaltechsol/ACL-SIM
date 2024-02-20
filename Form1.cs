@@ -45,6 +45,8 @@ namespace ACLSim
         int torqueTillerMax = 20;
         int torqueTillerMin = 0;
         int torqueTillerAddHydOff = 5;
+        int torqueStallingAdditional = 0;
+        bool isStalling = false;
         bool autoCenterOnStatart = false;
         bool centeringPitch = false;
 
@@ -262,6 +264,8 @@ namespace ACLSim
             torqueTillerMin = Properties.Settings.Default.Torque_Tiller_Min;
             torqueTillerAddHydOff = Properties.Settings.Default.Torque_Tiller_Add_Hyd_Off;
 
+            torqueStallingAdditional = Properties.Settings.Default.Torque_Stalling_Additional;
+
             trimFactorAileron = Properties.Settings.Default.TrimFactor_Aileron;
             trimFactorRudder = Properties.Settings.Default.TrimFactor_Rudder;
 
@@ -441,6 +445,7 @@ namespace ACLSim
             this.add_data_ref(DayaRefNames.TILLER_CAPT);
 
             this.add_data_ref(DayaRefNames.WIND_SPEED);
+            this.add_data_ref(DayaRefNames.IS_STALLING);
         }
 
         private void add_data_ref(string dataRefName)
@@ -661,6 +666,14 @@ namespace ACLSim
                                 break;
                             }
 
+                        case DayaRefNames.IS_STALLING:
+                            {
+                                isStalling = Convert.ToBoolean(dataRef.value);
+                                errorh.DisplayInfo("Stalling warning: " + isStalling);
+                                UpdatePitchTorques(true);
+                                break;
+                            }
+
                         case DayaRefNames.MCP_AP_DISENGAGE:
                         {
                                 bool isDisengaged = Convert.ToBoolean(dataRef.value);
@@ -860,7 +873,6 @@ namespace ACLSim
                 int newAdditionalPitchTorque = 0;
                 if (isHydAvail)
                 {
-                    Debug.WriteLine("additionalElevatorTorque " + pitchTorqueFromPos);
                     newAdditionalPitchTorque = pitchTorqueFromPos + additionalAirSpeedTorque;
                 }
                 
@@ -874,13 +886,33 @@ namespace ACLSim
                     newAdditionalPitchTorque = torquePitchHigh - 10;
                 }
 
+                if (isStalling)
+                {
+                    newAdditionalPitchTorque += torqueStallingAdditional;
+                }
+
                 if (async)
                 {
-                    await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
+                    if (isStalling)
+                    {
+                        await Task.Run(() => torquePitch.SetTorqueCCWAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque + torqueStallingAdditional)));
+                    } else
+                    {
+                        await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
+                    }
                 }
                 else
                 {
-                    torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
+
+                    if (isStalling)
+                    {
+                        torquePitch.SetTorqueCCW(GetMaxMinPitchTorque(newAdditionalPitchTorque + torqueStallingAdditional));
+                    }
+                    else
+                    {
+                        torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
+                    }
+
                 }
 
             }
@@ -1278,8 +1310,9 @@ namespace ACLSim
         public const string TRIM_ELEVATOR = "aircraft.flightControls.trim.elevator";
         public const string TRIM_AILERON = "aircraft.flightControls.trim.aileron.units";
         public const string TRIM_RUDDER = "aircraft.flightControls.trim.rudder.units";
+        public const string IS_STALLING = "system.gates.B_STICKSHAKER";
 
-        
+
         public const string AILERON_CPTN = "system.analog.A_FC_AILERON_CAPT";
         public const string ELEVATOR_CPTN = "system.analog.A_FC_ELEVATOR_CAPT";
         public const string RUDDER_CAPT = "system.analog.A_FC_RUDDER_CAPT";

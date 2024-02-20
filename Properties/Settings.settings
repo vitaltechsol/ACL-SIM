@@ -167,5 +167,8 @@
     <Setting Name="Torque_Pitch_Axis_Factor" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">12</Value>
     </Setting>
+    <Setting Name="Torque_Stalling_Additional" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
