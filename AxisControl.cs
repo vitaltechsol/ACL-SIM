@@ -159,13 +159,13 @@ namespace ACLSim
 
                     MoveTo(posOffset * direction);
 
-                    // Move on direction, if passes target move oposite directions
+                    // Move on direction, if passes target move opposite directions
                     if (axisPosition > target)
                     {
                         if (directing != "CW")
                         {
                             directing = "CW";
-                            // If direction changes, reduce the moving amount for precission
+                            // If direction changes, reduce the moving amount for precision
                             if (moveFactor > 1)
                             {
                                 moveFactor -= 1;
@@ -204,7 +204,7 @@ namespace ACLSim
                     {
                         move = false;
                         axisCentered = true;
-                        errorLog.DisplayError("Maximun reached, could not center " + axisName + " : " + posOffset);
+                        errorLog.DisplayError("Maximum reached, could not center (try reversing direction) " + axisName + " : " + posOffset);
                     }
 
                 }
@@ -218,6 +218,11 @@ namespace ACLSim
         // Pitch Speed
         public void ChangeAxisSpeed(double value)
         {
+            if (!enabled)
+            {
+                return;
+            }
+
             string arduLine = "<" + movePrefix + "_SPEED, 0, " + value + ">";
             try
             {
@@ -225,7 +230,7 @@ namespace ACLSim
             }
             catch (Exception ex)
             {
-                errorLog.DisplayError("Cannot connect to Arduino COM port. " + ex.Message);
+                errorLog.DisplayError("Cannot connect to Arduino COM port. -ChangeAxisSpeed " + ex.Message);
             }
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ACLSim
@@ -20,6 +21,10 @@ namespace ACLSim
         public int StatusTextCCW { get; private set; }
 
         public double torqueOffsetCW = 0;
+        private const int Rate = 100; // Rate in milliseconds
+        private CancellationTokenSource CancellationTokenSource;
+        public int CurrentTorque  { get; private set; } = 0;
+
 
         public TorqueControl(ModbusClient mbc, byte driverID, bool enabled, int torqueOffsetCW) 
         {
@@ -159,6 +164,31 @@ namespace ACLSim
                     Debug.WriteLine("ERROR: failed update torque CCW: " + ex.Message);
                     errorLog.DisplayError("Failed to update torque CCW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
+            }
+        }
+
+        public async void GoToTorqueTarget(int target)
+        {
+            CancellationTokenSource?.Cancel(); // Cancel previous task if any
+
+            CancellationTokenSource = new CancellationTokenSource();
+            CancellationToken cancellationToken = CancellationTokenSource.Token;
+
+
+            if (CurrentTorque == target)
+                return; // No need to change torque
+
+            int increment = target > CurrentTorque ? 1 : -1;
+
+            while (CurrentTorque != target)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                    break;
+
+                CurrentTorque += increment;
+                SetTorqueCCW(CurrentTorque);
+
+                await Task.Delay(Rate);
             }
         }
 

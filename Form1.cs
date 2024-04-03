@@ -714,7 +714,7 @@ namespace ACLSim
                                 }
 
                                 // move if on ground
-                                DropAxisFromWind();
+                                // DropAxisFromWind();
                                 UpdateTorques();
                                 UpdatePitchTorques(false);
 
