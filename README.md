@@ -1,5 +1,5 @@
 # ACL-SIM
- Active Load Control for Flight Simulator.
+ Active Control Loading for Flight Simulator.
  
  Pro-Sim and AC Servo controllers
 
@@ -11,7 +11,7 @@ Software:
 Hardware:
 - AC Servo Motors
 - Arduino Mega
-- RS232 Controller
+- RS485 Controller
  
  
 | Axis        | Feature                                         | Status   |
@@ -25,7 +25,7 @@ Hardware:
 |             | Autopilot disengage override                    | Complete |
 |             | Forces increase and decreases (Airspeed)        | Complete |
 |             | Elevator Trim                                   | Complete |
-|             | Pitch Limit (Avoid Stalling)                    | To do    |
+|             | Pitch Limit (Avoid Stalling)                    | Complete |
 |             | Center Calibration when starting the sim        | Complete |
 | Roll Axis   |                                                 |          |
 |             | Self-centering                                  | Complete |
@@ -35,7 +35,11 @@ Hardware:
 |             | Center Calibration when starting the sim        | Complete |
 | Rudder Axis |                                                 |          |
 |             | Rudders move left when hydraulics are off       | Complete |
-|             | Load change when hydraulics are available       | Complete |
+|             | Load change when hydraulics are not available   | Complete |
 |             | Rudder pedals move with rudder trim             | Complete |
-|             | Rudders don't move with hydraulics off ?        | To do    |
+|             | Center Calibration when starting the sim        | Complete |
+| Tiller      |                                                 |          |
+|             | Self-centering                                  | Complete |
+|             | Load change when hydraulics are not available   | Complete |
+|             | Load change depending on ground speed           | Complete |
 |             | Center Calibration when starting the sim        | Complete |
