@@ -642,7 +642,7 @@ namespace ACLSim
                                 if (isPitchCMD == true && oldisPitchCMD == false)
                                 {
                                     // turned on
-                                    torquePitch.SetTorque(torquePitchHigh);
+                                    torquePitch.SetToTorqueTarget(torquePitchHigh);
                                 }
 
                                 if (isPitchCMD == false)
@@ -652,16 +652,15 @@ namespace ACLSim
                                     {
                                         moveToY(0);
                                     }
-                                }
-                                {
+                               
                                     // This timer is used to avoid disconnecting
                                     // immediately after first connecting
-                                    Debug.WriteLine("Don't allow mnual AP disc " + isRollCMD);
+                                    Debug.WriteLine("Don't allow manual AP disc " + isRollCMD);
                                     sendDataAPDisconnect = false;
                                     timerAPdiconnect.Start();
+                                    UpdatePitchTorques(false);
                                 }
 
-                                UpdatePitchTorques(false);
                                 Debug.WriteLine("updated isPitchCMD " + isPitchCMD);
                                 break;
                             }
@@ -1219,10 +1218,10 @@ namespace ACLSim
         private async void centerAllAxis()
         {
             centeringPitch = true;
-            torquePitch.SetTorque(torquePitchHigh);
-            torqueRoll.SetTorque(torqueRollHigh);
-            torqueYaw.SetTorque(torqueYawHigh);
-            torqueTiller.SetTorque(torqueTillerMax);
+            torquePitch.SetToTorqueTarget(torquePitchHigh);
+            torqueRoll.SetToTorqueTarget(torqueRollHigh);
+            torqueYaw.SetToTorqueTarget(torqueYawHigh);
+            torqueTiller.SetToTorqueTarget(torqueTillerMax);
 
             axisRoll.MoveToHome();
             errorh.DisplayInfo("Moved Roll to home");

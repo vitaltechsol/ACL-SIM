@@ -21,7 +21,7 @@ namespace ACLSim
         public int StatusTextCCW { get; private set; }
 
         public double torqueOffsetCW = 0;
-        private const int Rate = 100; // Rate in milliseconds
+        private const int Rate = 50; // Rate in milliseconds (higher is slower)
         private CancellationTokenSource CancellationTokenSource;
         public int CurrentTorque  { get; private set; } = 0;
 
@@ -167,7 +167,7 @@ namespace ACLSim
             }
         }
 
-        public async void GoToTorqueTarget(int target)
+        public async void SetToTorqueTarget(int target)
         {
             CancellationTokenSource?.Cancel(); // Cancel previous task if any
 
@@ -186,7 +186,7 @@ namespace ACLSim
                     break;
 
                 CurrentTorque += increment;
-                SetTorqueCCW(CurrentTorque);
+                SetTorques(CurrentTorque, CurrentTorque);
 
                 await Task.Delay(Rate);
             }
