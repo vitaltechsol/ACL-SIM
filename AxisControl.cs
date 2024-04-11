@@ -200,7 +200,7 @@ namespace ACLSim
                         }
                     }
 
-                    if (posOffset > 35000 || posOffset < -35000)
+                    if (posOffset > 100000 || posOffset < -100000)
                     {
                         move = false;
                         axisCentered = true;
