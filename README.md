@@ -1,18 +1,21 @@
 # ACL-SIM
  Active Control Loading for Flight Simulator.
- 
- Pro-Sim and AC Servo controllers
 
-Software:
+[Download Software manual](https://docs.google.com/document/d/1KazFxLndUraUICVV142zfowjpmU_UAafAoSC2X-yo0w/edit?usp=sharing)
+
+## Software Required:
 - Prosim-AR 737
-- Flight Simulator 2020 or P3D
-- Custom ACL software control
+- Flight Simulator 2020 or P3D v4+
+- [ACL software](https://github.com/vitaltechsol/ACL-SIM/releases)
 
-Hardware:
+## Hardware Required:
 - AC Servo Motors
 - Arduino Mega
 - RS485 Controller
- 
+[Hardware installation](https://fabianb.medium.com/a-d862f927d0bf)
+
+
+## Features 
  
 | Axis        | Feature                                         | Status   |
 | ----------- | ----------------------------------------------- | -------- |
