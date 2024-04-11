@@ -17,32 +17,32 @@
 
 ## Features 
  
-| Axis        | Feature                                         | Status   |
-| ----------- | ----------------------------------------------- | -------- |
-| Pitch Axis  |                                                 |          |
-|             | Self-centering                                  | Complete |
-|             | Autopilot Follow                                | Complete |
-|             | Reposition when Hydraulics are available        | Complete |
-|             | Load change when Hydraulics are available       | Complete |
-|             | Load change when Hydraulics are Not available   | Complete |
-|             | Autopilot disengage override                    | Complete |
-|             | Forces increase and decreases (Airspeed)        | Complete |
-|             | Elevator Trim                                   | Complete |
-|             | Pitch Limit (Avoid Stalling)                    | Complete |
-|             | Center Calibration when starting the sim        | Complete |
-| Roll Axis   |                                                 |          |
-|             | Self-centering                                  | Complete |
-|             | Autopilot Follow                                | Complete |
-|             | Trim Adjustment                                 | Complete |
-|             | Autopilot disengage override                    | Complete |
-|             | Center Calibration when starting the sim        | Complete |
-| Rudder Axis |                                                 |          |
-|             | Rudders move left when hydraulics are off       | Complete |
-|             | Load change when hydraulics are not available   | Complete |
-|             | Rudder pedals move with rudder trim             | Complete |
-|             | Center Calibration when starting the sim        | Complete |
-| Tiller      |                                                 |          |
-|             | Self-centering                                  | Complete |
-|             | Load change when hydraulics are not available   | Complete |
-|             | Load change depending on ground speed           | Complete |
-|             | Center Calibration when starting the sim        | Complete |
+| Axis        | Feature                                           | Status   |
+| ----------- | ------------------------------------------------- | -------- |
+| Pitch Axis  |                                                   |          |
+|             | Self-centering                                    | Complete |
+|             | Load increases when hydraulics are not available  | Complete |
+|             | Load increases with airspeed                      | Complete |
+|             | Load changes based on aft/fwrd position (v1)      | Complete |
+|             | Fwd Load increases when approaching a stall       | Complete |
+|             | Autopilot moves control column                    | Complete |
+|             | Autopilot disengage override by moving the control| Complete |
+|             | Center calibration when starting the sim          | Complete |
+|             | More accurate Load changes based on pitch position| TODO     |
+| Roll Axis   |                                                   |          |
+|             | Self-centering                                    | Complete |
+|             | Load increased when hydraulics are not available  | Complete |
+|             | Autopilot moves control wheel                     | Complete |
+|             | Autopilot disengage override by moving the control| Complete |
+|             | Trim Adjustment moves Control wheel               | Complete |
+|             | Center calibration when starting the sim          | Complete |
+| Rudder Axis |                                                   |          |
+|             | Self-centering                                    | Complete |
+|             | Load increased when hydraulics are not available  | Complete |
+|             | Trim Adjustment moves rudders                     | Complete |
+|             | Center calibration when starting the sim          | Complete |
+| Tiller      |                                                   |          |
+|             | Self-centering                                    | Complete |
+|             | Load increases when hydraulics are not available  | Complete |
+|             | Load decreases with higher ground speed           | Complete |
+|             | Center calibration when starting the sim          | Complete |
