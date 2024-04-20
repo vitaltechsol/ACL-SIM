@@ -96,12 +96,12 @@ namespace ACLSim
             try
             {
                 port.Write(arduLine);
-                errorLog.DisplayInfo("Moving to Home. " + movePrefix);
+                errorLog.DisplayInfo("Moving to Home. " + axisName);
 
             }
             catch (Exception ex)
             {
-                errorLog.DisplayError("Cannot connect to Arduino COM port. " + movePrefix + " " + ex.Message);
+                errorLog.DisplayError("Cannot connect to Arduino COM port. " + axisName + " " + ex.Message);
             }
         }
 

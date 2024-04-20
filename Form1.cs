@@ -1208,7 +1208,7 @@ namespace ACLSim
             torqueRoll.SetTorque(torqueRollMax);
             torqueYaw.SetTorque(torqueYawHydOff);
             torqueTiller.SetTorque(torqueTillerMax);
-            torquePitch.SetToTorqueTarget(torquePitchMax);
+            torquePitch.SetTorque(torquePitchMax);
 
             axisRoll.MoveToHome();
             axisPitch.MoveToHome();
