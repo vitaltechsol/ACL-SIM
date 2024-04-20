@@ -21,10 +21,10 @@
       <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="Torque_Pitch_Hyd_Off" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">55</Value>
+      <Value Profile="(Default)">65</Value>
     </Setting>
     <Setting Name="Torque_Pitch_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">25</Value>
+      <Value Profile="(Default)">45</Value>
     </Setting>
     <Setting Name="Torque_Roll_Min" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
@@ -129,10 +129,10 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Driver_Tiller_ID" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">4</Value>
     </Setting>
     <Setting Name="Dampening_Tiller" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="Center_Calibration_Speed_Tiller" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">12</Value>
@@ -153,7 +153,7 @@
       <Value Profile="(Default)">12</Value>
     </Setting>
     <Setting Name="Torque_Stalling_Additional" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">8</Value>
+      <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="Torque_Roll_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">50</Value>

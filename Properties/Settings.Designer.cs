@@ -97,7 +97,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("55")]
+        [global::System.Configuration.DefaultSettingValueAttribute("65")]
         public int Torque_Pitch_Hyd_Off {
             get {
                 return ((int)(this["Torque_Pitch_Hyd_Off"]));
@@ -109,7 +109,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        [global::System.Configuration.DefaultSettingValueAttribute("45")]
         public int Torque_Pitch_Max {
             get {
                 return ((int)(this["Torque_Pitch_Max"]));
@@ -529,7 +529,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
         public int Driver_Tiller_ID {
             get {
                 return ((int)(this["Driver_Tiller_ID"]));
@@ -541,7 +541,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public int Dampening_Tiller {
             get {
                 return ((int)(this["Dampening_Tiller"]));
@@ -625,7 +625,7 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public int Torque_Stalling_Additional {
             get {
                 return ((int)(this["Torque_Stalling_Additional"]));
