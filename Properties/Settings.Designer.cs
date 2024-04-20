@@ -85,31 +85,31 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("25")]
-        public int Torque_Pitch_Low {
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int Torque_Pitch_Min {
             get {
-                return ((int)(this["Torque_Pitch_Low"]));
+                return ((int)(this["Torque_Pitch_Min"]));
             }
             set {
-                this["Torque_Pitch_Low"] = value;
+                this["Torque_Pitch_Min"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("55")]
-        public int Torque_Pitch_High {
+        public int Torque_Pitch_Hyd_Off {
             get {
-                return ((int)(this["Torque_Pitch_High"]));
+                return ((int)(this["Torque_Pitch_Hyd_Off"]));
             }
             set {
-                this["Torque_Pitch_High"] = value;
+                this["Torque_Pitch_Hyd_Off"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("70")]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
         public int Torque_Pitch_Max {
             get {
                 return ((int)(this["Torque_Pitch_Max"]));
@@ -122,24 +122,24 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("18")]
-        public int Torque_Roll_Low {
+        public int Torque_Roll_Min {
             get {
-                return ((int)(this["Torque_Roll_Low"]));
+                return ((int)(this["Torque_Roll_Min"]));
             }
             set {
-                this["Torque_Roll_Low"] = value;
+                this["Torque_Roll_Min"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("55")]
-        public int Torque_Roll_High {
+        public int Torque_Roll_Hyd_Off {
             get {
-                return ((int)(this["Torque_Roll_High"]));
+                return ((int)(this["Torque_Roll_Hyd_Off"]));
             }
             set {
-                this["Torque_Roll_High"] = value;
+                this["Torque_Roll_Hyd_Off"] = value;
             }
         }
         
@@ -152,18 +152,6 @@ namespace ACLSim.Properties {
             }
             set {
                 this["TrimFactor_Aileron"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("75")]
-        public int Torque_Roll_Max {
-            get {
-                return ((int)(this["Torque_Roll_Max"]));
-            }
-            set {
-                this["Torque_Roll_Max"] = value;
             }
         }
         
@@ -206,24 +194,24 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("40")]
-        public int Torque_Yaw_High {
+        public int Torque_Yaw_Hyd_off {
             get {
-                return ((int)(this["Torque_Yaw_High"]));
+                return ((int)(this["Torque_Yaw_Hyd_off"]));
             }
             set {
-                this["Torque_Yaw_High"] = value;
+                this["Torque_Yaw_Hyd_off"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int Torque_Yaw_Low {
+        public int Torque_Yaw {
             get {
-                return ((int)(this["Torque_Yaw_Low"]));
+                return ((int)(this["Torque_Yaw"]));
             }
             set {
-                this["Torque_Yaw_Low"] = value;
+                this["Torque_Yaw"] = value;
             }
         }
         
@@ -518,12 +506,12 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public int Torque_Tiller_Add_Hyd_Off {
+        public int Torque_Tiller_Hyd_Off {
             get {
-                return ((int)(this["Torque_Tiller_Add_Hyd_Off"]));
+                return ((int)(this["Torque_Tiller_Hyd_Off"]));
             }
             set {
-                this["Torque_Tiller_Add_Hyd_Off"] = value;
+                this["Torque_Tiller_Hyd_Off"] = value;
             }
         }
         
@@ -602,18 +590,6 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Centered_Position_Tiller {
-            get {
-                return ((int)(this["Centered_Position_Tiller"]));
-            }
-            set {
-                this["Centered_Position_Tiller"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int Torque_Tiller_Diff_Offset {
             get {
                 return ((int)(this["Torque_Tiller_Diff_Offset"]));
@@ -656,6 +632,18 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Torque_Stalling_Additional"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int Torque_Roll_Max {
+            get {
+                return ((int)(this["Torque_Roll_Max"]));
+            }
+            set {
+                this["Torque_Roll_Max"] = value;
             }
         }
     }

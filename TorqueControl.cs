@@ -185,7 +185,7 @@ namespace ACLSim
                     break;
 
                 CurrentTorque += increment;
-                SetTorques(CurrentTorque, CurrentTorque);
+                SetTorqueAsync(CurrentTorque);
 
                 await Task.Delay(Rate);
             }

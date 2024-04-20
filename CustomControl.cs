@@ -67,7 +67,7 @@ namespace ACLSim
             { 
                 if (value < min)
                 {
-                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value + " | Minimum is " + min);
+                    errorLog.DisplayError("failed set custom value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value + " | Minimum is " + min);
                     return;
                 }
                 try
@@ -77,7 +77,7 @@ namespace ACLSim
                 }
                 catch (Exception ex)
                 {
-                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value  + " | " + ex.Message);
+                    errorLog.DisplayError("failed set custom value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value  + " | " + ex.Message);
                 }
 
             }

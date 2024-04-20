@@ -17,26 +17,23 @@
     <Setting Name="Torque_Factor_Air_Speed" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
-    <Setting Name="Torque_Pitch_Low" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">25</Value>
+    <Setting Name="Torque_Pitch_Min" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
     </Setting>
-    <Setting Name="Torque_Pitch_High" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Pitch_Hyd_Off" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">55</Value>
     </Setting>
     <Setting Name="Torque_Pitch_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">70</Value>
+      <Value Profile="(Default)">25</Value>
     </Setting>
-    <Setting Name="Torque_Roll_Low" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Roll_Min" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">18</Value>
     </Setting>
-    <Setting Name="Torque_Roll_High" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Roll_Hyd_Off" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">55</Value>
     </Setting>
     <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
-    </Setting>
-    <Setting Name="Torque_Roll_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">75</Value>
     </Setting>
     <Setting Name="Position_Pitch_HYD_OFF_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-2000</Value>
@@ -47,10 +44,10 @@
     <Setting Name="RS485COM_Port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
-    <Setting Name="Torque_Yaw_High" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Yaw_Hyd_off" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">40</Value>
     </Setting>
-    <Setting Name="Torque_Yaw_Low" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Yaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="Position_Yaw_HYD_OFF_Max" Type="System.Int32" Scope="User">
@@ -125,7 +122,7 @@
     <Setting Name="Torque_Tiller_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
-    <Setting Name="Torque_Tiller_Add_Hyd_Off" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Tiller_Hyd_Off" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
     </Setting>
     <Setting Name="Enable_Tiller_ACL" Type="System.Boolean" Scope="User">
@@ -146,9 +143,6 @@
     <Setting Name="Centering_Speed_Tiller" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
-    <Setting Name="Centered_Position_Tiller" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="Torque_Tiller_Diff_Offset" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
@@ -160,6 +154,9 @@
     </Setting>
     <Setting Name="Torque_Stalling_Additional" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="Torque_Roll_Max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
     </Setting>
   </Settings>
 </SettingsFile>
