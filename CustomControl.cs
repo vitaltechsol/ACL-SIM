@@ -67,7 +67,7 @@ namespace ACLSim
             { 
                 if (value < min)
                 {
-                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value + " | Minimun is " + min);
+                    errorLog.DisplayError("failed set value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value + " | Minimum is " + min);
                     return;
                 }
                 try

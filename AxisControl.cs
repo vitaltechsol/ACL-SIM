@@ -128,7 +128,7 @@ namespace ACLSim
 
 
 
-        public async void CenterAxis(string refName, int additionalOffset, int moveFactor, bool axisDroppedByWind)
+        public async void CenterAxis(string refName, int moveFactor, bool axisDroppedByWind)
         {
             if (!enabled)
             {
@@ -192,7 +192,7 @@ namespace ACLSim
                     {
                         move = false;
                         errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset);
-                        axisOfset = posOffset + additionalOffset;
+                        axisOfset = posOffset;
                         axisCentered = true;
                         if (axisDroppedByWind)
                         {

@@ -33,7 +33,6 @@ namespace ACLSim
             this.driverID = driverID;
             this.mbc = mbc;
             errorLog.onError += (message) => onError(message);
-
         }
 
         void UpdateStatusCW(int value)

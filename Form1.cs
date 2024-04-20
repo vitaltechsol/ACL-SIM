@@ -86,10 +86,11 @@ namespace ACLSim
         static ModbusClient mbc = new ModbusClient(getRS485Port())
         {
             Baudrate = 115200,
-                StopBits = StopBits.One,
-                Parity = Parity.None
-            };
-
+            StopBits = StopBits.One,
+            Parity = Parity.None,
+            ConnectionTimeout = 1000
+        };
+        
         TorqueControl torquePitch = new TorqueControl(mbc,  
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID),
              Properties.Settings.Default.Enable_Pitch_ACL, 0);
@@ -156,6 +157,10 @@ namespace ACLSim
 
         public Form1()
         {
+            if (mbc.Connected)
+            {
+                mbc.Disconnect();
+            }
             mbc.Connect();
             InitializeComponent();
             errorh.onError += (msg) => ShowFormError(msg);
@@ -302,7 +307,7 @@ namespace ACLSim
             Direction_Axis_Tiller = Properties.Settings.Default.Direction_Axis_Tiller;
 
 
-            if (Properties.Settings.Default.AutoConnect && firstTime)
+            if (false && Properties.Settings.Default.AutoConnect && firstTime)
             {
                 // Values from settings
                 speedPitch.SetSpeed(Centering_Speed_Pitch);
@@ -1238,25 +1243,21 @@ namespace ACLSim
             {
 
                 await Task.Run(() => axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN,
-                    Properties.Settings.Default.Centered_Position_Roll,
                     Properties.Settings.Default.Center_Calibration_Speed_Roll,
                     axisDroppedByWind
                   ));
 
                 await Task.Run(() => axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, 
-                    Properties.Settings.Default.Centered_Position_Pitch,
                     Properties.Settings.Default.Center_Calibration_Speed_Pitch,
                     axisDroppedByWind
                 ));
 
                 await Task.Run(() => axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 
-                    Properties.Settings.Default.Centered_Position_Yaw,
                     Properties.Settings.Default.Center_Calibration_Speed_Yaw,
                     axisDroppedByWind
                 ));
 
                 await Task.Run(() => axisTiller.CenterAxis(DayaRefNames.TILLER_CAPT,
-                   Properties.Settings.Default.Centered_Position_Tiller,
                    Properties.Settings.Default.Center_Calibration_Speed_Tiller,
                    axisDroppedByWind
                ));

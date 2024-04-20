@@ -12,7 +12,7 @@ namespace ACLSim.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.6.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -428,42 +428,6 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Direction_Axis_Yaw"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Centered_Position_Pitch {
-            get {
-                return ((int)(this["Centered_Position_Pitch"]));
-            }
-            set {
-                this["Centered_Position_Pitch"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Centered_Position_Roll {
-            get {
-                return ((int)(this["Centered_Position_Roll"]));
-            }
-            set {
-                this["Centered_Position_Roll"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Centered_Position_Yaw {
-            get {
-                return ((int)(this["Centered_Position_Yaw"]));
-            }
-            set {
-                this["Centered_Position_Yaw"] = value;
             }
         }
         

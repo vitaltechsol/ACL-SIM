@@ -104,15 +104,6 @@
     <Setting Name="Direction_Axis_Yaw" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
-    <Setting Name="Centered_Position_Pitch" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="Centered_Position_Roll" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
-    <Setting Name="Centered_Position_Yaw" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
-    </Setting>
     <Setting Name="Auto_Center_On_Start" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
