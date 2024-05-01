@@ -194,12 +194,12 @@ namespace ACLSim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("40")]
-        public int Torque_Yaw_Hyd_off {
+        public int Torque_Yaw_Hyd_Off {
             get {
-                return ((int)(this["Torque_Yaw_Hyd_off"]));
+                return ((int)(this["Torque_Yaw_Hyd_Off"]));
             }
             set {
-                this["Torque_Yaw_Hyd_off"] = value;
+                this["Torque_Yaw_Hyd_Off"] = value;
             }
         }
         

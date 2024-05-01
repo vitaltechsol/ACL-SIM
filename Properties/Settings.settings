@@ -44,7 +44,7 @@
     <Setting Name="RS485COM_Port" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
-    <Setting Name="Torque_Yaw_Hyd_off" Type="System.Int32" Scope="User">
+    <Setting Name="Torque_Yaw_Hyd_Off" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">40</Value>
     </Setting>
     <Setting Name="Torque_Yaw" Type="System.Int32" Scope="User">

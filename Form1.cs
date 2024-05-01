@@ -265,7 +265,7 @@ namespace ACLSim
             torqueRollHydOff = Properties.Settings.Default.Torque_Roll_Hyd_Off;
 
             torqueYawLow = Properties.Settings.Default.Torque_Yaw;
-            torqueYawHydOff = Properties.Settings.Default.Torque_Yaw_Hyd_off;
+            torqueYawHydOff = Properties.Settings.Default.Torque_Yaw_Hyd_Off;
 
             torqueTillerMax = Properties.Settings.Default.Torque_Tiller_Max;
             torqueTillerMin = Properties.Settings.Default.Torque_Tiller_Min;
