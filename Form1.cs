@@ -15,6 +15,7 @@ using EasyModbus;
 using ProSimSDK;
 using static ACLSim.ErrorHandler;
 using Timer = System.Timers.Timer;
+using Phidget22;
 
 namespace ACLSim
 {
@@ -28,12 +29,16 @@ namespace ACLSim
 
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
+        Phidget22.Encoder encoder0 = new Phidget22.Encoder();
+
         static int torqueRollMin = 18;
         static int torqueRollMax = 30;
         static int torqueRollHydOff = 65;
         static int additionalAirSpeedTorque = 0;
         static int tillerTorqueReduction = 0;
 
+        int pitchEncPos = 0;
+        
         int pitchTorqueFromPos;
         int torqueFactorAirSpeed = 10;
         int trimFactorAileron = 1000;
@@ -158,6 +163,21 @@ namespace ACLSim
 
         public Form1()
         {
+            Phidget22.Net.AddServer("hub5000", "hub5000", 5661, "", 0);
+
+
+            encoder0.HubPort = 0;
+            encoder0.IsRemote = true;
+            encoder0.DeviceSerialNumber = 745138;
+            encoder0.IsHubPortDevice = false;
+
+
+            encoder0.PositionChange += Encoder0_PositionChange;
+
+            encoder0.Open(4000);
+            encoder0.DataInterval = 20;
+            encoder0.PositionChangeTrigger = 0;
+
             if (mbc.Connected)
             {
                 mbc.Disconnect();
@@ -227,6 +247,30 @@ namespace ACLSim
             axisTiller.SetPort(port, connection);
 
             dataRefView.Hide();
+        }
+
+
+        private async void Encoder0_PositionChange(object sender, Phidget22.Events.EncoderPositionChangeEventArgs e)
+        {
+
+            int newVal = Convert.ToInt32(encoder0.Position / 250);
+            if (newVal != pitchEncPos)
+            {
+                pitchEncPos = newVal;
+                Debug.WriteLine("Position torq: " + newVal);
+                // torquePitch.SetTorque(newVal);
+                await Task.Run(() => torquePitch.SetTorqueAsync(newVal));
+
+            }
+
+            Phidget22.Encoder evChannel = (Phidget22.Encoder)sender;
+            Debug.WriteLine("PositionChange: " + e.PositionChange);
+            Debug.WriteLine("TimeChange: " + e.TimeChange);
+            Debug.WriteLine("IndexTriggered: " + e.IndexTriggered);
+            Debug.WriteLine("Position: " + evChannel.Position);
+            Debug.WriteLine("Position1: " + encoder0.Position);
+
+            Debug.WriteLine("----------");
         }
 
         private void Form1_Shown(Object sender, EventArgs e)
@@ -891,11 +935,11 @@ namespace ACLSim
 
                 if (async)
                 {
-                    await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
+                  //  await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
                 }
                 else
                 {
-                    torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
+                 //   torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
                 }
 
             }
