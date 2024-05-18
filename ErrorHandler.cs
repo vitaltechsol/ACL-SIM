@@ -9,7 +9,9 @@ namespace ACLSim
 
         public void DisplayError(string message)
         {
-            onError(DateTime.Now.ToLongTimeString() + " | *ERROR*: " + message + "\r\n");
+            if (onError != null) {
+                onError(DateTime.Now.ToLongTimeString() + " | *ERROR*: " + message + "\r\n");
+            }
         }
 
         public void DisplayInfo(string message)

@@ -32,7 +32,11 @@ namespace ACLSim
             this.torqueOffsetCW = torqueOffsetCW * 0.01;
             this.driverID = driverID;
             this.mbc = mbc;
-            errorLog.onError += (message) => onError(message);
+            if (onError != null)
+            {
+                errorLog.onError += (message) => onError(message);
+            }
+
         }
 
         void UpdateStatusCW(int value)

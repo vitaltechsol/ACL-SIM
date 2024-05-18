@@ -163,27 +163,34 @@ namespace ACLSim
 
         public Form1()
         {
-            Phidget22.Net.AddServer("hub5000", "hub5000", 5661, "", 0);
 
-
-            encoder0.HubPort = 0;
-            encoder0.IsRemote = true;
-            encoder0.DeviceSerialNumber = 745138;
-            encoder0.IsHubPortDevice = false;
-
-
-            encoder0.PositionChange += Encoder0_PositionChange;
-
-            encoder0.Open(4000);
-            encoder0.DataInterval = 20;
-            encoder0.PositionChangeTrigger = 0;
-
-            if (mbc.Connected)
+            try
             {
-                mbc.Disconnect();
+                Phidget22.Net.AddServer("hub5000", "hub5000", 5661, "", 0);
+
+                encoder0.HubPort = 0;
+                encoder0.IsRemote = true;
+                encoder0.DeviceSerialNumber = 745138;
+                encoder0.IsHubPortDevice = false;
+
+
+                encoder0.PositionChange += Encoder0_PositionChange;
+
+                encoder0.Open(4000);
+                encoder0.DataInterval = 20;
+                encoder0.PositionChangeTrigger = 0;
             }
-            mbc.Connect();
-            InitializeComponent();
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Cannot open connection to Phidgets " + ex.Message);
+                port.Close();
+            }
+
+
+
+  
+
+         
             errorh.onError += (msg) => ShowFormError(msg);
             torquePitch.onError += (msg) => ShowFormError(msg);
             torqueRoll.onError += (msg) => ShowFormError(msg);
@@ -199,6 +206,13 @@ namespace ACLSim
             speedRoll.onError += (msg) => ShowFormError(msg);
             speedYaw.onError += (msg) => ShowFormError(msg);
             speedTiller.onError += (msg) => ShowFormError(msg);
+
+            if (mbc.Connected)
+            {
+                mbc.Disconnect();
+            }
+            mbc.Connect();
+            InitializeComponent();
 
             // Add event to update the torque status
             torquePitch.OnUpdateStatusCCW += (sender1, e1) => UpdateTorquePitchLabelBack(torquePitch.StatusTextCCW);
@@ -253,24 +267,39 @@ namespace ACLSim
         private async void Encoder0_PositionChange(object sender, Phidget22.Events.EncoderPositionChangeEventArgs e)
         {
 
+
             int newVal = Convert.ToInt32(encoder0.Position / 250);
-            if (newVal != pitchEncPos)
+            if (newVal != pitchTorqueFromPos)
             {
-                pitchEncPos = newVal;
+//                pitchEncPos = newVal;
                 Debug.WriteLine("Position torq: " + newVal);
                 // torquePitch.SetTorque(newVal);
-                await Task.Run(() => torquePitch.SetTorqueAsync(newVal));
+                if (newVal < 0)
+                {
+                    pitchTorqueFromPos = newVal * -1;
+                }
+                else
+                {
+                    pitchTorqueFromPos = newVal;
+                }
+
+                Phidget22.Encoder evChannel = (Phidget22.Encoder)sender;
+                Debug.WriteLine("newVal set torque: " + newVal);
+                Debug.WriteLine("PositionChange: " + e.PositionChange);
+                Debug.WriteLine("TimeChange: " + e.TimeChange);
+                Debug.WriteLine("IndexTriggered: " + e.IndexTriggered);
+                Debug.WriteLine("Position: " + evChannel.Position);
+                Debug.WriteLine("Position1: " + encoder0.Position);
+
+                Debug.WriteLine("----------");
+
+                UpdatePitchTorques(true);
+              //  await Task.Run(() => torqueRoll.SetTorqueAsync(newVal));
+                // await Task.Run(() => torquePitch.SetTorqueAsync(newVal));
 
             }
 
-            Phidget22.Encoder evChannel = (Phidget22.Encoder)sender;
-            Debug.WriteLine("PositionChange: " + e.PositionChange);
-            Debug.WriteLine("TimeChange: " + e.TimeChange);
-            Debug.WriteLine("IndexTriggered: " + e.IndexTriggered);
-            Debug.WriteLine("Position: " + evChannel.Position);
-            Debug.WriteLine("Position1: " + encoder0.Position);
 
-            Debug.WriteLine("----------");
         }
 
         private void Form1_Shown(Object sender, EventArgs e)
@@ -795,77 +824,81 @@ namespace ACLSim
 
                         case DayaRefNames.ELEVATOR_CPTN:
                             {
-                                if (isPitchCMD == true)
-                                {
-                                    int value = Convert.ToInt32(dataRef.value);
-                                    double diff1 = value - lastPitchMoved;
-                                    double diff2 = lastPitchMoved - value;
-                                    item.valueAdjusted = diff1;
-
-                                    // Disconnect auto pilot
-                                    if ((diff1 > AP_Disconnet_Pitch_Threshold || diff2 > AP_Disconnet_Pitch_Threshold) && lastPitchMoved != -1)
+                                if (false) 
+                                { 
+                                    if (isPitchCMD == true)
                                     {
-                                        item.valueAdjusted = diff1 * 1000;
-                                        // Disconnect
-                                        errorh.DisplayInfo("A/P overridden by pitch. Disconnecting: | " + diff1 + " | " + diff2 + " | Value: " + value + " | Previous value: " + lastPitchMoved);
-                                        DisconnectAPWithTimer();
-                                    }
+                                        int value = Convert.ToInt32(dataRef.value);
+                                        double diff1 = value - lastPitchMoved;
+                                        double diff2 = lastPitchMoved - value;
+                                        item.valueAdjusted = diff1;
 
-                                    lastPitchMoved = value;
-                                    sendDataY = false;
-
-                                } else
-                                {
-                                    int pos = (int)(item.Value);
-                                    int newVal = (pos / 100);
-                                    int pos_min = 512;
-                                    int pos_max = 1024;
-                                    int newval_min = torquePitchMin;
-                                    int newval_max = torquePitchMax;
-
-                                    if (newVal < 0)
-                                    {
-                                        newVal = newVal * -1;
-                                    }
-
-                                    if (pos < 512)
-                                    {
-                                        pos = 1024 - pos;
-                                    }
-
-                                    pos = Math.Max(pos_min, Math.Min(pos, pos_max));
-                                    // ap pos from the input range to the output range
-                                    double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
-                                    newVal = (int)(proportion * (newval_max - newval_min) + newval_min);
-                                  
-                                    // bring to 2 towards very center
-                                    if (pos <= 519)
-                                    {
-                                        newVal = 2;
-                                    }
-
-                                    if (newVal != pitchTorqueFromPos)
-                                    {
-                                        pitchTorqueFromPos = newVal;
-                                        if (isPitchCMD == false)
+                                        // Disconnect auto pilot
+                                        if ((diff1 > AP_Disconnet_Pitch_Threshold || diff2 > AP_Disconnet_Pitch_Threshold) && lastPitchMoved != -1)
                                         {
-                                            UpdatePitchTorques(true);
-                                        }
-                                    }
-
-                                    if (isPitchCMD == true && sendDataY == true)
-                                    {
-                                        double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
-                                        // Skip sudden jumps to 0
-                                        if (yValue != 0)
-                                        {
-                                            item.valueAdjusted = yValue;
-                                            moveToY(yValue);
-                                            sendDataY = false;
+                                            item.valueAdjusted = diff1 * 1000;
+                                            // Disconnect
+                                            errorh.DisplayInfo("A/P overridden by pitch. Disconnecting: | " + diff1 + " | " + diff2 + " | Value: " + value + " | Previous value: " + lastPitchMoved);
+                                            DisconnectAPWithTimer();
                                         }
 
-                                    }
+                                        lastPitchMoved = value;
+                                        sendDataY = false;
 
+                                    }
+                                    else
+                                    {
+                                        int pos = (int)(item.Value);
+                                        int newVal = (pos / 100);
+                                        int pos_min = 512;
+                                        int pos_max = 1024;
+                                        int newval_min = torquePitchMin;
+                                        int newval_max = torquePitchMax;
+
+                                        if (newVal < 0)
+                                        {
+                                            newVal = newVal * -1;
+                                        }
+
+                                        if (pos < 512)
+                                        {
+                                            pos = 1024 - pos;
+                                        }
+
+                                        pos = Math.Max(pos_min, Math.Min(pos, pos_max));
+                                        // ap pos from the input range to the output range
+                                        double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
+                                        newVal = (int)(proportion * (newval_max - newval_min) + newval_min);
+
+                                        // bring to 2 towards very center
+                                        if (pos <= 519)
+                                        {
+                                            newVal = 2;
+                                        }
+
+                                        if (newVal != pitchTorqueFromPos)
+                                        {
+                                            pitchTorqueFromPos = newVal;
+                                            if (isPitchCMD == false)
+                                            {
+                                                UpdatePitchTorques(true);
+                                            }
+                                        }
+
+                                        if (isPitchCMD == true && sendDataY == true)
+                                        {
+                                            double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
+                                            // Skip sudden jumps to 0
+                                            if (yValue != 0)
+                                            {
+                                                item.valueAdjusted = yValue;
+                                                moveToY(yValue);
+                                                sendDataY = false;
+                                            }
+
+                                        }
+
+                                    }
                                 }
 
                                 break;
@@ -935,11 +968,11 @@ namespace ACLSim
 
                 if (async)
                 {
-                  //  await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
+                    await Task.Run(() => torquePitch.SetTorqueAsync(GetMaxMinPitchTorque(newAdditionalPitchTorque)));
                 }
                 else
                 {
-                 //   torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
+                   torquePitch.SetTorque(GetMaxMinPitchTorque(newAdditionalPitchTorque));
                 }
 
             }
