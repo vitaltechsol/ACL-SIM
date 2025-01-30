@@ -633,9 +633,9 @@ namespace ACLSim
             this.lblACLSIMVersion.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.lblACLSIMVersion.Location = new System.Drawing.Point(622, 9);
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
-            this.lblACLSIMVersion.Size = new System.Drawing.Size(31, 13);
+            this.lblACLSIMVersion.Size = new System.Drawing.Size(28, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.9.0";
+            this.lblACLSIMVersion.Text = "1.10";
             // 
             // rtxtLog
             // 

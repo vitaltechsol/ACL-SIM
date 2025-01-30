@@ -128,8 +128,6 @@ namespace ACLSim
             }
         }
 
-
-
         public async void CenterAxis(string refName, int moveFactor, bool axisDroppedByWind)
         {
             if (!enabled)

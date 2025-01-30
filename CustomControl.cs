@@ -11,6 +11,7 @@ namespace ACLSim
         public event ErrorHandler.OnError onError;
         public bool enabled = true;
         byte driverID = 0;
+        int prevSpeed = 0;
 
         public CustomControl(ModbusClient mbc, byte driverID, bool enabled)
         {
@@ -23,7 +24,11 @@ namespace ACLSim
         // 51 - Motor running top speed
         public void SetSpeed(int value)
         {
-            SetValue(51, value, 1);
+            if (prevSpeed != value)
+            {
+                SetValue(51, value, 0);
+                prevSpeed = value;
+            }
         }
 
         public int GetSpeed()
@@ -74,6 +79,8 @@ namespace ACLSim
                 {
                     mbc.UnitIdentifier = driverID;
                     mbc.WriteSingleRegister(pn, value);
+                    errorLog.DisplayInfo("Set custom value (Servo " + mbc.UnitIdentifier + ") " + pn + " to: " + value);
+
                 }
                 catch (Exception ex)
                 {

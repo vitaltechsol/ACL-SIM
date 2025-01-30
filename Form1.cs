@@ -25,7 +25,7 @@ namespace ACLSim
         // Y is pitch
         // X is roll
         // Z is yaw
-
+        ErrorHandler errorh = new ErrorHandler();
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
         static int torqueRollMin = 18;
@@ -149,8 +149,6 @@ namespace ACLSim
             0,  // no hydraulic positionchange
             Properties.Settings.Default.Enable_Tiller_ACL);
 
-        ErrorHandler errorh = new ErrorHandler();
-
         int lastRollMoved = -1;
         int lastPitchMoved = -1;
         int AP_Disconnet_Roll_Threshold;
@@ -158,13 +156,20 @@ namespace ACLSim
 
         public Form1()
         {
-            if (mbc.Connected)
+
+            try
             {
-                mbc.Disconnect();
+                if (mbc.Connected)
+                {
+                    mbc.Disconnect();
+                }
+                mbc.Connect();
             }
-            mbc.Connect();
+            catch (Exception ex)
+            {
+                Debug.WriteLine("COM port error " + ex.Message);
+            }
             InitializeComponent();
-            errorh.onError += (msg) => ShowFormError(msg);
             torquePitch.onError += (msg) => ShowFormError(msg);
             torqueRoll.onError += (msg) => ShowFormError(msg);
             torqueYaw.onError += (msg) => ShowFormError(msg);
@@ -707,12 +712,14 @@ namespace ACLSim
                                     axisPitch.HydraulicPower = false;
                                     axisYaw.HydraulicPower = false;
                                     axisTiller.HydraulicPower = false;
-                                } 
+                                    speedPitch.SetSpeed(0);
+                                }
                                 else
                                 {
                                     axisPitch.HydraulicPower = true;
                                     axisYaw.HydraulicPower = true;
                                     axisTiller.HydraulicPower = true;
+                                    speedPitch.SetSpeed(Centering_Speed_Pitch);
                                 }
 
                                 // move if on ground
