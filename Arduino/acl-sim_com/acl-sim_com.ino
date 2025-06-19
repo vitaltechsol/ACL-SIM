@@ -24,6 +24,10 @@ int driverDIR2 = 11;    // DIR- pin
 int driverPUL3 = 6;    // PUL- pin
 int driverDIR3 = 7;    // DIR- pin
 
+// Tiller
+int driverPUL4 = 4;    // PUL- pin
+int driverDIR4 = 5;    // DIR- pin
+
 const int LED_PIN = 13;
 const int TQ_PIN = 12;
 const int vlt = 2;
@@ -36,6 +40,7 @@ int Zdest = 0;
 AccelStepper stepper(1, driverPUL, driverDIR); 
 AccelStepper stepper2(1, driverPUL2, driverDIR2); 
 AccelStepper stepper3(1, driverPUL3, driverDIR3); 
+AccelStepper stepper4(1, driverPUL4, driverDIR4); 
 
 int speedval = 800;
 
@@ -68,10 +73,13 @@ void setup() {
   stepper3.setMaxSpeed(8000);
   stepper3.setAcceleration(8000);
 
+  stepper4.setMaxSpeed(8000);
+  stepper4.setAcceleration(8000);
+
   stepper.moveTo(0);
   stepper2.moveTo(0);
   stepper3.moveTo(0);
-
+  stepper4.moveTo(0);
 
   Serial.begin(115200);
 }
@@ -95,7 +103,7 @@ void loop() {
   stepper.run();
   stepper2.run();
   stepper3.run();
-
+  stepper4.run();
 }
 
 
@@ -164,10 +172,20 @@ void showParsedData() {
     stepper.moveTo(floatFromPC);
   }
 
+  if (strcmp(messageFromPC, "X_POS_SPEED") == 0) {
+    stepper.setMaxSpeed(floatFromPC);
+    stepper.setAcceleration(floatFromPC);
+  }
+
   // Pitch
   if (strcmp(messageFromPC, "Y_POS") == 0) {
     Ydest = floatFromPC;
     stepper2.moveTo(floatFromPC);
+  }
+
+  if (strcmp(messageFromPC, "Y_POS_SPEED") == 0) {
+    stepper2.setMaxSpeed(floatFromPC);
+    stepper2.setAcceleration(floatFromPC);
   }
 
   // Yaw
@@ -176,9 +194,19 @@ void showParsedData() {
     stepper3.moveTo(floatFromPC);
   }
 
-  if (strcmp(messageFromPC, "PITCH_SPEED") == 0) {
-    stepper2.setMaxSpeed(floatFromPC);
-    stepper2.setAcceleration(floatFromPC);
+  if (strcmp(messageFromPC, "Z_POS_SPEED") == 0) {
+    stepper3.setMaxSpeed(floatFromPC);
+    stepper3.setAcceleration(floatFromPC);
   }
 
+  // Tiller
+  if (strcmp(messageFromPC, "Tiller_POS") == 0) {
+    Zdest = floatFromPC;
+    stepper4.moveTo(floatFromPC);
+  }
+
+  if (strcmp(messageFromPC, "Tiller_POS_SPEED") == 0) {
+    stepper4.setMaxSpeed(floatFromPC);
+    stepper4.setAcceleration(floatFromPC);
+  }
 }
