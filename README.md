@@ -27,8 +27,9 @@
 |             | Fwd Load increases when approaching a stall       | Complete |
 |             | Autopilot moves control column                    | Complete |
 |             | Autopilot disengage override by moving the control| Complete |
+|             | Clomun pitch stays fixed with hydraulics off      | Complete |
 |             | Center calibration when starting the sim          | Complete |
-|             | More accurate Load changes based on pitch position| TODO     |
+|             | More accurate Load changes based on pitch position| In Prog  |
 | Roll Axis   |                                                   |          |
 |             | Self-centering                                    | Complete |
 |             | Load increased when hydraulics are not available  | Complete |
