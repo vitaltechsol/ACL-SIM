@@ -5,7 +5,7 @@
 
 ## Software Required:
 - Prosim-AR 737
-- Flight Simulator 2020 or P3D v4+
+- Microsfot Flight Simulator 2020, 2024 or P3D v4+
 - [ACL software](https://github.com/vitaltechsol/ACL-SIM/releases)
 
 ## Hardware Required:
