@@ -61,6 +61,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -102,6 +103,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Arduino\acl-sim_com\acl-sim_com.ino" />
+    <None Include="Arduino\test-accelStepper\test-accelStepper.ino" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\DataRefTableItem.datasource" />
     <None Include="Properties\Settings.settings">

@@ -49,7 +49,8 @@ namespace ACLSim
         int torqueStallingAdditional = 0;
         bool isStalling = false;
         bool autoCenterOnStatart = false;
-        bool centeringPitch = false;
+        bool isCenteringPitch = false;
+        bool isManualPitchTorqueSet = false;
 
         int Centering_Speed_Pitch = 0;
         int Centering_Speed_Roll = 0;
@@ -89,9 +90,9 @@ namespace ACLSim
             Baudrate = 115200,
             StopBits = StopBits.One,
             Parity = Parity.None,
-            ConnectionTimeout = 1000
+            ConnectionTimeout = 4000
         };
-        
+
         TorqueControl torquePitch = new TorqueControl(mbc,  
             Convert.ToByte(Properties.Settings.Default.Driver_Pitch_ID),
              Properties.Settings.Default.Enable_Pitch_ACL, 0);
@@ -156,6 +157,13 @@ namespace ACLSim
 
         public Form1()
         {
+            //this.Shown += Form1_Shown;
+            InitializeComponent();
+        }
+
+        private void Form1_Shown(Object sender, EventArgs e)
+        {
+            errorh.onError += (msg) => ShowFormError(msg);
 
             try
             {
@@ -164,12 +172,13 @@ namespace ACLSim
                     mbc.Disconnect();
                 }
                 mbc.Connect();
+
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("COM port error " + ex.Message);
+                errorh.DisplayError("COM port error " + ex.Message);
             }
-            InitializeComponent();
+
             torquePitch.onError += (msg) => ShowFormError(msg);
             torqueRoll.onError += (msg) => ShowFormError(msg);
             torqueYaw.onError += (msg) => ShowFormError(msg);
@@ -206,7 +215,7 @@ namespace ACLSim
             timerY.Start();
             timerY.Elapsed += sendDataOK_Y;
             timerY.AutoReset = true;
-            
+
             timerZ = new Timer();
             timerZ.Interval = 100;
             timerY.Elapsed += sendDataOK_Z;
@@ -232,10 +241,7 @@ namespace ACLSim
             axisTiller.SetPort(port, connection);
 
             dataRefView.Hide();
-        }
 
-        private void Form1_Shown(Object sender, EventArgs e)
-        {
             propertyGridSettings.SelectedObject = Properties.Settings.Default;
             propertyGridSettings.BrowsableAttributes = new AttributeCollection(new UserScopedSettingAttribute());
 
@@ -419,7 +425,15 @@ namespace ACLSim
 
         void fillDataRefTable()
         {
-            fillTableWorker.RunWorkerAsync();
+            try
+            {
+                fillTableWorker.RunWorkerAsync();
+            }
+            catch (Exception ex)
+            {
+                errorh.DisplayError(ex.Message);
+            }
+            
         }
 
 
@@ -430,6 +444,12 @@ namespace ACLSim
             DataRefDescription[] descriptions = connection.getDataRefDescriptions().ToArray();
 
             DataRef dataRef = new DataRef("", 10, connection);
+           
+            //this.add_data_ref("aircraft.autoflight.PitchD");
+            //this.add_data_ref("aircraft.autoflight.PitchI");
+            //this.add_data_ref("aircraft.autoflight.PitchP");
+            //this.add_data_ref("aircraft.flightControls.input.pitch");
+            //this.add_data_ref("aircraft.flightControls.input.roll");
 
             this.add_data_ref(DayaRefNames.AILERON_LEFT);
             this.add_data_ref(DayaRefNames.AILERON_RIGHT);
@@ -456,7 +476,7 @@ namespace ACLSim
             this.add_data_ref(DayaRefNames.RUDDER_CAPT);
             this.add_data_ref(DayaRefNames.TILLER_CAPT);
 
-            this.add_data_ref(DayaRefNames.WIND_SPEED);
+            //this.add_data_ref(DayaRefNames.WIND_SPEED);
             this.add_data_ref(DayaRefNames.IS_STALLING);
         }
 
@@ -483,7 +503,7 @@ namespace ACLSim
 
       
 
-        void dataRef_onDataChange(DataRef dataRef)
+        async void dataRef_onDataChange(DataRef dataRef)
         {
             if (IsDisposed)
                 return;
@@ -701,7 +721,7 @@ namespace ACLSim
                         case DayaRefNames.HYDRAULICS_AVAILABLE:
                             {
                                 isHydAvail = Convert.ToBoolean(dataRef.value);
-                                Debug.WriteLine("updated isHydAvail " + isHydAvail);
+                                errorh.DisplayInfo("Hydraulics updated " + isHydAvail);
                                 if (lblHydPower.InvokeRequired)
                                 {
                                     lblHydPower.Invoke(new MethodInvoker(delegate { lblHydPower.Text = isHydAvail ? "On" : "Off"; }));
@@ -712,13 +732,18 @@ namespace ACLSim
                                     axisPitch.HydraulicPower = false;
                                     axisYaw.HydraulicPower = false;
                                     axisTiller.HydraulicPower = false;
-                                    speedPitch.SetSpeed(0);
+                                    if (!isCenteringPitch && !isManualPitchTorqueSet)
+                                    {
+                                        await Task.Delay(2000);
+                                        speedPitch.SetSpeed(0);
+                                    }
                                 }
                                 else
                                 {
                                     axisPitch.HydraulicPower = true;
                                     axisYaw.HydraulicPower = true;
                                     axisTiller.HydraulicPower = true;
+                                    await Task.Delay(2000);
                                     speedPitch.SetSpeed(Centering_Speed_Pitch);
                                 }
 
@@ -869,7 +894,7 @@ namespace ACLSim
 
         private async void UpdatePitchTorques(bool async)
         {
-            if (centeringPitch)
+            if (isCenteringPitch || isManualPitchTorqueSet)
             {
                 return;
             }
@@ -1079,6 +1104,7 @@ namespace ACLSim
 
             if (txbPitchTorque.Text != "")
             {
+                isManualPitchTorqueSet = true;
                 torquePitch.SetTorque(Int32.Parse(txbPitchTorque.Text));
             }
 
@@ -1095,6 +1121,7 @@ namespace ACLSim
 
         private void btnTorqueDefault_Click(object sender, EventArgs e)
         {
+            isManualPitchTorqueSet = false;
             torqueRoll.SetTorque(torqueRollMin);
             torquePitch.SetTorque(torquePitchMin);
             torqueYaw.SetTorque(torqueYawLow);
@@ -1206,56 +1233,73 @@ namespace ACLSim
         // Sef center flight controls bases on prosim control position
         private void btnCenterControls_Click(object sender, EventArgs e)
         {
+            errorh.DisplayInfo("Center all axis from command");
             centerAllAxis();
         }
 
         private async void centerAllAxis()
         {
-            centeringPitch = true;
+            isCenteringPitch = true;
+            speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
             torqueRoll.SetTorque(torqueRollMax);
             torqueYaw.SetTorque(torqueYawHydOff);
             torqueTiller.SetTorque(torqueTillerMax);
             torquePitch.SetTorque(torquePitchMax);
 
-            axisRoll.MoveToHome();
-            axisPitch.MoveToHome();
-            axisYaw.MoveToHome();
-            axisTiller.MoveToHome();
+            var taskHomeRoll = axisRoll.MoveToHome();
+            var taskHomePitch = axisPitch.MoveToHome();
+            var taskHomeYaw = axisYaw.MoveToHome();
+            var taskHomeTiller = axisTiller.MoveToHome();
+            await Task.WhenAll(taskHomeRoll, taskHomePitch, taskHomeYaw, taskHomeTiller);
 
             await Task.Delay(4000);
 
             if (connection.isConnected)
             {
+                var taskPitch = Task.Run(() => axisPitch.CenterAxis(
+                     DayaRefNames.ELEVATOR_CPTN,
+                     Properties.Settings.Default.Center_Calibration_Speed_Pitch,
+                     axisDroppedByWind
+                 ));
 
-                await Task.Run(() => axisRoll.CenterAxis(DayaRefNames.AILERON_CPTN,
-                    Properties.Settings.Default.Center_Calibration_Speed_Roll,
-                    axisDroppedByWind
-                  ));
+                var taskRoll = Task.Run(() => axisRoll.CenterAxis(
+                     DayaRefNames.AILERON_CPTN,
+                     Properties.Settings.Default.Center_Calibration_Speed_Roll,
+                     axisDroppedByWind
+                 ));
 
-                await Task.Run(() => axisPitch.CenterAxis(DayaRefNames.ELEVATOR_CPTN, 
-                    Properties.Settings.Default.Center_Calibration_Speed_Pitch,
-                    axisDroppedByWind
-                ));
-
-                await Task.Run(() => axisYaw.CenterAxis(DayaRefNames.RUDDER_CAPT, 
+                var taskYaw = Task.Run(() => axisYaw.CenterAxis(
+                    DayaRefNames.RUDDER_CAPT,
                     Properties.Settings.Default.Center_Calibration_Speed_Yaw,
                     axisDroppedByWind
                 ));
 
-                await Task.Run(() => axisTiller.CenterAxis(DayaRefNames.TILLER_CAPT,
-                   Properties.Settings.Default.Center_Calibration_Speed_Tiller,
-                   axisDroppedByWind
-               ));
+                var taskTiller = Task.Run(() => axisTiller.CenterAxis(
+                    DayaRefNames.TILLER_CAPT,
+                    Properties.Settings.Default.Center_Calibration_Speed_Tiller,
+                    axisDroppedByWind
+                ));
 
-                await Task.Delay(8000);
+                errorh.DisplayInfo("Starting centering");
+
+                // Await all at once
+                await Task.WhenAll(taskPitch, taskRoll,taskYaw, taskTiller);
+                
+                errorh.DisplayInfo("Finished centering");
+
 
             } else
             {
                 errorh.DisplayError("Cannot center axes when Prosim is not connected");
             }
 
-            centeringPitch = false;
+            isCenteringPitch = false;
             errorh.DisplayInfo("Reset Torque");
+            if (!isHydAvail)
+            {
+                errorh.DisplayInfo("Reset Pitch Centering Speed to 1");
+                speedPitch.SetSpeed(0);
+            }
             UpdateTorques();
             UpdatePitchTorques(false);
 

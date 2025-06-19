@@ -95,7 +95,10 @@ namespace ACLSim
             {
 
                 try { 
-
+                    if (!mbc.Connected)
+                    {
+                        mbc.Connect();
+                    }
                     mbc.UnitIdentifier = driverID;
                     mbc.WriteSingleRegister(8, cwValueWithOffset);
                     mbc.WriteSingleRegister(9, ccwValue * -1);
@@ -109,7 +112,8 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + cwValue  + " | " + ccwValue + " - " + ex.Message);
+                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + cwValue  + " | " + cwValueWithOffset + " - " + ex.Message);
+                    mbc.Disconnect();
                 }
             }
         }

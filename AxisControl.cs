@@ -12,6 +12,7 @@ namespace ACLSim
 {
     class AxisControl
     {
+
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
         bool enabled;
@@ -80,12 +81,12 @@ namespace ACLSim
                 }
                 catch (Exception ex)
                 {
-                    errorLog.DisplayError("Cannot connect to Arduino COM port. " + movePrefix + " " + ex.Message);
+                    errorLog.DisplayError("MoveTo: Cannot connect to Arduino COM port. " + this.port.PortName + " sending: " + movePrefix + " " + ex.Message);
                 }
             }
         }
 
-        public void MoveToHome()
+        public async Task MoveToHome()
         {
             if (!enabled)
             {
@@ -101,8 +102,11 @@ namespace ACLSim
             }
             catch (Exception ex)
             {
-                errorLog.DisplayError("Cannot connect to Arduino COM port. " + axisName + " " + ex.Message);
+                errorLog.DisplayError("MoveToHome: Cannot connect to Arduino COM port. " + axisName + " " + ex.Message);
             }
+
+            await Task.Delay(4000);
+
         }
 
         public void MoveToHydPos(bool axisDroppedByWind)
@@ -128,13 +132,15 @@ namespace ACLSim
             }
         }
 
-        public async void CenterAxis(string refName, int moveFactor, bool axisDroppedByWind)
+        public async Task CenterAxis(string refName, int moveFactor, bool axisDroppedByWind)
         {
             if (!enabled)
             {
                 axisCentered = true;
                 return;
             }
+
+            var stopwatch = Stopwatch.StartNew(); // Start timing
 
             axisOfset = 0;
             int posOffset = 0;
@@ -144,74 +150,88 @@ namespace ACLSim
             int target = 512;
             errorLog.DisplayInfo("Center calibration started " + axisName);
 
-            try
+            using (CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(20)))
             {
+                CancellationToken token = cts.Token;
 
-                while (move)
+                try
                 {
-                    axisPosition = int.Parse(connection.ReadDataRef(refName).ToString());
 
-                    // errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
-                    // delay for servo to move
-                    await Task.Delay(100);
-
-                    //errorLog.DisplayInfo("posOffset " + posOffset);
-
-                    MoveTo(posOffset * direction);
-
-                    // Move on direction, if passes target move opposite directions
-                    if (axisPosition > target)
+                    while (move)
                     {
-                        if (directing != "CW")
+                        token.ThrowIfCancellationRequested();
+
+                        axisPosition = int.Parse(connection.ReadDataRef(refName).ToString());
+
+                        // errorLog.DisplayInfo("axisPosition " + movePrefix + " " + axisPosition);
+                        // delay for servo to move
+                        await Task.Delay(100);
+
+                        //errorLog.DisplayInfo("posOffset " + posOffset);
+
+                        MoveTo(posOffset * direction);
+
+                        // Move on direction, if passes target move opposite directions
+                        if (axisPosition > target)
                         {
-                            directing = "CW";
-                            // If direction changes, reduce the moving amount for precision
-                            if (moveFactor > 1)
+                            if (directing != "CW")
                             {
-                                moveFactor -= 1;
-                            }
+                                directing = "CW";
+                                // If direction changes, reduce the moving amount for precision
+                                if (moveFactor > 1)
+                                {
+                                    moveFactor -= 1;
+                                }
 
+                            }
+                            posOffset -= moveFactor;
                         }
-                        posOffset -= moveFactor;
-                    }
-                    else
-                    {
-                        if (directing != "CCW")
+                        else
                         {
-                            directing = "CCW";
-                            if (moveFactor > 1)
+                            if (directing != "CCW")
                             {
-                                moveFactor -= 1;
+                                directing = "CCW";
+                                if (moveFactor > 1)
+                                {
+                                    moveFactor -= 1;
+                                }
+
                             }
-
+                            posOffset += moveFactor;
                         }
-                        posOffset += moveFactor;
-                    }
 
-                    if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
-                    {
-                        move = false;
-                        errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset);
-                        axisOfset = posOffset;
-                        axisCentered = true;
-                        if (axisDroppedByWind)
+                        if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
                         {
-                            MoveToHydPos(axisDroppedByWind);
+                            move = false;
+                            errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset + " for " 
+                                    + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
+                            axisOfset = posOffset;
+                            axisCentered = true;
+                            if (axisDroppedByWind)
+                            {
+                                MoveToHydPos(axisDroppedByWind);
+                            }
                         }
-                    }
 
-                    if (posOffset > 100000 || posOffset < -100000)
-                    {
-                        move = false;
-                        axisCentered = true;
-                        errorLog.DisplayError("Maximum reached, could not center (try reversing direction) " + axisName + " : " + posOffset);
-                    }
+                        if (posOffset > 100000 || posOffset < -100000)
+                        {
+                            move = false;
+                            axisCentered = true;
+                            errorLog.DisplayError("Maximum reached, could not center (try reversing direction) " + axisName + " : " + posOffset);
+                        }
 
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                errorLog.DisplayError("Cannot center calibrate controls." + ex.Message);
+                catch (OperationCanceledException)
+                {
+                    axisCentered = true;
+                    errorLog.DisplayError("Center calibration timed out for " + axisName + ": " + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
+                }
+                catch (Exception ex)
+                {
+                    axisCentered = true;
+                    errorLog.DisplayError("Cannot center calibrate controls." + ex.Message + ": " + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
+                }
             }
         }
 
