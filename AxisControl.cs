@@ -23,9 +23,22 @@ namespace ACLSim
         int axisOfset = 0;
         int hydOffPosition = 0;
         bool axisCentered = false;
+        public bool isCentering { get; set; } = false;
+        public bool isTrimming { get; set; } = false;
         bool hydraulicPower = false;
 
         int direction;
+
+        private CancellationTokenSource trimCancelToken;
+        private Task trimTask;
+        private double currentPosition = 0;
+        private const int TrimDelayMs = 5; // 20ms = ~50 updates/sec
+                                           //private const double StepSize = 5.0;
+        private const double StepSize = 50.0;
+        private DateTime lastTrimTime;
+        private Timer torqueUpdateTimer;
+        private Action onTrimSettled; // callback set by main form
+        private const int TrimSettleTimeoutMs = 500;
 
         public AxisControl(string movePrefix, string axisName, int direction, int hydOffPosition, bool enabled)
         {
@@ -73,6 +86,7 @@ namespace ACLSim
                     if (port != null)
                     {
                         port.Write(arduLine);
+                        // errorLog.DisplayInfo($"Move {movePrefix} to {value} with offset {axisOfset}");
                     }
                     else
                     {
@@ -203,8 +217,7 @@ namespace ACLSim
                         if (axisPosition == target || axisPosition == target + 1 || axisPosition == target - 1)
                         {
                             move = false;
-                            errorLog.DisplayInfo("Center calibration completed " + axisName + ":" + posOffset + " for " 
-                                    + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
+                            errorLog.DisplayInfo($"Center calibration completed {axisName}: {posOffset} for {stopwatch.Elapsed.TotalSeconds.ToString("F2")} seconds. Target {target}, position: {axisPosition}");
                             axisOfset = posOffset;
                             axisCentered = true;
                             if (axisDroppedByWind)
@@ -235,6 +248,109 @@ namespace ACLSim
             }
         }
 
+        //public async Task TrimToPositionAsync(double targetPosition)
+        //{
+        //    // Cancel previous trim
+        //    trimCancelToken?.Cancel();
+
+        //    trimCancelToken = new CancellationTokenSource();
+        //    var token = trimCancelToken.Token;
+
+        //    isTrimming = true;
+
+        //    trimTask = Task.Run(async () =>
+        //    {
+        //        try
+        //        {
+        //            while (Math.Abs(currentPosition - targetPosition) > StepSize)
+        //            {
+        //                token.ThrowIfCancellationRequested();
+
+        //                double direction = Math.Sign(targetPosition - currentPosition);
+        //                currentPosition += direction * StepSize;
+        //                MoveTo(currentPosition);
+
+        //                await Task.Delay(TrimDelayMs, token);
+        //            }
+
+        //            // Final adjustment to target
+        //            MoveTo(targetPosition);
+        //            currentPosition = targetPosition;
+        //        }
+        //        catch (OperationCanceledException)
+        //        {
+        //            // Gracefully exit
+        //        }
+        //        finally
+        //        {
+        //            isTrimming = false;
+        //        }
+        //    });
+        //}
+
+
+        public async Task TrimToPositionAsync(double targetPosition)
+        {
+
+            lastTrimTime = DateTime.UtcNow;
+            ResetTorqueTimer(); // restart debounce timer
+
+            // Cancel any existing trimming task
+            trimCancelToken?.Cancel();
+
+            trimCancelToken = new CancellationTokenSource();
+            var token = trimCancelToken.Token;
+
+            isTrimming = true;
+
+            trimTask = Task.Run(async () =>
+            {
+                try
+                {
+                    while (Math.Abs(currentPosition - targetPosition) > StepSize)
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        double direction = Math.Sign(targetPosition - currentPosition);
+                        currentPosition += direction * StepSize;
+                        MoveTo(currentPosition);
+
+                        await Task.Delay(TrimDelayMs, token);
+                    }
+
+                    // Final move to target
+                    currentPosition = targetPosition;
+                    MoveTo(currentPosition);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Trimming interrupted gracefully
+                }
+                finally
+                {
+                    isTrimming = false;
+                }
+            });
+        }
+
+        private void ResetTorqueTimer()
+        {
+            torqueUpdateTimer?.Dispose();
+            torqueUpdateTimer = new Timer(state =>
+            {
+                if (DateTime.UtcNow - lastTrimTime >= TimeSpan.FromMilliseconds(TrimSettleTimeoutMs))
+                {
+                    onTrimSettled?.Invoke();
+                }
+            }, null, TrimSettleTimeoutMs, Timeout.Infinite);
+        }
+
+        public void SetOnTrimSettled(Action callback)
+        {
+            onTrimSettled = callback;
+        }
+
+
         // Pitch Speed
         public void ChangeAxisSpeed(double value)
         {
@@ -247,6 +363,7 @@ namespace ACLSim
             try
             {
                 port.Write(arduLine);
+               // errorLog.DisplayInfo("ChangeAxisSpeed " + axisName + ": " + value);
             }
             catch (Exception ex)
             {

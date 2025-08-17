@@ -12,7 +12,7 @@ namespace ACLSim.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -205,13 +205,13 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int Torque_Yaw {
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int Torque_Yaw_Min {
             get {
-                return ((int)(this["Torque_Yaw"]));
+                return ((int)(this["Torque_Yaw_Min"]));
             }
             set {
-                this["Torque_Yaw"] = value;
+                this["Torque_Yaw_Min"] = value;
             }
         }
         
@@ -644,6 +644,66 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Torque_Roll_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("192.168.1.254")]
+        public string RS485_Pitch {
+            get {
+                return ((string)(this["RS485_Pitch"]));
+            }
+            set {
+                this["RS485_Pitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int Torque_Yaw_Max {
+            get {
+                return ((int)(this["Torque_Yaw_Max"]));
+            }
+            set {
+                this["Torque_Yaw_Max"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RS485_Roll {
+            get {
+                return ((string)(this["RS485_Roll"]));
+            }
+            set {
+                this["RS485_Roll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RS485_Yaw {
+            get {
+                return ((string)(this["RS485_Yaw"]));
+            }
+            set {
+                this["RS485_Yaw"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RS485_Tiller {
+            get {
+                return ((string)(this["RS485_Tiller"]));
+            }
+            set {
+                this["RS485_Tiller"] = value;
             }
         }
     }

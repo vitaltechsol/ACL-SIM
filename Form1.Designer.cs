@@ -97,6 +97,8 @@ namespace ACLSim
             this.lblTorqueRollAft = new System.Windows.Forms.Label();
             this.lblTorqueRollFwd = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.lblTorqueYawFwd = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -635,7 +637,7 @@ namespace ACLSim
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
             this.lblACLSIMVersion.Size = new System.Drawing.Size(37, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.10.1";
+            this.lblACLSIMVersion.Text = "1.11.0";
             // 
             // rtxtLog
             // 
@@ -691,7 +693,7 @@ namespace ACLSim
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
-            this.label11.Location = new System.Drawing.Point(383, 109);
+            this.label11.Location = new System.Drawing.Point(158, 147);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(84, 13);
             this.label11.TabIndex = 27;
@@ -704,7 +706,7 @@ namespace ACLSim
             this.lblHydPower.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.lblHydPower.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHydPower.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
-            this.lblHydPower.Location = new System.Drawing.Point(474, 106);
+            this.lblHydPower.Location = new System.Drawing.Point(249, 144);
             this.lblHydPower.Name = "lblHydPower";
             this.lblHydPower.Size = new System.Drawing.Size(18, 18);
             this.lblHydPower.TabIndex = 28;
@@ -745,12 +747,37 @@ namespace ACLSim
             this.label8.TabIndex = 31;
             this.label8.Text = "Roll";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.BackColor = System.Drawing.Color.Transparent;
+            this.label13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
+            this.label13.Location = new System.Drawing.Point(382, 148);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(28, 13);
+            this.label13.TabIndex = 34;
+            this.label13.Text = "Yaw";
+            // 
+            // lblTorqueYawFwd
+            // 
+            this.lblTorqueYawFwd.AutoSize = true;
+            this.lblTorqueYawFwd.BackColor = System.Drawing.Color.Transparent;
+            this.lblTorqueYawFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorqueYawFwd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
+            this.lblTorqueYawFwd.Location = new System.Drawing.Point(378, 109);
+            this.lblTorqueYawFwd.Name = "lblTorqueYawFwd";
+            this.lblTorqueYawFwd.Size = new System.Drawing.Size(36, 39);
+            this.lblTorqueYawFwd.TabIndex = 32;
+            this.lblTorqueYawFwd.Text = "0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(673, 636);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.lblTorqueYawFwd);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.lblTorqueRollAft);
             this.Controls.Add(this.lblTorqueRollFwd);
@@ -859,6 +886,8 @@ namespace ACLSim
         private System.Windows.Forms.Label lblTorqueRollAft;
         private System.Windows.Forms.Label lblTorqueRollFwd;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label lblTorqueYawFwd;
     }
 }
 

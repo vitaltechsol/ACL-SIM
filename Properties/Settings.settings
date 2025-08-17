@@ -47,8 +47,8 @@
     <Setting Name="Torque_Yaw_Hyd_Off" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">40</Value>
     </Setting>
-    <Setting Name="Torque_Yaw" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">20</Value>
+    <Setting Name="Torque_Yaw_Min" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Position_Yaw_HYD_OFF_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">-1000</Value>
@@ -157,6 +157,21 @@
     </Setting>
     <Setting Name="Torque_Roll_Max" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="RS485_Pitch" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.1.254</Value>
+    </Setting>
+    <Setting Name="Torque_Yaw_Max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="RS485_Roll" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RS485_Yaw" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RS485_Tiller" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

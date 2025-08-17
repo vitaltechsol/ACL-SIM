@@ -16,6 +16,7 @@ namespace ACLSim
         public event ErrorHandler.OnError onError;
         public bool enabled = true;
         byte driverID = 0;
+        public bool isManuallySet { get; set; }
 
         public int StatusTextCW { get; private set; }
         public int StatusTextCCW { get; private set; }
@@ -25,6 +26,7 @@ namespace ACLSim
         private CancellationTokenSource CancellationTokenSource;
         public int CurrentTorque  { get; private set; } = 0;
 
+        private int lastValue = 0;
 
         public TorqueControl(ModbusClient mbc, byte driverID, bool enabled, int torqueOffsetCW) 
         {
@@ -61,12 +63,21 @@ namespace ACLSim
 
         public void SetTorque(int value)
         {
-           SetTorques(value, value);
+            if (lastValue != value )
+            {
+                lastValue = value;
+                SetTorques(value, value);
+            }
+           
         }
 
         public async void SetTorqueAsync(int value)
         {
-            await Task.Run(() => SetTorques(value, value));
+            if (lastValue != value)
+            {
+                lastValue = value;
+                await Task.Run(() => SetTorques(value, value));
+            }
         }
         public async void SetTorqueCWAsync(int value)
         {
