@@ -238,7 +238,8 @@ namespace ACLSim
                 catch (OperationCanceledException)
                 {
                     axisCentered = true;
-                    errorLog.DisplayError("Center calibration timed out for " + axisName + ": " + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
+                    errorLog.DisplayError($"Center calibration timed out for {axisName}: " + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
+                    errorLog.DisplayError($"Could not center (try reversing direction or increasing Center_Callibration_Speed_{axisName}");
                 }
                 catch (Exception ex)
                 {

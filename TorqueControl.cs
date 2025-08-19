@@ -17,8 +17,15 @@ namespace ACLSim
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
         public bool enabled = true;
-        //byte driverID = 0;
-        public bool isManuallySet { get; set; }
+        public bool isManuallySet { get; }
+
+        public int MinTorque { get; set; }
+        public int MaxTorque { get; set; }
+        public int HydOffTorque { get; set; }
+
+        public int AdditionalTorque { get; set; } = 0;
+
+        public bool HasHydraulicPower { get; set; } = true;
 
         public int StatusTextCW { get; private set; }
         public int StatusTextCCW { get; private set; }
@@ -26,13 +33,13 @@ namespace ACLSim
         public double torqueOffsetCW = 0;
         private const int Rate = 50; // Rate in milliseconds (higher is slower)
         private CancellationTokenSource CancellationTokenSource;
-        public int CurrentTorque  { get; private set; } = 0;
+        public int CurrentTorque { get; private set; } = 0;
 
         private int lastValue = 0;
 
 
         private readonly byte driverID;
-        private readonly int addr;
+        private readonly int encoderPn;
         private CancellationTokenSource _cts;
         private Task _loopTask;
         private volatile bool _resetHomeRequested;
@@ -45,14 +52,14 @@ namespace ACLSim
         private EncoderTorqueTracker _tracker;
 
 
-        public TorqueControl(ModbusClient mbc, byte driverID, bool enabled, int torqueOffsetCW) 
+        public TorqueControl(ModbusClient mbc, byte driverID, bool enabled, int torqueOffsetCW)
         {
             this.enabled = enabled;
             this.torqueOffsetCW = torqueOffsetCW * 0.01;
             this.driverID = driverID;
             this.mbc = mbc;
             errorLog.onError += (message) => onError(message);
-            this.addr = 387;
+            this.encoderPn = 387;
         }
 
         void UpdateStatusCW(int value)
@@ -81,12 +88,12 @@ namespace ACLSim
 
         public void SetTorque(int value)
         {
-            if (lastValue != value )
+            if (lastValue != value)
             {
                 lastValue = value;
                 SetTorques(value, value);
             }
-           
+
         }
 
         public async Task SetTorqueAsync(int value)
@@ -123,7 +130,7 @@ namespace ACLSim
             if (this.enabled && (StatusTextCCW != cwValueWithOffset || StatusTextCW != cwValue))
             {
 
-                try { 
+                try {
                     if (!mbc.Connected)
                     {
                         mbc.Connect();
@@ -141,7 +148,7 @@ namespace ACLSim
                 catch (Exception ex)
                 {
                     Debug.WriteLine("ERROR: failed update torques " + ex.Message);
-                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + cwValue  + " | " + cwValueWithOffset + " - " + ex.Message);
+                    errorLog.DisplayError("Failed to update torques: (Servo " + mbc.UnitIdentifier + ") " + cwValue + " | " + cwValueWithOffset + " - " + ex.Message);
                     mbc.Disconnect();
                 }
             }
@@ -150,7 +157,7 @@ namespace ACLSim
         public async void SetTorqueCW(int cwValue)
         {
             int cwValueWithOffset = cwValue + Convert.ToInt32(torqueOffsetCW * cwValue);
-    
+
 
             if (this.enabled && StatusTextCW != cwValueWithOffset)
             {
@@ -171,7 +178,7 @@ namespace ACLSim
                     Debug.WriteLine("ERROR: failed update torque CW " + ex.Message);
                     errorLog.DisplayError("Failed to update torque CW: (Servo " + mbc.UnitIdentifier + ") " + ex.Message);
                 }
-               
+
             }
         }
 
@@ -199,31 +206,6 @@ namespace ACLSim
             }
         }
 
-        public async void SetToTorqueTarget(int target)
-        {
-            CancellationTokenSource?.Cancel(); // Cancel previous task if any
-
-            CancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = CancellationTokenSource.Token;
-
-
-            if (CurrentTorque == target)
-                return; // No need to change torque
-
-            int increment = target > CurrentTorque ? 1 : -1;
-
-            while (CurrentTorque != target)
-            {
-                if (cancellationToken.IsCancellationRequested)
-                    break;
-
-                CurrentTorque += increment;
-                SetTorqueAsync(CurrentTorque);
-
-                await Task.Delay(Rate);
-            }
-        }
-
         public bool IsEnabled()
         {
             return this.enabled;
@@ -232,9 +214,9 @@ namespace ACLSim
 
         static int GetActualPos(ModbusClient mbc)
         {
-            try { 
-            int[] regs = mbc.ReadHoldingRegisters(0x1002, 2);
-            return (short)regs[0] << 16 | (ushort)regs[1];
+            try {
+                int[] regs = mbc.ReadHoldingRegisters(0x1002, 2);
+                return (short)regs[0] << 16 | (ushort)regs[1];
             }
             catch (Exception ex)
             {
@@ -276,11 +258,11 @@ namespace ACLSim
             390, 391
         };
 
-        //    {
-        //        369, 370, 371, 372, 379,
-        //    383, 384, 385, 386, 387,
-        //    390, 391, 407, 410
-        //};
+            //    {
+            //        369, 370, 371, 372, 379,
+            //    383, 384, 385, 386, 387,
+            //    390, 391, 407, 410
+            //};
             Console.WriteLine("Monitoring input registers... Press Ctrl+C to stop.\n");
 
             while (true)
@@ -301,8 +283,8 @@ namespace ACLSim
                     Console.WriteLine("Error: " + ex.Message);
                 }
             }
-        
-        
+
+
 
 
             // Many libraries use 0-based addressing for Modbus tables.
@@ -353,13 +335,13 @@ namespace ACLSim
         /// <summary>
         /// Starts the background loop. If already running, throws unless you stop first.
         /// </summary>
-        public void StartDynamicTorque(int minTorque, int maxTorque)
+        public void StartDynamicTorque()
         {
             if (_loopTask != null && !_loopTask.IsCompleted)
                 throw new InvalidOperationException("Loop already running. Call StopAsync() first.");
 
             _cts = new CancellationTokenSource();
-            _loopTask = RunLoopAsync(minTorque, maxTorque, _cts.Token);
+            _loopTask = RunLoopAsync(MinTorque, MaxTorque, _cts.Token);
         }
 
         /// <summary>
@@ -411,7 +393,7 @@ namespace ACLSim
             // Create tracker and set home from first read
             _tracker = new EncoderTorqueTracker(10000, minTorque, maxTorque);
 
-            int firstRead = SafeRead(addr);
+            int firstRead = SafeRead(encoderPn);
             _tracker.SetHome(firstRead);
             _prevEncoderValue = firstRead;
 
@@ -427,7 +409,7 @@ namespace ACLSim
                     // Optional: brief pacing
                     await Task.Delay(10, token).ConfigureAwait(false);
 
-                    int raw = SafeRead(addr);
+                    int raw = SafeRead(encoderPn);
 
                     if (_resetHomeRequested)
                     {
@@ -444,8 +426,8 @@ namespace ACLSim
 
                     if (!_isManuallySet && raw != _prevEncoderValue)
                     {
-                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {addr} = {raw} -> torque {torque}");
-                        await SafeSetTorqueAsync(torque).ConfigureAwait(false);
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {encoderPn} = {raw} -> torque {torque} - add {AdditionalTorque}");
+                        await SafeSetTorqueAsync(torque + AdditionalTorque).ConfigureAwait(false);
                         _prevEncoderValue = raw;
                     }
                 }
@@ -490,6 +472,61 @@ namespace ACLSim
             return SetTorqueAsync(torque);
         }
 
-    
+        //public void MoveToPosition(int targetPosition)
+        //{
+        //    try
+        //    {
+        //        // Split 32-bit int into two 16-bit values
+        //        ushort high = (ushort)((targetPosition >> 16) & 0xFFFF);
+        //        ushort low = (ushort)(targetPosition & 0xFFFF);
+
+        //        // 1. Enable parameter write (write 1 to address 0x0000)
+        //        mbc.WriteSingleRegister(0x0000, 1);
+        //        Thread.Sleep(10);
+
+        //        // 2. Write target position to Pn120/Pn121 (0x0078, 0x0079)
+        //        mbc.WriteSingleRegister(0x0078, high);
+        //        mbc.WriteSingleRegister(0x0079, low);
+        //        Thread.Sleep(10);
+
+        //        // 3. Trigger internal servo start (write 1 to address 0x0003)
+        //        mbc.WriteSingleRegister(0x0003, 1);
+        //        Thread.Sleep(100); // Adjust based on speed/distance
+
+        //        Console.WriteLine($"Moved to target: {targetPosition}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"MoveToPosition failed: {ex.Message}");
+        //    }
+        //}
+
+        public void HydraulicOff()
+        {
+            SetManualOverride(true);
+            HasHydraulicPower = false;
+            SetTorque(HydOffTorque);
+        }
+
+        public void HydraulicOn()
+        {
+            HasHydraulicPower = true;
+            SetManualOverride(false);
+        }
+
+        public void APIsOn()
+        {
+            SetManualOverride(true);
+            SetTorque((int)(MaxTorque / 1.5));
+        }
+
+        public void APIsOff()
+        {
+            if (HasHydraulicPower)
+            {
+                SetManualOverride(false);
+            }
+        }
+
     }
 }
