@@ -392,6 +392,7 @@ namespace ACLSim
             propertyGridSettings.BrowsableAttributes = new AttributeCollection(new UserScopedSettingAttribute());
 
             SetAppSettings(true);
+            StartDynamicTorques();
         }
 
         static bool isIp(string ip)
@@ -980,54 +981,53 @@ namespace ACLSim
 
                                 } else
                                 {
-                                    int pos = (int)(item.Value);
-                                    int newVal = (pos / 100);
-                                    int pos_min = 512;
-                                    int pos_max = 1024;
-                                    //int newval_min = torquePitchMin;
-                                    //int newval_max = torquePitchMax;
+                                    //int pos = (int)(item.Value);
+                                    //int newVal = (pos / 100);
+                                    //int pos_min = 512;
+                                    //int pos_max = 1024;
+                                    ////int newval_min = torquePitchMin;
+                                    ////int newval_max = torquePitchMax;
 
-                                    if (newVal < 0)
-                                    {
-                                        newVal = newVal * -1;
-                                    }
+                                    //if (newVal < 0)
+                                    //{
+                                    //    newVal = newVal * -1;
+                                    //}
 
-                                    if (pos < 512)
-                                    {
-                                        pos = 1024 - pos;
-                                    }
+                                    //if (pos < 512)
+                                    //{
+                                    //    pos = 1024 - pos;
+                                    //}
 
-                                    pos = Math.Max(pos_min, Math.Min(pos, pos_max));
-                                    // ap pos from the input range to the output range
-                                    double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
-                                    newVal = (int)(proportion * (torquePitchMax - torquePitchMin) + torquePitchMin);
+                                    //pos = Math.Max(pos_min, Math.Min(pos, pos_max));
+                                    //// ap pos from the input range to the output range
+                                    //double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
+                                    //newVal = (int)(proportion * (torquePitchMax - torquePitchMin) + torquePitchMin);
                                   
-                                    // bring to 2 towards very center
-                                    if (pos <= 519)
-                                    {
-                                        newVal = 2;
-                                    }
+                                    //// bring to 2 towards very center
+                                    //if (pos <= 519)
+                                    //{
+                                    //    newVal = 2;
+                                    //}
 
-                                    if (newVal != pitchTorqueFromPos)
-                                    {
-                                        pitchTorqueFromPos = newVal;
-                                        if (isPitchCMD == false)
-                                        {
-                                            UpdatePitchTorques(true);
-                                        }
-                                    }
+                                    //if (newVal != pitchTorqueFromPos)
+                                    //{
+                                    //    pitchTorqueFromPos = newVal;
+                                    //    if (isPitchCMD == false)
+                                    //    {
+                                    //        UpdatePitchTorques(true);
+                                    //    }
+                                    //}
+                                }
 
-                                    if (isPitchCMD == true && sendDataY == true)
+                                if (isPitchCMD == true && sendDataY == true)
+                                {
+                                    double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
+                                    // Skip sudden jumps to 0
+                                    if (yValue != 0)
                                     {
-                                        double yValue = Math.Round(item.Value * (apPositionPitchFactor * 10) * Direction_Axis_Pitch);
-                                        // Skip sudden jumps to 0
-                                        if (yValue != 0)
-                                        {
-                                            item.valueAdjusted = yValue;
-                                            moveToY(yValue);
-                                            sendDataY = false;
-                                        }
-
+                                        item.valueAdjusted = yValue;
+                                        moveToY(yValue);
+                                        sendDataY = false;
                                     }
 
                                 }
@@ -1035,36 +1035,36 @@ namespace ACLSim
                                 break;
                             }
 
-                        case DayaRefNames.RUDDER_CAPT:
-                            {
-                                int pos = (int)(item.Value);
-                                int newVal = (pos / 100);
-                                int pos_min = 512;
-                                int pos_max = 1024;
+                        //case DayaRefNames.RUDDER_CAPT:
+                        //    {
+                        //        int pos = (int)(item.Value);
+                        //        int newVal = (pos / 100);
+                        //        int pos_min = 512;
+                        //        int pos_max = 1024;
 
-                                if (newVal < 0)
-                                {
-                                    newVal = newVal * -1;
-                                }
+                        //        if (newVal < 0)
+                        //        {
+                        //            newVal = newVal * -1;
+                        //        }
 
-                                if (pos < 512)
-                                {
-                                    pos = 1024 - pos;
-                                }
+                        //        if (pos < 512)
+                        //        {
+                        //            pos = 1024 - pos;
+                        //        }
 
-                                pos = Math.Max(pos_min, Math.Min(pos, pos_max));
-                                // ap pos from the input range to the output range
-                                double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
-                                newVal = (int)(proportion * (torqueYawMax - torqueYawMin) + torqueYawMin);
-                                //errorh.DisplayInfo($"rudder {pos} / {proportion} newVal {newVal}");
-                                if (newVal != yawTorqueFromPos)
-                                {
-                                    yawTorqueFromPos = newVal;
-                                    // errorh.DisplayInfo($"rudder {pos} / {proportion} newVal {newVal}");
-                                    UpdateYawTorques(true);
-                                }
-                                break;
-                            }
+                        //        pos = Math.Max(pos_min, Math.Min(pos, pos_max));
+                        //        // ap pos from the input range to the output range
+                        //        double proportion = (double)(pos - pos_min) / (pos_max - pos_min);
+                        //        newVal = (int)(proportion * (torqueYawMax - torqueYawMin) + torqueYawMin);
+                        //        //errorh.DisplayInfo($"rudder {pos} / {proportion} newVal {newVal}");
+                        //        if (newVal != yawTorqueFromPos)
+                        //        {
+                        //            yawTorqueFromPos = newVal;
+                        //            // errorh.DisplayInfo($"rudder {pos} / {proportion} newVal {newVal}");
+                        //            UpdateYawTorques(true);
+                        //        }
+                        //        break;
+                        //    }
 
                             //case DayaRefNames.WIND_SPEED:
                             //    {
@@ -1352,8 +1352,10 @@ namespace ACLSim
 
         private void btnGoTo_Click(object sender, EventArgs e)
         {
-            try { 
+            try {
+                torquePitch.isManuallySet = true;
                 torquePitch.SetTorque(torquePitchMax);
+                torqueRoll.isManuallySet = true;
                 torqueRoll.SetTorque(torqueRollMax);
                 axisRoll.MoveTo(Convert.ToDouble(txtbxRollPosition.Text));
                 axisPitch.MoveTo(Convert.ToDouble(txtbxPitchPosition.Text));
@@ -1364,6 +1366,13 @@ namespace ACLSim
             {
                 Debug.WriteLine("failed to move " + ex.Message + " " + ex.Data);
             }
+        }
+
+        private async void StartDynamicTorques()
+        {
+            var taskPitch = Task.Run(() => torquePitch.DynamicTorque(torquePitchMin, torquePitchMax));
+            var taskRoll = Task.Run(() => torqueRoll.DynamicTorque(torqueRollMin, torqueRollMax));
+            var taskYaw = Task.Run(() => torqueYaw.DynamicTorque(torqueYawMin, torqueYawMax));
         }
 
         private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
@@ -1523,6 +1532,11 @@ namespace ACLSim
             axisYaw.isCentering = true;
             axisTiller.isCentering = true;
 
+            torquePitch.isManuallySet = true;
+            torqueRoll.isManuallySet = true;
+            torqueYaw.isManuallySet = true;
+            torqueTiller.isManuallySet = true;
+
             speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
             speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
             torqueRoll.SetTorque(torqueRollMax);
@@ -1581,6 +1595,11 @@ namespace ACLSim
             axisRoll.isCentering = false;
             axisYaw.isCentering = false;
             axisTiller.isCentering = false;
+            torquePitch.isManuallySet = false;
+            torqueRoll.isManuallySet = false;
+            torqueYaw.isManuallySet = false;
+            torqueTiller.isManuallySet = false;
+
             errorh.DisplayInfo("Reset Torque");
             if (!isHydAvail)
             {

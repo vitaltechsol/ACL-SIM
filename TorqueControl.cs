@@ -2,8 +2,10 @@
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ACLSim
 {
@@ -210,7 +212,162 @@ namespace ACLSim
         {
             return this.enabled;
         }
+
+
+        static int GetActualPos(ModbusClient mbc)
+        {
+            try { 
+            int[] regs = mbc.ReadHoldingRegisters(0x1002, 2);
+            return (short)regs[0] << 16 | (ushort)regs[1];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("GetActualPos failed: " + ex.Message);
+            }
+            return 0;
+        }
+
+        public void DynamicTorque(int minTorque, int maxTorque)
+        {
+            var addr = 387;
+            var tracker = new EncoderTorqueTracker(10000, minTorque, maxTorque);
+
+            if (!mbc.Connected)
+            {
+                mbc.Connect();
+            }
+            mbc.UnitIdentifier = driverID;
+
+            // Optional: set the first read as home
+            int firstRead = mbc.ReadHoldingRegisters(addr, 1)[0];
+            tracker.SetHome(firstRead);
+
+            int prevValue = 0;
+            while (true)
+            {
+                try
+                {
+                    int value = mbc.ReadHoldingRegisters(addr, 1)[0];
+                    int torque = (int)tracker.Update(value);
+                    if (prevValue != value && !isManuallySet)
+                    {
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {addr} = {value} - to torque {torque}");
+                        SetTorqueAsync(torque);
+                        prevValue = value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                Thread.Sleep(10); // Adjust as needed
+            }
+        }
+
+        public void MoveTo(int targetPosition, bool waitUntilReached = false, int tolerance = 50)
+        {
+            Debug.WriteLine($"Start MoveTo: {targetPosition}");
+            errorLog.DisplayInfo($" Start MoveTo: {targetPosition}");
+            // Split 32-bit target into two 16-bit registers
+            ushort high = (ushort)((targetPosition >> 16) & 0xFFFF);
+            ushort low = (ushort)(targetPosition & 0xFFFF);
+
+            //mbc.WriteMultipleRegisters(REG_TARGET_POS_HIGH, new int[] { high, low });
+            //mbc.WriteSingleRegister(REG_TARGET_POS_HIGH, high);
+            //mbc.WriteSingleRegister(REG_TARGET_POS_LOW, low);
+            //mbc.WriteSingleRegister(0x0010, 0x0000);
+            //mbc.WriteSingleRegister(0x0011, 0x0100);
+        }
+
+        public void ReadAllValues()
+        {
+            if (!mbc.Connected)
+            {
+                mbc.Connect();
+            }
+            mbc.UnitIdentifier = driverID;
+
+            Console.WriteLine("Connected.");
+            mbc.WriteSingleRegister(0, 1); // Pn000 = 1
+
+            int[] addresses = new int[]
+        {
+            379,
+            383, 387,
+            390, 391
+        };
+
+        //    {
+        //        369, 370, 371, 372, 379,
+        //    383, 384, 385, 386, 387,
+        //    390, 391, 407, 410
+        //};
+            Console.WriteLine("Monitoring input registers... Press Ctrl+C to stop.\n");
+
+            while (true)
+            {
+                try
+                {
+                    foreach (int addr in addresses)
+                    {
+                        int[] values = mbc.ReadHoldingRegisters(addr, 1);
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] Addr {addr} = {values[0]}");
+                    }
+
+                    Console.WriteLine("------");
+                    Thread.Sleep(250); // Adjust as needed
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
+        
+        
+
+
+            // Many libraries use 0-based addressing for Modbus tables.
+            // We'll scan Input Registers [0..600] and compare 32-bit pairs.
+            const int MAX = 600;
+
+            int[] baseHi = new int[MAX + 1];
+            int[] baseLo = new int[MAX + 1];
+            for (int i = 0; i <= MAX; i++)
+            {
+                try
+                {
+                    baseHi[i] = mbc.ReadHoldingRegisters(i, 1)[0];
+                    Console.WriteLine($"base {i} = {baseHi[i]}");
+                }
+                catch { baseHi[i] = int.MinValue; baseLo[i] = int.MinValue; }
+            }
+
+            Console.WriteLine("Now move the motor by hand (4 seconds)...");
+            Thread.Sleep(14000);
+
+            Console.WriteLine("Scanning for changes...");
+            for (int i = 0; i < MAX; i++)
+            {
+                try
+                {
+                    int hiAfter = mbc.ReadHoldingRegisters(i, 1)[0];
+
+                    // Combine into signed 32-bit
+
+                    if (baseHi[i] != hiAfter)
+                    {
+                        Console.WriteLine($"CHANGE @ InputRegs {i}: before: {baseHi[i]} after: {hiAfter}");
+                    }
+                }
+                catch { /* ignore */ }
+            }
+
+            mbc.Disconnect();
+            Console.WriteLine("Done.");
+
+
+            return;
+
+        }
     }
-
-
 }
