@@ -17,7 +17,7 @@ namespace ACLSim
         ErrorHandler errorLog = new ErrorHandler();
         public event ErrorHandler.OnError onError;
         public bool enabled = true;
-        byte driverID = 0;
+        //byte driverID = 0;
         public bool isManuallySet { get; set; }
 
         public int StatusTextCW { get; private set; }
@@ -30,6 +30,21 @@ namespace ACLSim
 
         private int lastValue = 0;
 
+
+        private readonly byte driverID;
+        private readonly int addr;
+        private CancellationTokenSource _cts;
+        private Task _loopTask;
+        private volatile bool _resetHomeRequested;
+        private volatile bool _isManuallySet;
+
+        // For change detection (optional)
+        private int _prevEncoderValue = int.MinValue;
+
+        // Active tracker for current run
+        private EncoderTorqueTracker _tracker;
+
+
         public TorqueControl(ModbusClient mbc, byte driverID, bool enabled, int torqueOffsetCW) 
         {
             this.enabled = enabled;
@@ -37,6 +52,7 @@ namespace ACLSim
             this.driverID = driverID;
             this.mbc = mbc;
             errorLog.onError += (message) => onError(message);
+            this.addr = 387;
         }
 
         void UpdateStatusCW(int value)
@@ -73,7 +89,7 @@ namespace ACLSim
            
         }
 
-        public async void SetTorqueAsync(int value)
+        public async Task SetTorqueAsync(int value)
         {
             if (lastValue != value)
             {
@@ -227,43 +243,6 @@ namespace ACLSim
             return 0;
         }
 
-        public void DynamicTorque(int minTorque, int maxTorque)
-        {
-            var addr = 387;
-            var tracker = new EncoderTorqueTracker(10000, minTorque, maxTorque);
-
-            if (!mbc.Connected)
-            {
-                mbc.Connect();
-            }
-            mbc.UnitIdentifier = driverID;
-
-            // Optional: set the first read as home
-            int firstRead = mbc.ReadHoldingRegisters(addr, 1)[0];
-            tracker.SetHome(firstRead);
-
-            int prevValue = 0;
-            while (true)
-            {
-                try
-                {
-                    int value = mbc.ReadHoldingRegisters(addr, 1)[0];
-                    int torque = (int)tracker.Update(value);
-                    if (prevValue != value && !isManuallySet)
-                    {
-                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {addr} = {value} - to torque {torque}");
-                        SetTorqueAsync(torque);
-                        prevValue = value;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error: " + ex.Message);
-                }
-                Thread.Sleep(10); // Adjust as needed
-            }
-        }
-
         public void MoveTo(int targetPosition, bool waitUntilReached = false, int tolerance = 50)
         {
             Debug.WriteLine($"Start MoveTo: {targetPosition}");
@@ -369,5 +348,148 @@ namespace ACLSim
             return;
 
         }
+
+
+        /// <summary>
+        /// Starts the background loop. If already running, throws unless you stop first.
+        /// </summary>
+        public void StartDynamicTorque(int minTorque, int maxTorque)
+        {
+            if (_loopTask != null && !_loopTask.IsCompleted)
+                throw new InvalidOperationException("Loop already running. Call StopAsync() first.");
+
+            _cts = new CancellationTokenSource();
+            _loopTask = RunLoopAsync(minTorque, maxTorque, _cts.Token);
+        }
+
+        /// <summary>
+        /// Stops the background loop gracefully.
+        /// </summary>
+        public async Task StopDynamicTorqueAsync()
+        {
+            if (_loopTask == null) return;
+            try
+            {
+                _cts.Cancel();
+                await _loopTask.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) { /* expected */ }
+            finally
+            {
+                _cts.Dispose();
+                _cts = null;
+                _loopTask = null;
+                _tracker = null;
+            }
+        }
+
+        /// <summary>
+        /// Request the loop to re-set Home to the current encoder value.
+        /// Takes effect on the next iteration.
+        /// </summary>
+        public void ResetHome()
+        {
+            _resetHomeRequested = true;
+        }
+
+        /// <summary>
+        /// If you have a manual override UI, set this to true to suspend auto torque updates.
+        /// </summary>
+        public void SetManualOverride(bool isManual)
+        {
+            _isManuallySet = isManual;
+        }
+
+        private async Task RunLoopAsync(int minTorque, int maxTorque, CancellationToken token)
+        {
+            // Ensure connection
+            if (!mbc.Connected)
+                mbc.Connect();
+
+            mbc.UnitIdentifier = driverID;
+
+            // Create tracker and set home from first read
+            _tracker = new EncoderTorqueTracker(10000, minTorque, maxTorque);
+
+            int firstRead = SafeRead(addr);
+            _tracker.SetHome(firstRead);
+            _prevEncoderValue = firstRead;
+
+            // Initial set
+            int initialTorque = _tracker.Update(firstRead);
+            await SafeSetTorqueAsync(initialTorque).ConfigureAwait(false);
+
+            // Main loop
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    // Optional: brief pacing
+                    await Task.Delay(10, token).ConfigureAwait(false);
+
+                    int raw = SafeRead(addr);
+
+                    if (_resetHomeRequested)
+                    {
+                        _tracker.SetHome(raw);
+                        _resetHomeRequested = false;
+                        _prevEncoderValue = raw;
+
+                        int tHome = _tracker.Update(raw); // equals minTorque
+                        await SafeSetTorqueAsync(tHome).ConfigureAwait(false);
+                        continue; // next iteration
+                    }
+
+                    int torque = _tracker.Update(raw);
+
+                    if (!_isManuallySet && raw != _prevEncoderValue)
+                    {
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {addr} = {raw} -> torque {torque}");
+                        await SafeSetTorqueAsync(torque).ConfigureAwait(false);
+                        _prevEncoderValue = raw;
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // Graceful stop
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("DynamicTorque error: " + ex.Message);
+                    // brief backoff to avoid tight error loop
+                    await Task.Delay(100, token).ConfigureAwait(false);
+                }
+            }
+
+            Console.WriteLine("DynamicTorque loop stopped.");
+        }
+
+        private int SafeRead(int address)
+        {
+            // Robust single-register read with reconnect
+            try
+            {
+                var vals = mbc.ReadHoldingRegisters(address, 1);
+                return vals[0];
+            }
+            catch
+            {
+                if (!mbc.Connected)
+                {
+                    try { mbc.Connect(); } catch { /* swallow; next loop will retry */ }
+                }
+                // Re-throw so loop handles and backs off
+                throw;
+            }
+        }
+
+        private Task SafeSetTorqueAsync(int torque)
+        {
+            // Your existing async setter; wrap if needed
+            return SetTorqueAsync(torque);
+        }
+
+    
     }
 }

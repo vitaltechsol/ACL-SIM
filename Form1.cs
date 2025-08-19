@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EasyModbus;
 using ProSimSDK;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static ACLSim.ErrorHandler;
 using Timer = System.Timers.Timer;
 
@@ -1370,9 +1371,15 @@ namespace ACLSim
 
         private async void StartDynamicTorques()
         {
-            var taskPitch = Task.Run(() => torquePitch.DynamicTorque(torquePitchMin, torquePitchMax));
-            var taskRoll = Task.Run(() => torqueRoll.DynamicTorque(torqueRollMin, torqueRollMax));
-            var taskYaw = Task.Run(() => torqueYaw.DynamicTorque(torqueYawMin, torqueYawMax));
+            torquePitch.ResetHome();
+            torqueRoll.ResetHome();
+
+            torquePitch.StartDynamicTorque(torquePitchMin, torquePitchMax);
+            torqueRoll.StartDynamicTorque(torqueRollMin, torqueRollMax);
+            torqueYaw.StartDynamicTorque(torqueYawMin, torqueYawMax);
+            //var taskPitch = Task.Run(() => torquePitch.DynamicTorque(torquePitchMin, torquePitchMax));
+            //var taskRoll = Task.Run(() => torqueRoll.DynamicTorque(torqueRollMin, torqueRollMax));
+            //var taskYaw = Task.Run(() => torqueYaw.DynamicTorque(torqueYawMin, torqueYawMax));
         }
 
         private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
@@ -1609,7 +1616,10 @@ namespace ACLSim
                 speedYaw.SetSpeed(0);
             }
             UpdateTorques(false);
-           
+            torquePitch.ResetHome();
+            torqueRoll.ResetHome();
+            torqueYaw.ResetHome();
+            torqueTiller.ResetHome();
         }
 
         private void chkAutoCenter_CheckedChanged(object sender, EventArgs e)
