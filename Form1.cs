@@ -543,7 +543,7 @@ namespace ACLSim
         {
             Invoke(new MethodInvoker(updateStatusLabel));
             Invoke(new MethodInvoker(fillDataRefTable));
-            Invoke(new MethodInvoker(shouldRecenterAxis));
+            Task.Run(() =>
 
         }
 
