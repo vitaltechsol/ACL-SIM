@@ -209,6 +209,31 @@ namespace ACLSim
             {
                 mbcYaw = mbc;
             }
+
+            if (mbcTillerSetting != "")
+            {
+                mbcTiller = new ModbusClient()
+                {
+                    Baudrate = 115200,
+                    StopBits = StopBits.One,
+                    Parity = Parity.None,
+                    ConnectionTimeout = 4000
+                };
+                if (isIp(mbcTillerSetting))
+                {
+                    mbcTiller.IPAddress = mbcTillerSetting;
+                    mbcTiller.Port = 502;
+                    Debug.WriteLine("mbcTillerSetting " + mbcTillerSetting);
+                }
+                else
+                {
+                    mbcTiller.SerialPort = mbcTillerSetting;
+                }
+            }
+            else
+            {
+                mbcTiller = mbc;
+            }
         }
 
         public Form1()
@@ -305,10 +330,20 @@ namespace ACLSim
                     mbcRoll.Connect();
                 }
 
+
+                if (mbcTiller != null)
+                {
+                    if (mbcTiller.Connected)
+                    {
+                        mbcTiller.Disconnect();
+                    }
+                    mbcTiller.Connect();
+                }
+
             }
             catch (Exception ex)
             {
-                errorh.DisplayError("COM port error " + ex.Message);
+                errorh.DisplayError("RS485 error " + ex.Message);
             }
 
             torquePitch.onError += (msg) => ShowFormError(msg);
@@ -381,6 +416,11 @@ namespace ACLSim
 
             SetAppSettings(true);
             StartDynamicTorques();
+           
+            if (Properties.Settings.Default.AutoConnect) 
+            { 
+                connectToProSim();
+            }
         }
 
         static bool isIp(string ip)
@@ -479,8 +519,7 @@ namespace ACLSim
 
                 axisRoll.ChangeAxisSpeed(8000000);
                 axisPitch.ChangeAxisSpeed(8000000);
-
-                connectToProSim();
+                axisYaw.ChangeAxisSpeed(8000000);
             }
            
         }
@@ -543,7 +582,13 @@ namespace ACLSim
         {
             Invoke(new MethodInvoker(updateStatusLabel));
             Invoke(new MethodInvoker(fillDataRefTable));
-            Task.Run(() =>
+            //Invoke(new MethodInvoker(shouldRecenterAxis));
+
+            System.Threading.ThreadPool.QueueUserWorkItem(_ =>
+            {
+                System.Threading.Thread.Sleep(3000);   // wait 3 seconds after connection
+                BeginInvoke((MethodInvoker)shouldRecenterAxis); // non-blocking marshal to UI
+            });
 
         }
 
@@ -551,7 +596,7 @@ namespace ACLSim
         {
             if (Properties.Settings.Default.Auto_Center_On_Start && (!axisPitch.AxisCentered || !axisRoll.AxisCentered || !axisYaw.AxisCentered || !axisTiller.AxisCentered))
             {
-                errorh.DisplayInfo("Center axis after connection");
+                errorh.DisplayInfo("Centering axis after connection");
                 centerAllAxis();
             }
         }
@@ -883,23 +928,27 @@ namespace ACLSim
 
                                 if (!isHydAvail)
                                 {
-                                    torquePitch.HydraulicOff();
-                                    torqueRoll.HydraulicOff();
-                                    torqueYaw.HydraulicOff();
+                                  
                                     torqueTiller.HydraulicOff();
-
                                     axisPitch.HydraulicPower = false;
                                     axisRoll.HydraulicPower = false;
                                     axisYaw.HydraulicPower = false;
                                     axisTiller.HydraulicPower = false;
                                     if (!axisPitch.isCentering && !torquePitch.isManuallySet)
                                     {
+                                        torquePitch.HydraulicOff();
                                         await Task.Delay(2000);
                                         speedPitch.SetSpeed(0);
                                     }
 
-                                    if (!torqueYaw.isManuallySet)
+                                    if (!axisRoll.isCentering && !torqueRoll.isManuallySet)
                                     {
+                                        torqueRoll.HydraulicOff();
+                                    }
+
+                                    if (!axisYaw.isCentering && !torqueYaw.isManuallySet)
+                                    {
+                                        torqueYaw.HydraulicOff();
                                         await Task.Delay(2000);
                                         speedYaw.SetSpeed(0);
                                     }
@@ -1283,12 +1332,12 @@ namespace ACLSim
 
         private async void centerAllAxis()
         {
-            PauseGame(true);
             axisPitch.isCentering = true;
             axisRoll.isCentering = true;    
             axisYaw.isCentering = true;
             axisTiller.isCentering = true;
             // On for additional torque
+            errorh.DisplayInfo("Moving Torque on");
             torquePitch.APIsOn();
             torqueRoll.APIsOn();
             torqueYaw.APIsOn();
@@ -1358,20 +1407,24 @@ namespace ACLSim
             torqueYaw.APIsOff();
             torqueTiller.APIsOff();
 
-            errorh.DisplayInfo("Reset Torque");
-            if (!isHydAvail)
-            {
-                errorh.DisplayInfo("Reset Pitch Centering Speed to 0");
-                speedPitch.SetSpeed(0);
-                errorh.DisplayInfo("Reset Pitch Centering Speed to 0");
-                speedYaw.SetSpeed(0);
-            }
-            //UpdateTorques(false);
             torquePitch.ResetHome();
             torqueRoll.ResetHome();
             torqueYaw.ResetHome();
             torqueTiller.ResetHome();
-            PauseGame(false);
+
+            errorh.DisplayInfo("Reset Torque");
+
+            if (!isHydAvail)
+            {
+                torquePitch.HydraulicOff();
+                torqueRoll.HydraulicOff();
+                torqueYaw.HydraulicOff();
+                errorh.DisplayInfo("Reset Pitch Centering Speed to 0");
+                speedPitch.SetSpeed(0);
+                errorh.DisplayInfo("Reset Yaw Centering Speed to 0");
+                speedYaw.SetSpeed(0);
+            }
+
         }
         private void PauseGame(bool state)
         {

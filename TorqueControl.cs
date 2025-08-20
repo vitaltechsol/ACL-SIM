@@ -337,11 +337,14 @@ namespace ACLSim
         /// </summary>
         public void StartDynamicTorque()
         {
-            if (_loopTask != null && !_loopTask.IsCompleted)
-                throw new InvalidOperationException("Loop already running. Call StopAsync() first.");
+            if (this.enabled)
+            {
+                if (_loopTask != null && !_loopTask.IsCompleted)
+                    throw new InvalidOperationException("Loop already running. Call StopAsync() first.");
 
-            _cts = new CancellationTokenSource();
-            _loopTask = RunLoopAsync(MinTorque, MaxTorque, _cts.Token);
+                _cts = new CancellationTokenSource();
+                _loopTask = RunLoopAsync(MinTorque, MaxTorque, _cts.Token);
+            }
         }
 
         /// <summary>
@@ -379,6 +382,7 @@ namespace ACLSim
         /// </summary>
         public void SetManualOverride(bool isManual)
         {
+            // errorLog.DisplayInfo($"Set Torque ManualOverride: (Servo {mbc.UnitIdentifier}: {isManual}");
             _isManuallySet = isManual;
         }
 
@@ -406,7 +410,7 @@ namespace ACLSim
             {
                 try
                 {
-                    // Optional: brief pacing
+                    // Brief pacing
                     await Task.Delay(10, token).ConfigureAwait(false);
 
                     int raw = SafeRead(encoderPn);
@@ -417,8 +421,12 @@ namespace ACLSim
                         _resetHomeRequested = false;
                         _prevEncoderValue = raw;
 
+                        // int tHome = _tracker.Update(raw); // equals minTorque
                         int tHome = _tracker.Update(raw); // equals minTorque
-                        await SafeSetTorqueAsync(tHome).ConfigureAwait(false);
+                        if (!_isManuallySet)
+                        {
+                            await SafeSetTorqueAsync(tHome).ConfigureAwait(false);
+                        }
                         continue; // next iteration
                     }
 
@@ -426,7 +434,7 @@ namespace ACLSim
 
                     if (!_isManuallySet && raw != _prevEncoderValue)
                     {
-                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {encoderPn} = {raw} -> torque {torque} - add {AdditionalTorque}");
+                        // Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {encoderPn} = {raw} -> torque {torque} - add {AdditionalTorque}");
                         await SafeSetTorqueAsync(torque + AdditionalTorque).ConfigureAwait(false);
                         _prevEncoderValue = raw;
                     }
@@ -459,7 +467,10 @@ namespace ACLSim
             {
                 if (!mbc.Connected)
                 {
-                    try { mbc.Connect(); } catch { /* swallow; next loop will retry */ }
+                    try { 
+                        mbc.Connect();
+                        mbc.UnitIdentifier = driverID;
+                    } catch { /* swallow; next loop will retry */ }
                 }
                 // Re-throw so loop handles and backs off
                 throw;
@@ -505,6 +516,7 @@ namespace ACLSim
         {
             SetManualOverride(true);
             HasHydraulicPower = false;
+         //   errorLog.DisplayInfo($"Hydraulic off mode for: (Servo {mbc.UnitIdentifier}: {HydOffTorque}");
             SetTorque(HydOffTorque);
         }
 
@@ -517,7 +529,8 @@ namespace ACLSim
         public void APIsOn()
         {
             SetManualOverride(true);
-            SetTorque((int)(MaxTorque / 1.5));
+            SetTorque((int)(MaxTorque / 6));
+            SetTorque((int)(MaxTorque / 2));
         }
 
         public void APIsOff()
