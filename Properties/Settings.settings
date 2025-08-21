@@ -35,9 +35,6 @@
     <Setting Name="TrimFactor_Aileron" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
-    <Setting Name="Position_Pitch_HYD_OFF_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-2000</Value>
-    </Setting>
     <Setting Name="AP_Position_Roll_Factor" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">700</Value>
     </Setting>
@@ -49,9 +46,6 @@
     </Setting>
     <Setting Name="Torque_Yaw_Min" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
-    </Setting>
-    <Setting Name="Position_Yaw_HYD_OFF_Max" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-1000</Value>
     </Setting>
     <Setting Name="TrimFactor_Rudder" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
@@ -172,6 +166,18 @@
     </Setting>
     <Setting Name="RS485_Tiller" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Moving_Speed_Pitch" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="Moving_Speed_Roll" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="Moving_Speed_Yaw" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="Moving_Speed_Tiller" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
     </Setting>
   </Settings>
 </SettingsFile>

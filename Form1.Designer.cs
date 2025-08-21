@@ -60,6 +60,11 @@ namespace ACLSim
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.propertyGridSettings = new System.Windows.Forms.PropertyGrid();
             this.tabTest = new System.Windows.Forms.TabPage();
+            this.txbSpeedYaw = new System.Windows.Forms.TextBox();
+            this.btnSaveSpeed = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.txbSpeedPitch = new System.Windows.Forms.TextBox();
+            this.txbSpeedRoll = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.txbBounceTiller = new System.Windows.Forms.TextBox();
             this.txbTillerSpeedTest = new System.Windows.Forms.TextBox();
@@ -70,12 +75,10 @@ namespace ACLSim
             this.txbYawSpeedTest = new System.Windows.Forms.TextBox();
             this.txbYawTorque = new System.Windows.Forms.TextBox();
             this.txtbxYawPosition = new System.Windows.Forms.TextBox();
-            this.btnBounceGet = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.txbBouncePitch = new System.Windows.Forms.TextBox();
             this.txbBounceRoll = new System.Windows.Forms.TextBox();
             this.btnBounceSet = new System.Windows.Forms.Button();
-            this.btnRecenterSpeedRead = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -217,9 +220,9 @@ namespace ACLSim
             // 
             // btnGoTo
             // 
-            this.btnGoTo.Location = new System.Drawing.Point(406, 47);
+            this.btnGoTo.Location = new System.Drawing.Point(435, 47);
             this.btnGoTo.Name = "btnGoTo";
-            this.btnGoTo.Size = new System.Drawing.Size(60, 23);
+            this.btnGoTo.Size = new System.Drawing.Size(58, 23);
             this.btnGoTo.TabIndex = 3;
             this.btnGoTo.Text = "Move";
             this.btnGoTo.UseVisualStyleBackColor = true;
@@ -227,17 +230,17 @@ namespace ACLSim
             // 
             // txtbxPitchPosition
             // 
-            this.txtbxPitchPosition.Location = new System.Drawing.Point(103, 48);
+            this.txtbxPitchPosition.Location = new System.Drawing.Point(132, 48);
             this.txtbxPitchPosition.Name = "txtbxPitchPosition";
-            this.txtbxPitchPosition.Size = new System.Drawing.Size(65, 20);
+            this.txtbxPitchPosition.Size = new System.Drawing.Size(66, 20);
             this.txtbxPitchPosition.TabIndex = 1;
             this.txtbxPitchPosition.Text = "0";
             // 
             // btnCenterOut
             // 
-            this.btnCenterOut.Location = new System.Drawing.Point(476, 47);
+            this.btnCenterOut.Location = new System.Drawing.Point(506, 47);
             this.btnCenterOut.Name = "btnCenterOut";
-            this.btnCenterOut.Size = new System.Drawing.Size(57, 23);
+            this.btnCenterOut.Size = new System.Drawing.Size(61, 23);
             this.btnCenterOut.TabIndex = 4;
             this.btnCenterOut.Text = "Center ";
             this.btnCenterOut.UseVisualStyleBackColor = true;
@@ -245,16 +248,16 @@ namespace ACLSim
             // 
             // txtbxRollPosition
             // 
-            this.txtbxRollPosition.Location = new System.Drawing.Point(181, 48);
+            this.txtbxRollPosition.Location = new System.Drawing.Point(210, 48);
             this.txtbxRollPosition.Name = "txtbxRollPosition";
-            this.txtbxRollPosition.Size = new System.Drawing.Size(65, 20);
+            this.txtbxRollPosition.Size = new System.Drawing.Size(66, 20);
             this.txtbxRollPosition.TabIndex = 2;
             this.txtbxRollPosition.Text = "0";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(122, 25);
+            this.label2.Location = new System.Drawing.Point(151, 25);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(31, 13);
             this.label2.TabIndex = 11;
@@ -263,7 +266,7 @@ namespace ACLSim
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(201, 25);
+            this.label3.Location = new System.Drawing.Point(230, 25);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(25, 13);
             this.label3.TabIndex = 12;
@@ -283,16 +286,16 @@ namespace ACLSim
             // 
             // txbRollTorque
             // 
-            this.txbRollTorque.Location = new System.Drawing.Point(181, 89);
+            this.txbRollTorque.Location = new System.Drawing.Point(210, 126);
             this.txbRollTorque.Name = "txbRollTorque";
-            this.txbRollTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbRollTorque.Size = new System.Drawing.Size(66, 20);
             this.txbRollTorque.TabIndex = 6;
             // 
             // btnTorqueTest
             // 
-            this.btnTorqueTest.Location = new System.Drawing.Point(406, 88);
+            this.btnTorqueTest.Location = new System.Drawing.Point(435, 125);
             this.btnTorqueTest.Name = "btnTorqueTest";
-            this.btnTorqueTest.Size = new System.Drawing.Size(60, 23);
+            this.btnTorqueTest.Size = new System.Drawing.Size(58, 23);
             this.btnTorqueTest.TabIndex = 7;
             this.btnTorqueTest.Text = "Test";
             this.btnTorqueTest.UseVisualStyleBackColor = true;
@@ -353,6 +356,11 @@ namespace ACLSim
             // 
             // tabTest
             // 
+            this.tabTest.Controls.Add(this.txbSpeedYaw);
+            this.tabTest.Controls.Add(this.btnSaveSpeed);
+            this.tabTest.Controls.Add(this.label14);
+            this.tabTest.Controls.Add(this.txbSpeedPitch);
+            this.tabTest.Controls.Add(this.txbSpeedRoll);
             this.tabTest.Controls.Add(this.label12);
             this.tabTest.Controls.Add(this.txbBounceTiller);
             this.tabTest.Controls.Add(this.txbTillerSpeedTest);
@@ -363,12 +371,10 @@ namespace ACLSim
             this.tabTest.Controls.Add(this.txbYawSpeedTest);
             this.tabTest.Controls.Add(this.txbYawTorque);
             this.tabTest.Controls.Add(this.txtbxYawPosition);
-            this.tabTest.Controls.Add(this.btnBounceGet);
             this.tabTest.Controls.Add(this.label7);
             this.tabTest.Controls.Add(this.txbBouncePitch);
             this.tabTest.Controls.Add(this.txbBounceRoll);
             this.tabTest.Controls.Add(this.btnBounceSet);
-            this.tabTest.Controls.Add(this.btnRecenterSpeedRead);
             this.tabTest.Controls.Add(this.label6);
             this.tabTest.Controls.Add(this.label5);
             this.tabTest.Controls.Add(this.label4);
@@ -393,10 +399,51 @@ namespace ACLSim
             this.tabTest.Text = "Servo Test/Config";
             this.tabTest.UseVisualStyleBackColor = true;
             // 
+            // txbSpeedYaw
+            // 
+            this.txbSpeedYaw.Location = new System.Drawing.Point(286, 74);
+            this.txbSpeedYaw.Name = "txbSpeedYaw";
+            this.txbSpeedYaw.Size = new System.Drawing.Size(66, 20);
+            this.txbSpeedYaw.TabIndex = 48;
+            // 
+            // btnSaveSpeed
+            // 
+            this.btnSaveSpeed.Location = new System.Drawing.Point(435, 74);
+            this.btnSaveSpeed.Name = "btnSaveSpeed";
+            this.btnSaveSpeed.Size = new System.Drawing.Size(61, 23);
+            this.btnSaveSpeed.TabIndex = 47;
+            this.btnSaveSpeed.Text = "Save";
+            this.btnSaveSpeed.UseVisualStyleBackColor = true;
+            this.btnSaveSpeed.Click += new System.EventHandler(this.btnSaveSpeed_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(40, 77);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(76, 13);
+            this.label14.TabIndex = 45;
+            this.label14.Text = "Moving Speed";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // txbSpeedPitch
+            // 
+            this.txbSpeedPitch.Location = new System.Drawing.Point(132, 74);
+            this.txbSpeedPitch.Name = "txbSpeedPitch";
+            this.txbSpeedPitch.Size = new System.Drawing.Size(66, 20);
+            this.txbSpeedPitch.TabIndex = 41;
+            // 
+            // txbSpeedRoll
+            // 
+            this.txbSpeedRoll.Location = new System.Drawing.Point(210, 74);
+            this.txbSpeedRoll.Name = "txbSpeedRoll";
+            this.txbSpeedRoll.Size = new System.Drawing.Size(66, 20);
+            this.txbSpeedRoll.TabIndex = 42;
+            // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(350, 25);
+            this.label12.Location = new System.Drawing.Point(379, 25);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(29, 13);
             this.label12.TabIndex = 40;
@@ -404,37 +451,37 @@ namespace ACLSim
             // 
             // txbBounceTiller
             // 
-            this.txbBounceTiller.Location = new System.Drawing.Point(334, 169);
+            this.txbBounceTiller.Location = new System.Drawing.Point(363, 206);
             this.txbBounceTiller.Name = "txbBounceTiller";
-            this.txbBounceTiller.Size = new System.Drawing.Size(65, 20);
+            this.txbBounceTiller.Size = new System.Drawing.Size(66, 20);
             this.txbBounceTiller.TabIndex = 39;
             // 
             // txbTillerSpeedTest
             // 
-            this.txbTillerSpeedTest.Location = new System.Drawing.Point(334, 130);
+            this.txbTillerSpeedTest.Location = new System.Drawing.Point(363, 167);
             this.txbTillerSpeedTest.Name = "txbTillerSpeedTest";
-            this.txbTillerSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbTillerSpeedTest.Size = new System.Drawing.Size(66, 20);
             this.txbTillerSpeedTest.TabIndex = 38;
             // 
             // txbTillerTorque
             // 
-            this.txbTillerTorque.Location = new System.Drawing.Point(334, 89);
+            this.txbTillerTorque.Location = new System.Drawing.Point(363, 126);
             this.txbTillerTorque.Name = "txbTillerTorque";
-            this.txbTillerTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbTillerTorque.Size = new System.Drawing.Size(66, 20);
             this.txbTillerTorque.TabIndex = 37;
             // 
             // txtbxTillerPosition
             // 
-            this.txtbxTillerPosition.Location = new System.Drawing.Point(334, 48);
+            this.txtbxTillerPosition.Location = new System.Drawing.Point(363, 48);
             this.txtbxTillerPosition.Name = "txtbxTillerPosition";
-            this.txtbxTillerPosition.Size = new System.Drawing.Size(65, 20);
+            this.txtbxTillerPosition.Size = new System.Drawing.Size(66, 20);
             this.txtbxTillerPosition.TabIndex = 36;
             this.txtbxTillerPosition.Text = "0";
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(276, 25);
+            this.label10.Location = new System.Drawing.Point(305, 25);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(28, 13);
             this.label10.TabIndex = 35;
@@ -442,47 +489,37 @@ namespace ACLSim
             // 
             // txbBounceYaw
             // 
-            this.txbBounceYaw.Location = new System.Drawing.Point(257, 169);
+            this.txbBounceYaw.Location = new System.Drawing.Point(286, 206);
             this.txbBounceYaw.Name = "txbBounceYaw";
-            this.txbBounceYaw.Size = new System.Drawing.Size(65, 20);
+            this.txbBounceYaw.Size = new System.Drawing.Size(66, 20);
             this.txbBounceYaw.TabIndex = 34;
             // 
             // txbYawSpeedTest
             // 
-            this.txbYawSpeedTest.Location = new System.Drawing.Point(257, 130);
+            this.txbYawSpeedTest.Location = new System.Drawing.Point(286, 167);
             this.txbYawSpeedTest.Name = "txbYawSpeedTest";
-            this.txbYawSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbYawSpeedTest.Size = new System.Drawing.Size(66, 20);
             this.txbYawSpeedTest.TabIndex = 33;
             // 
             // txbYawTorque
             // 
-            this.txbYawTorque.Location = new System.Drawing.Point(257, 89);
+            this.txbYawTorque.Location = new System.Drawing.Point(286, 126);
             this.txbYawTorque.Name = "txbYawTorque";
-            this.txbYawTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbYawTorque.Size = new System.Drawing.Size(66, 20);
             this.txbYawTorque.TabIndex = 32;
             // 
             // txtbxYawPosition
             // 
-            this.txtbxYawPosition.Location = new System.Drawing.Point(257, 48);
+            this.txtbxYawPosition.Location = new System.Drawing.Point(286, 48);
             this.txtbxYawPosition.Name = "txtbxYawPosition";
-            this.txtbxYawPosition.Size = new System.Drawing.Size(65, 20);
+            this.txtbxYawPosition.Size = new System.Drawing.Size(66, 20);
             this.txtbxYawPosition.TabIndex = 31;
             this.txtbxYawPosition.Text = "0";
-            // 
-            // btnBounceGet
-            // 
-            this.btnBounceGet.Location = new System.Drawing.Point(476, 168);
-            this.btnBounceGet.Name = "btnBounceGet";
-            this.btnBounceGet.Size = new System.Drawing.Size(57, 23);
-            this.btnBounceGet.TabIndex = 30;
-            this.btnBounceGet.Text = "Read";
-            this.btnBounceGet.UseVisualStyleBackColor = true;
-            this.btnBounceGet.Click += new System.EventHandler(this.btnBounceGet_Click);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(26, 173);
+            this.label7.Location = new System.Drawing.Point(55, 210);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(61, 13);
             this.label7.TabIndex = 29;
@@ -491,42 +528,32 @@ namespace ACLSim
             // 
             // txbBouncePitch
             // 
-            this.txbBouncePitch.Location = new System.Drawing.Point(103, 169);
+            this.txbBouncePitch.Location = new System.Drawing.Point(132, 206);
             this.txbBouncePitch.Name = "txbBouncePitch";
-            this.txbBouncePitch.Size = new System.Drawing.Size(65, 20);
+            this.txbBouncePitch.Size = new System.Drawing.Size(66, 20);
             this.txbBouncePitch.TabIndex = 28;
             // 
             // txbBounceRoll
             // 
-            this.txbBounceRoll.Location = new System.Drawing.Point(181, 169);
+            this.txbBounceRoll.Location = new System.Drawing.Point(210, 206);
             this.txbBounceRoll.Name = "txbBounceRoll";
-            this.txbBounceRoll.Size = new System.Drawing.Size(65, 20);
+            this.txbBounceRoll.Size = new System.Drawing.Size(66, 20);
             this.txbBounceRoll.TabIndex = 26;
             // 
             // btnBounceSet
             // 
-            this.btnBounceSet.Location = new System.Drawing.Point(406, 168);
+            this.btnBounceSet.Location = new System.Drawing.Point(435, 205);
             this.btnBounceSet.Name = "btnBounceSet";
-            this.btnBounceSet.Size = new System.Drawing.Size(60, 23);
+            this.btnBounceSet.Size = new System.Drawing.Size(61, 23);
             this.btnBounceSet.TabIndex = 27;
-            this.btnBounceSet.Text = "Set";
+            this.btnBounceSet.Text = "Save";
             this.btnBounceSet.UseVisualStyleBackColor = true;
             this.btnBounceSet.Click += new System.EventHandler(this.btnBounceSet_Click);
-            // 
-            // btnRecenterSpeedRead
-            // 
-            this.btnRecenterSpeedRead.Location = new System.Drawing.Point(476, 129);
-            this.btnRecenterSpeedRead.Name = "btnRecenterSpeedRead";
-            this.btnRecenterSpeedRead.Size = new System.Drawing.Size(57, 23);
-            this.btnRecenterSpeedRead.TabIndex = 25;
-            this.btnRecenterSpeedRead.Text = "Read";
-            this.btnRecenterSpeedRead.UseVisualStyleBackColor = true;
-            this.btnRecenterSpeedRead.Click += new System.EventHandler(this.btnRecenterSpeedRead_Click);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(2, 134);
+            this.label6.Location = new System.Drawing.Point(31, 171);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(88, 13);
             this.label6.TabIndex = 24;
@@ -536,7 +563,7 @@ namespace ACLSim
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(46, 93);
+            this.label5.Location = new System.Drawing.Point(75, 130);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(41, 13);
             this.label5.TabIndex = 23;
@@ -546,7 +573,7 @@ namespace ACLSim
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(43, 52);
+            this.label4.Location = new System.Drawing.Point(72, 52);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(44, 13);
             this.label4.TabIndex = 22;
@@ -555,33 +582,33 @@ namespace ACLSim
             // 
             // txbPitchSpeedTest
             // 
-            this.txbPitchSpeedTest.Location = new System.Drawing.Point(103, 130);
+            this.txbPitchSpeedTest.Location = new System.Drawing.Point(132, 167);
             this.txbPitchSpeedTest.Name = "txbPitchSpeedTest";
-            this.txbPitchSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbPitchSpeedTest.Size = new System.Drawing.Size(66, 20);
             this.txbPitchSpeedTest.TabIndex = 20;
             // 
             // txbRollSpeedTest
             // 
-            this.txbRollSpeedTest.Location = new System.Drawing.Point(181, 130);
+            this.txbRollSpeedTest.Location = new System.Drawing.Point(210, 167);
             this.txbRollSpeedTest.Name = "txbRollSpeedTest";
-            this.txbRollSpeedTest.Size = new System.Drawing.Size(65, 20);
+            this.txbRollSpeedTest.Size = new System.Drawing.Size(66, 20);
             this.txbRollSpeedTest.TabIndex = 18;
             // 
             // btnSpeedSet
             // 
-            this.btnSpeedSet.Location = new System.Drawing.Point(406, 129);
+            this.btnSpeedSet.Location = new System.Drawing.Point(435, 166);
             this.btnSpeedSet.Name = "btnSpeedSet";
-            this.btnSpeedSet.Size = new System.Drawing.Size(60, 23);
+            this.btnSpeedSet.Size = new System.Drawing.Size(61, 23);
             this.btnSpeedSet.TabIndex = 19;
-            this.btnSpeedSet.Text = "Set";
+            this.btnSpeedSet.Text = "Save";
             this.btnSpeedSet.UseVisualStyleBackColor = true;
             this.btnSpeedSet.Click += new System.EventHandler(this.btnSpeedTest_Click);
             // 
             // btnTorqueDefault
             // 
-            this.btnTorqueDefault.Location = new System.Drawing.Point(476, 88);
+            this.btnTorqueDefault.Location = new System.Drawing.Point(506, 125);
             this.btnTorqueDefault.Name = "btnTorqueDefault";
-            this.btnTorqueDefault.Size = new System.Drawing.Size(57, 23);
+            this.btnTorqueDefault.Size = new System.Drawing.Size(61, 23);
             this.btnTorqueDefault.TabIndex = 8;
             this.btnTorqueDefault.Text = "Revert";
             this.btnTorqueDefault.UseVisualStyleBackColor = true;
@@ -589,9 +616,9 @@ namespace ACLSim
             // 
             // txbPitchTorque
             // 
-            this.txbPitchTorque.Location = new System.Drawing.Point(103, 89);
+            this.txbPitchTorque.Location = new System.Drawing.Point(132, 126);
             this.txbPitchTorque.Name = "txbPitchTorque";
-            this.txbPitchTorque.Size = new System.Drawing.Size(65, 20);
+            this.txbPitchTorque.Size = new System.Drawing.Size(66, 20);
             this.txbPitchTorque.TabIndex = 5;
             // 
             // lblTorquePitchFwd
@@ -856,9 +883,7 @@ namespace ACLSim
         private System.Windows.Forms.CheckBox chkBoxStatus;
         private System.Windows.Forms.PropertyGrid propertyGridSettings;
         private System.Windows.Forms.Button btnTorqueDefault;
-        private System.Windows.Forms.Button btnRecenterSpeedRead;
         private System.Windows.Forms.Label lblACLSIMVersion;
-        private System.Windows.Forms.Button btnBounceGet;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txbBouncePitch;
         private System.Windows.Forms.TextBox txbBounceRoll;
@@ -888,6 +913,11 @@ namespace ACLSim
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label lblTorqueYawFwd;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox txbSpeedPitch;
+        private System.Windows.Forms.TextBox txbSpeedRoll;
+        private System.Windows.Forms.Button btnSaveSpeed;
+        private System.Windows.Forms.TextBox txbSpeedYaw;
     }
 }
 

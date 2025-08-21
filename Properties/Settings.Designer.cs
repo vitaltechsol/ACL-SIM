@@ -157,18 +157,6 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-2000")]
-        public int Position_Pitch_HYD_OFF_Max {
-            get {
-                return ((int)(this["Position_Pitch_HYD_OFF_Max"]));
-            }
-            set {
-                this["Position_Pitch_HYD_OFF_Max"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("700")]
         public int AP_Position_Roll_Factor {
             get {
@@ -212,18 +200,6 @@ namespace ACLSim.Properties {
             }
             set {
                 this["Torque_Yaw_Min"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-1000")]
-        public int Position_Yaw_HYD_OFF_Max {
-            get {
-                return ((int)(this["Position_Yaw_HYD_OFF_Max"]));
-            }
-            set {
-                this["Position_Yaw_HYD_OFF_Max"] = value;
             }
         }
         
@@ -704,6 +680,54 @@ namespace ACLSim.Properties {
             }
             set {
                 this["RS485_Tiller"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int Moving_Speed_Pitch {
+            get {
+                return ((int)(this["Moving_Speed_Pitch"]));
+            }
+            set {
+                this["Moving_Speed_Pitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int Moving_Speed_Roll {
+            get {
+                return ((int)(this["Moving_Speed_Roll"]));
+            }
+            set {
+                this["Moving_Speed_Roll"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int Moving_Speed_Yaw {
+            get {
+                return ((int)(this["Moving_Speed_Yaw"]));
+            }
+            set {
+                this["Moving_Speed_Yaw"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int Moving_Speed_Tiller {
+            get {
+                return ((int)(this["Moving_Speed_Tiller"]));
+            }
+            set {
+                this["Moving_Speed_Tiller"] = value;
             }
         }
     }

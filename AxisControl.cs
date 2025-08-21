@@ -25,6 +25,9 @@ namespace ACLSim
         bool axisCentered = false;
         public bool isCentering { get; set; } = false;
         public bool isTrimming { get; set; } = false;
+
+        private int defaultSpeed {get; set;} = 50;
+        public int currentSpeed { get; set; } = 0;
         bool hydraulicPower = false;
 
         int direction;
@@ -40,7 +43,7 @@ namespace ACLSim
         private Action onTrimSettled; // callback set by main form
         private const int TrimSettleTimeoutMs = 500;
 
-        public AxisControl(string movePrefix, string axisName, int direction, int hydOffPosition, bool enabled)
+        public AxisControl(string movePrefix, string axisName, int direction, int defaultSpeed, bool enabled)
         {
             errorLog.onError += (message) => onError(message);
 
@@ -48,12 +51,12 @@ namespace ACLSim
             this.axisName = axisName;
             this.movePrefix = movePrefix;
             this.direction = direction;
-            this.hydOffPosition = hydOffPosition;
+            this.defaultSpeed = defaultSpeed;
             // If not enabled always make it centered
             if (!enabled)
             {
                 axisCentered = true;
-            }
+            } 
         }
 
         public void SetPort(SerialPort port, ProSimConnect connection)
@@ -61,6 +64,7 @@ namespace ACLSim
             if (enabled) { 
                 this.port = port;
                 this.connection = connection;
+                ChangeAxisSpeed(defaultSpeed);
             }
         }
 
@@ -239,7 +243,7 @@ namespace ACLSim
                 {
                     axisCentered = true;
                     errorLog.DisplayError($"Center calibration timed out for {axisName}: " + stopwatch.Elapsed.TotalSeconds.ToString("F2") + " seconds");
-                    errorLog.DisplayError($"Could not center (try reversing direction or increasing Center_Callibration_Speed_{axisName}");
+                    errorLog.DisplayError($"Could not center (try reversing direction or increasing Center_Calibration_Speed_{axisName}");
                 }
                 catch (Exception ex)
                 {
@@ -353,24 +357,42 @@ namespace ACLSim
 
 
         // Pitch Speed
-        public void ChangeAxisSpeed(double value)
+        public void ChangeAxisSpeed(int value)
         {
             if (!enabled)
             {
                 return;
             }
 
+            if (value < 0) value = 0;
+            else if (value > 100) value = 100;
+            currentSpeed = value;
+            errorLog.DisplayInfo("Changing Axis Speed " + axisName + ": " + currentSpeed);
+
+            // 5000 scale
+            value = value * 50; 
+
             string arduLine = "<" + movePrefix + "_SPEED, 0, " + value + ">";
             try
             {
                 port.Write(arduLine);
-               // errorLog.DisplayInfo("ChangeAxisSpeed " + axisName + ": " + value);
             }
             catch (Exception ex)
             {
                 errorLog.DisplayError("Cannot connect to Arduino COM port. -ChangeAxisSpeed " + ex.Message);
             }
         }
+
+        public void ResetAxisSpeed()
+        {
+            ChangeAxisSpeed(defaultSpeed);
+        }
+
+        public void SetDefaultSpeed(int speed)
+        {
+            this.defaultSpeed = speed;
+        }
+            
 
         public bool IsEnabled()
         {

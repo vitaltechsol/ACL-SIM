@@ -130,7 +130,6 @@ namespace ACLSim
             string mbcYawSetting = Properties.Settings.Default.RS485_Yaw;
             string mbcTillerSetting = Properties.Settings.Default.RS485_Tiller;
 
-
             mbc = new ModbusClient(port)
             {
                 Baudrate = 115200,
@@ -277,31 +276,32 @@ namespace ACLSim
              axisPitch = new AxisControl("Y_POS",
                 "Pitch",
                 Properties.Settings.Default.Direction_Axis_Pitch,
-                Properties.Settings.Default.Position_Pitch_HYD_OFF_Max,
+                Properties.Settings.Default.Moving_Speed_Pitch,
                 Properties.Settings.Default.Enable_Pitch_ACL);
 
              axisRoll = new AxisControl("X_POS",
                 "Roll",
                 Properties.Settings.Default.Direction_Axis_Roll,
-                0,  // no hydraulic positionchange
+                Properties.Settings.Default.Moving_Speed_Roll,
                 Properties.Settings.Default.Enable_Roll_ACL);
 
              axisYaw = new AxisControl("Z_POS",
                 "Yaw",
                 Properties.Settings.Default.Direction_Axis_Yaw,
-                Properties.Settings.Default.Position_Yaw_HYD_OFF_Max,
+                Properties.Settings.Default.Moving_Speed_Yaw,
                 Properties.Settings.Default.Enable_Yaw_ACL);
 
              axisTiller = new AxisControl("Tiller_POS",
                 "Tiller",
                 Properties.Settings.Default.Direction_Axis_Tiller,
-                0,  // no hydraulic positionchange
+                0,  // no speed changes
                 Properties.Settings.Default.Enable_Tiller_ACL);
         }
 
         private void Form1_Shown(Object sender, EventArgs e)
         {
             errorh.onError += (msg) => ShowFormError(msg);
+            tabTest.Enter += (s, ev) => OnTestTabShown();
 
             try
             {
@@ -516,10 +516,6 @@ namespace ACLSim
                 speedYaw.SetBounceGain(Dampening_Yaw);
                 speedTiller.SetSpeed(Centering_Speed_Tiller);
                 speedTiller.SetBounceGain(Dampening_Tiller);
-
-                axisRoll.ChangeAxisSpeed(8000000);
-                axisPitch.ChangeAxisSpeed(8000000);
-                axisYaw.ChangeAxisSpeed(8000000);
             }
            
         }
@@ -732,7 +728,6 @@ namespace ACLSim
 
                                 if (rollValue != 0)
                                 {
-                                    axisRoll.ChangeAxisSpeed(500);
                                     item.valueAdjusted = rollValue;
                                     _ = axisRoll.TrimToPositionAsync(rollValue); // fire-and-forget or await if async
                                  
@@ -757,7 +752,6 @@ namespace ACLSim
                                     //UpdateYawTorques(true);
                                     // _ = axisYaw.TrimToPositionAsync(yawValue); // fire-and-forget or await if async
 
-                                    axisYaw.ChangeAxisSpeed(500);
                                    // axisYaw.isTrimming = true;
                                //     UpdateYawTorques(true);
                                     item.valueAdjusted = yawValue * Direction_Axis_Yaw;
@@ -1136,35 +1130,81 @@ namespace ACLSim
 
         private void btnCenterOut_Click(object sender, EventArgs e)
         {
-            moveToX(0);
-            errorh.DisplayInfo("Moved Roll to 0");
-            moveToY(0);
+
+
+            if (txbSpeedPitch.Text != "")
+            {
+                if (axisPitch.currentSpeed != Int32.Parse(txbSpeedPitch.Text))
+                {
+                    axisPitch.ChangeAxisSpeed(Int32.Parse(txbSpeedPitch.Text));
+                }
+            }
+
+            if (txbSpeedRoll.Text != "")
+            {
+                if (axisRoll.currentSpeed != Int32.Parse(txbSpeedRoll.Text))
+                {
+                    axisRoll.ChangeAxisSpeed(Int32.Parse(txbSpeedRoll.Text));
+                }
+            }
+
+            if (txbYawSpeedTest.Text != "")
+            {
+                if (axisYaw.currentSpeed != Int32.Parse(txbSpeedYaw.Text))
+                {
+                    axisYaw.ChangeAxisSpeed(Int32.Parse(txbSpeedYaw.Text));
+                }
+            }
+            axisPitch.MoveTo(0);
             errorh.DisplayInfo("Moved Pitch to 0");
-            moveToZ(0);
+            axisRoll.MoveTo(0);
+            errorh.DisplayInfo("Moved Roll to 0");
+            axisYaw.MoveTo(0);
             errorh.DisplayInfo("Moved Yaw to 0");
             axisTiller.MoveTo(0);
             errorh.DisplayInfo("Moved Tiller to 0");
-            txtbxRollPosition.Text = "0";
-            txtbxPitchPosition.Text = "0";
-            txtbxYawPosition.Text = "0";
-            txtbxTillerPosition.Text = "0";
         }
 
         private void btnGoTo_Click(object sender, EventArgs e)
         {
             try {
-                torquePitch.SetManualOverride(true);
-                torquePitch.SetTorque(torquePitchMax);
-                torqueRoll.SetManualOverride(true);
-                torqueRoll.SetTorque(torqueRollMax);
-                axisRoll.MoveTo(Convert.ToDouble(txtbxRollPosition.Text));
+
+
+                if (txbSpeedPitch.Text != "")
+                {
+                     axisPitch.ChangeAxisSpeed(Int32.Parse(txbSpeedPitch.Text));
+                }
+
+                if (txbSpeedRoll.Text != "")
+                {
+                      axisRoll.ChangeAxisSpeed(Int32.Parse(txbSpeedRoll.Text));
+                }
+
+                if (txbSpeedYaw.Text != "")
+                { 
+                     axisYaw.ChangeAxisSpeed(Int32.Parse(txbSpeedYaw.Text));
+                }
+
+                torquePitch.APIsOn();
+                torqueRoll.APIsOn();
+                torqueYaw.APIsOn();
+                torqueTiller.APIsOn();
+
+                speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
+                speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
+
                 axisPitch.MoveTo(Convert.ToDouble(txtbxPitchPosition.Text));
+                errorh.DisplayInfo($"Moving Pitch to {txtbxPitchPosition.Text}");
+                axisRoll.MoveTo(Convert.ToDouble(txtbxRollPosition.Text));
+                errorh.DisplayInfo($"Moving Roll to {txtbxRollPosition.Text}");
                 axisYaw.MoveTo(Convert.ToDouble(txtbxYawPosition.Text));
+                errorh.DisplayInfo($"Moving Yaw to {txtbxYawPosition.Text}");
                 axisTiller.MoveTo(Convert.ToDouble(txtbxTillerPosition.Text));
+                errorh.DisplayInfo($"Moving Tiller to {txtbxTillerPosition.Text}");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("failed to move " + ex.Message + " " + ex.Data);
+               errorh.DisplayError("failed to move " + ex.Message + " " + ex.Data);
             }
         }
 
@@ -1296,6 +1336,60 @@ namespace ACLSim
             txbBounceTiller.Text = speedTiller.GetBounceGain().ToString();
         }
 
+
+        private void btnSaveSpeed_Click(object sender, EventArgs e)
+        {
+            if (txbSpeedPitch.Text != "")
+            {
+                int speed = Int32.Parse(txbSpeedPitch.Text);
+                if (speed < 0) speed = 0;
+                else if (speed > 100) speed = 100;
+                Properties.Settings.Default.Moving_Speed_Pitch = Int32.Parse(txbSpeedPitch.Text); 
+                axisPitch.ChangeAxisSpeed(speed);
+                axisPitch.SetDefaultSpeed(speed);
+                errorh.DisplayInfo($"Pitch moving speed saved to {speed}");
+            }
+
+            if (txbSpeedRoll.Text != "")
+            {
+                int speed = Int32.Parse(txbSpeedRoll.Text);
+                if (speed < 0) speed = 0;
+                else if (speed > 100) speed = 100;
+                Properties.Settings.Default.Moving_Speed_Roll = Int32.Parse(txbSpeedRoll.Text);
+                axisRoll.ChangeAxisSpeed(speed);
+                axisRoll.SetDefaultSpeed(speed);
+                errorh.DisplayInfo($"Roll moving speed saved to {speed}");
+            }
+
+            if (txbSpeedYaw.Text != "")
+            {
+                int speed = Int32.Parse(txbSpeedYaw.Text);
+                if (speed < 0) speed = 0;
+                else if (speed > 100) speed = 100;
+                Properties.Settings.Default.Moving_Speed_Yaw = Int32.Parse(txbSpeedYaw.Text);
+                axisYaw.ChangeAxisSpeed(speed);
+                axisYaw.SetDefaultSpeed(speed);
+                errorh.DisplayInfo($"Yaw moving speed saved to {speed}");
+            }
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void OnTestTabShown()
+        {
+            txbSpeedPitch.Text = Properties.Settings.Default.Moving_Speed_Pitch.ToString();
+            txbSpeedRoll.Text = Properties.Settings.Default.Moving_Speed_Roll.ToString();
+            txbSpeedYaw.Text = Properties.Settings.Default.Moving_Speed_Yaw.ToString();
+            txbBouncePitch.Text = speedPitch.GetBounceGain().ToString();
+            txbBounceRoll.Text = speedRoll.GetBounceGain().ToString();
+            txbBounceYaw.Text = speedYaw.GetBounceGain().ToString();
+            txbBounceTiller.Text = speedTiller.GetBounceGain().ToString();
+            txbPitchSpeedTest.Text = speedPitch.GetSpeed().ToString();
+            txbRollSpeedTest.Text = speedRoll.GetSpeed().ToString();
+            txbYawSpeedTest.Text = speedYaw.GetSpeed().ToString();
+            txbTillerSpeedTest.Text = speedTiller.GetSpeed().ToString();
+        }
+
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (chkBoxStatus.Checked)
@@ -1337,6 +1431,11 @@ namespace ACLSim
             axisYaw.isCentering = true;
             axisTiller.isCentering = true;
             // On for additional torque
+            axisPitch.ChangeAxisSpeed(100);
+            axisRoll.ChangeAxisSpeed(100);
+            axisYaw.ChangeAxisSpeed(100);
+            axisTiller.ChangeAxisSpeed(100);
+
             errorh.DisplayInfo("Moving Torque on");
             torquePitch.APIsOn();
             torqueRoll.APIsOn();
@@ -1412,6 +1511,11 @@ namespace ACLSim
             torqueYaw.ResetHome();
             torqueTiller.ResetHome();
 
+            axisPitch.ResetAxisSpeed();
+            axisRoll.ResetAxisSpeed();
+            axisYaw.ResetAxisSpeed();
+            axisTiller.ResetAxisSpeed();
+
             errorh.DisplayInfo("Reset Torque");
 
             if (!isHydAvail)
@@ -1450,6 +1554,7 @@ namespace ACLSim
         {
 
         }
+
     }
 
     // The data object that is used for the DataRef table
