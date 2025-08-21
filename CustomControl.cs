@@ -1,6 +1,7 @@
 ﻿using EasyModbus;
 using System;
 using System.IO.Ports;
+using System.Threading.Tasks;
 
 namespace ACLSim
 {
@@ -24,11 +25,17 @@ namespace ACLSim
         // 51 - Motor running top speed
         public void SetSpeed(int value)
         {
+            errorLog.DisplayInfo($"Set centering speed for (Servo {driverID}) to {value}");
             if (prevSpeed != value)
             {
                 SetValue(51, value, 0);
                 prevSpeed = value;
             }
+        }
+
+        public async Task SetSpeedAsync(int value)
+        {
+            await Task.Run(() => SetSpeed(value));
         }
 
         public int GetSpeed()

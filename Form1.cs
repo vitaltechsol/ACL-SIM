@@ -85,6 +85,8 @@ namespace ACLSim
         static bool sendDataY = false;
         static bool sendDataZ = false;
 
+        private InactivityDebouncer<double> trimAileronAction;
+
         static ModbusClient mbc;
         static ModbusClient mbcPitch;
         static ModbusClient mbcRoll;
@@ -331,6 +333,16 @@ namespace ACLSim
                 }
 
 
+                if (mbcYaw != null)
+                {
+                    if (mbcYaw.Connected)
+                    {
+                        mbcYaw.Disconnect();
+                    }
+                    mbcYaw.Connect();
+                }
+
+
                 if (mbcTiller != null)
                 {
                     if (mbcTiller.Connected)
@@ -416,7 +428,17 @@ namespace ACLSim
 
             SetAppSettings(true);
             StartDynamicTorques();
-           
+
+
+            trimAileronAction = new InactivityDebouncer<double>(
+                TimeSpan.FromMilliseconds(800),
+                onStart: delegate (double v) { HandleAileronTrimStart(); },
+                onIdle: delegate (double v) { HandleAileronTrimEnd(); },
+                equals: delegate (double a, double b) { return Math.Abs(a - b) < 50.0; }, // Threshold is 50
+                marshalTo: this, // optional; only needed if onIdle/onStart touch UI controls
+                onChange: delegate (double v) { axisRoll.MoveTo(v); } // only called when Δ > X
+            );
+
             if (Properties.Settings.Default.AutoConnect) 
             { 
                 connectToProSim();
@@ -508,13 +530,14 @@ namespace ACLSim
             if (Properties.Settings.Default.AutoConnect && firstTime)
             {
                 // Values from settings
-                speedPitch.SetSpeed(Centering_Speed_Pitch);
-                speedPitch.SetBounceGain(Dampening_Pitch);
-                speedRoll.SetSpeed(Centering_Speed_Roll);
-                speedRoll.SetBounceGain(Dampening_Roll);
-                speedYaw.SetSpeed(Centering_Speed_Yaw);
+                //speedPitch.SetSpeedAsync(Centering_Speed_Pitch);
+                //speedRoll.SetSpeedAsync(Centering_Speed_Roll);
+                //speedYaw.SetSpeedAsync(Centering_Speed_Yaw);
+                //speedTiller.SetSpeedAsync(Centering_Speed_Tiller);
+
                 speedYaw.SetBounceGain(Dampening_Yaw);
-                speedTiller.SetSpeed(Centering_Speed_Tiller);
+                speedPitch.SetBounceGain(Dampening_Pitch);
+                speedRoll.SetBounceGain(Dampening_Roll);
                 speedTiller.SetBounceGain(Dampening_Tiller);
             }
            
@@ -724,13 +747,12 @@ namespace ACLSim
                         case DayaRefNames.TRIM_AILERON:
                             {
                                 double rollValue = Math.Round(item.Value * trimFactorAileron) * Direction_Axis_Roll;
-                             //   errorh.DisplayInfo("trim aileron " + rollValue);
 
                                 if (rollValue != 0)
                                 {
                                     item.valueAdjusted = rollValue;
-                                    _ = axisRoll.TrimToPositionAsync(rollValue); // fire-and-forget or await if async
-                                 
+                                    //axisRoll.MoveTo(rollValue);
+                                    trimAileronAction.Signal(rollValue);
                                 }
 
                                 break;
@@ -739,25 +761,15 @@ namespace ACLSim
 
                         case DayaRefNames.TRIM_RUDDER:
                             {
-
-                                //if (sendDataZ == true)
-                                //{
-                                    double yawValue = Math.Round(item.Value * trimFactorRudder);
-                                    // Skip sudden jumps to 0
-                                    if (yawValue != 0)
-                                    {
-
-                                    //axisYaw.ChangeAxisSpeed(100);
-                                    //    item.valueAdjusted = yawValue;
-                                    //UpdateYawTorques(true);
-                                    // _ = axisYaw.TrimToPositionAsync(yawValue); // fire-and-forget or await if async
-
-                                   // axisYaw.isTrimming = true;
-                               //     UpdateYawTorques(true);
+                                double yawValue = Math.Round(item.Value * trimFactorRudder);
+                                if (yawValue != 0)
+                                {
+                                    torqueYaw.APIsOn();
                                     item.valueAdjusted = yawValue * Direction_Axis_Yaw;
                                     moveToZ(yawValue * Direction_Axis_Yaw);
 
                                     sendDataZ = false;
+                                    torqueYaw.APIsOff();
                                 }
                                 break;
                             }
@@ -930,9 +942,8 @@ namespace ACLSim
                                     axisTiller.HydraulicPower = false;
                                     if (!axisPitch.isCentering && !torquePitch.isManuallySet)
                                     {
+                                        await speedPitch.SetSpeedAsync(0);
                                         torquePitch.HydraulicOff();
-                                        await Task.Delay(2000);
-                                        speedPitch.SetSpeed(0);
                                     }
 
                                     if (!axisRoll.isCentering && !torqueRoll.isManuallySet)
@@ -942,9 +953,8 @@ namespace ACLSim
 
                                     if (!axisYaw.isCentering && !torqueYaw.isManuallySet)
                                     {
+                                        await speedYaw.SetSpeedAsync(0);
                                         torqueYaw.HydraulicOff();
-                                        await Task.Delay(2000);
-                                        speedYaw.SetSpeed(0);
                                     }
                                 }
                                 else
@@ -959,8 +969,8 @@ namespace ACLSim
                                     torqueTiller.HydraulicOn();
 
                                     await Task.Delay(2000);
-                                    speedPitch.SetSpeed(Centering_Speed_Pitch);
-                                    speedYaw.SetSpeed(Centering_Speed_Yaw);
+                                    await speedPitch.SetSpeedAsync(Centering_Speed_Pitch);
+                                    await speedYaw.SetSpeedAsync(Centering_Speed_Yaw);
                                 }
 
                                 break;
@@ -1184,14 +1194,13 @@ namespace ACLSim
                 { 
                      axisYaw.ChangeAxisSpeed(Int32.Parse(txbSpeedYaw.Text));
                 }
+                speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
+                speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
 
                 torquePitch.APIsOn();
                 torqueRoll.APIsOn();
                 torqueYaw.APIsOn();
                 torqueTiller.APIsOn();
-
-                speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
-                speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
 
                 axisPitch.MoveTo(Convert.ToDouble(txtbxPitchPosition.Text));
                 errorh.DisplayInfo($"Moving Pitch to {txtbxPitchPosition.Text}");
@@ -1218,6 +1227,16 @@ namespace ACLSim
             torqueYaw.StartDynamicTorque();
         }
 
+        private void HandleAileronTrimStart()
+        {
+            torqueRoll.APIsOn();
+        }
+
+        private void HandleAileronTrimEnd()
+        {
+            torqueRoll.ResetHome();
+            torqueRoll.APIsOff();
+        }
         private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.AutoConnect = chkAutoConnect.Checked;
@@ -1437,13 +1456,13 @@ namespace ACLSim
             axisTiller.ChangeAxisSpeed(100);
 
             errorh.DisplayInfo("Moving Torque on");
+            speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
+            speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
             torquePitch.APIsOn();
             torqueRoll.APIsOn();
             torqueYaw.APIsOn();
             torqueTiller.APIsOn();
 
-            speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
-            speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
             errorh.DisplayInfo("Moving axis to home");
             var taskHomeRoll = axisRoll.MoveToHome();
             var taskHomePitch = axisPitch.MoveToHome();

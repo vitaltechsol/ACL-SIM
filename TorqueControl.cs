@@ -127,6 +127,8 @@ namespace ACLSim
                 ccwValue = 1;
             }
 
+            CurrentTorque = cwValue;
+
             if (this.enabled && (StatusTextCCW != cwValueWithOffset || StatusTextCW != cwValue))
             {
 
@@ -347,6 +349,14 @@ namespace ACLSim
             }
         }
 
+        public void StartTargetTorque(int targetTorque)
+        {
+            if (this.enabled)
+            {
+                _ = IncreaseTorqueAsync(targetTorque);
+            }
+        }
+
         /// <summary>
         /// Stops the background loop gracefully.
         /// </summary>
@@ -426,6 +436,7 @@ namespace ACLSim
                         if (!_isManuallySet)
                         {
                             await SafeSetTorqueAsync(tHome).ConfigureAwait(false);
+
                         }
                         continue; // next iteration
                     }
@@ -483,6 +494,36 @@ namespace ACLSim
             return SetTorqueAsync(torque);
         }
 
+
+        private async Task IncreaseTorqueAsync(int maxTorque)
+        {
+            Console.WriteLine("IncreaseTorqueAsync loop started");
+
+            // Ensure connection
+            if (!mbc.Connected)
+                mbc.Connect();
+
+            mbc.UnitIdentifier = driverID;
+
+            
+            // Main loop
+            while (CurrentTorque < maxTorque)
+            {
+                try
+                {
+                    CurrentTorque++;
+                    await SafeSetTorqueAsync(CurrentTorque).ConfigureAwait(false);
+                    // Brief pacing
+                    //await Task.Delay(2).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("DynamicTorque error: " + ex.Message);
+                }
+            }
+
+            Console.WriteLine("IncreaseTorqueAsync loop stopped.");
+        }
         //public void MoveToPosition(int targetPosition)
         //{
         //    try
@@ -516,8 +557,8 @@ namespace ACLSim
         {
             SetManualOverride(true);
             HasHydraulicPower = false;
-         //   errorLog.DisplayInfo($"Hydraulic off mode for: (Servo {mbc.UnitIdentifier}: {HydOffTorque}");
-            SetTorque(HydOffTorque);
+            //   errorLog.DisplayInfo($"Hydraulic off mode for: (Servo {mbc.UnitIdentifier}: {HydOffTorque}");
+            StartTargetTorque(HydOffTorque);
         }
 
         public void HydraulicOn()
@@ -529,8 +570,7 @@ namespace ACLSim
         public void APIsOn()
         {
             SetManualOverride(true);
-            SetTorque((int)(MaxTorque / 6));
-            SetTorque((int)(MaxTorque / 2));
+            StartTargetTorque((int)(MaxTorque / 2));
         }
 
         public void APIsOff()
