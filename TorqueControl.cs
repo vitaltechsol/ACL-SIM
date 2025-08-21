@@ -41,6 +41,7 @@ namespace ACLSim
         private readonly byte driverID;
         private readonly int encoderPn;
         private CancellationTokenSource _cts;
+        private CancellationTokenSource _ctsTarget;
         private Task _loopTask;
         private volatile bool _resetHomeRequested;
         private volatile bool _isManuallySet;
@@ -353,7 +354,13 @@ namespace ACLSim
         {
             if (this.enabled)
             {
-                _ = IncreaseTorqueAsync(targetTorque);
+                if (_ctsTarget != null)
+                {
+                    _ctsTarget.Cancel();
+                    _ctsTarget.Dispose();
+                }
+                _ctsTarget = new CancellationTokenSource();
+                _ = IncreaseTorqueAsync(targetTorque, _ctsTarget.Token);
             }
         }
 
@@ -375,6 +382,20 @@ namespace ACLSim
                 _cts = null;
                 _loopTask = null;
                 _tracker = null;
+            }
+        }
+
+        public async Task StopTargetTorqueAsync()
+        {
+            try
+            {
+                _cts.Cancel();
+            }
+            catch (OperationCanceledException) { /* expected */ }
+            finally
+            {
+                _cts.Dispose();
+                _cts = null;
             }
         }
 
@@ -495,7 +516,7 @@ namespace ACLSim
         }
 
 
-        private async Task IncreaseTorqueAsync(int maxTorque)
+        private async Task IncreaseTorqueAsync(int maxTorque, CancellationToken token)
         {
             Console.WriteLine("IncreaseTorqueAsync loop started");
 
@@ -507,7 +528,7 @@ namespace ACLSim
 
             
             // Main loop
-            while (CurrentTorque < maxTorque)
+            while (CurrentTorque < maxTorque && !token.IsCancellationRequested)
             {
                 try
                 {

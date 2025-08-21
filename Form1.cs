@@ -530,10 +530,10 @@ namespace ACLSim
             if (Properties.Settings.Default.AutoConnect && firstTime)
             {
                 // Values from settings
-                //speedPitch.SetSpeedAsync(Centering_Speed_Pitch);
-                //speedRoll.SetSpeedAsync(Centering_Speed_Roll);
-                //speedYaw.SetSpeedAsync(Centering_Speed_Yaw);
-                //speedTiller.SetSpeedAsync(Centering_Speed_Tiller);
+                speedPitch.SetSpeed(Centering_Speed_Pitch);
+                speedRoll.SetSpeed(Centering_Speed_Roll);
+                speedYaw.SetSpeed(Centering_Speed_Yaw);
+                speedTiller.SetSpeed(Centering_Speed_Tiller);
 
                 speedYaw.SetBounceGain(Dampening_Yaw);
                 speedPitch.SetBounceGain(Dampening_Pitch);
@@ -934,27 +934,29 @@ namespace ACLSim
 
                                 if (!isHydAvail)
                                 {
-                                  
-                                    torqueTiller.HydraulicOff();
+
+                                    //torqueTiller.HydraulicOff();
                                     axisPitch.HydraulicPower = false;
                                     axisRoll.HydraulicPower = false;
                                     axisYaw.HydraulicPower = false;
                                     axisTiller.HydraulicPower = false;
-                                    if (!axisPitch.isCentering && !torquePitch.isManuallySet)
-                                    {
-                                        await speedPitch.SetSpeedAsync(0);
-                                        torquePitch.HydraulicOff();
-                                    }
 
-                                    if (!axisRoll.isCentering && !torqueRoll.isManuallySet)
-                                    {
-                                        torqueRoll.HydraulicOff();
-                                    }
 
                                     if (!axisYaw.isCentering && !torqueYaw.isManuallySet)
                                     {
                                         await speedYaw.SetSpeedAsync(0);
                                         torqueYaw.HydraulicOff();
+                                    }
+
+                                    if (!axisPitch.isCentering && !torquePitch.isManuallySet)
+                                    {
+                                       await speedPitch.SetSpeedAsync(0);
+                                       torquePitch.HydraulicOff();
+                                    }
+
+                                    if (!axisRoll.isCentering && !torqueRoll.isManuallySet)
+                                    {
+                                        torqueRoll.HydraulicOff();
                                     }
                                 }
                                 else
@@ -1462,14 +1464,12 @@ namespace ACLSim
             torqueRoll.APIsOn();
             torqueYaw.APIsOn();
             torqueTiller.APIsOn();
-
             errorh.DisplayInfo("Moving axis to home");
             var taskHomeRoll = axisRoll.MoveToHome();
             var taskHomePitch = axisPitch.MoveToHome();
             var taskHomeYaw = axisYaw.MoveToHome();
             var taskHomeTiller = axisTiller.MoveToHome();
             await Task.WhenAll(taskHomeRoll, taskHomePitch, taskHomeYaw, taskHomeTiller);
-
             await Task.Delay(4000);
 
             if (connection.isConnected)
