@@ -29,7 +29,7 @@
 |             | Autopilot disengage override by moving the control| Complete |
 |             | Clomun pitch stays fixed with hydraulics off      | Complete |
 |             | Center calibration when starting the sim          | Complete |
-|             | More accurate Load changes based on pitch position| In Prog  |
+|             | Accurate Load changes based on position           | Complete |
 | Roll Axis   |                                                   |          |
 |             | Self-centering                                    | Complete |
 |             | Load increased when hydraulics are not available  | Complete |
@@ -37,11 +37,13 @@
 |             | Autopilot disengage override by moving the control| Complete |
 |             | Trim Adjustment moves Control wheel               | Complete |
 |             | Center calibration when starting the sim          | Complete |
+|             | Accurate Load changes based on position           | Complete |
 | Rudder Axis |                                                   |          |
 |             | Self-centering                                    | Complete |
 |             | Load increased when hydraulics are not available  | Complete |
 |             | Trim Adjustment moves rudders                     | Complete |
 |             | Center calibration when starting the sim          | Complete |
+|             | Accurate Load changes based on position           | Complete |
 | Tiller      |                                                   |          |
 |             | Self-centering                                    | Complete |
 |             | Load increases when hydraulics are not available  | Complete |
