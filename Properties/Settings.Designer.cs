@@ -589,18 +589,6 @@ namespace ACLSim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("12")]
-        public int Torque_Pitch_Axis_Factor {
-            get {
-                return ((int)(this["Torque_Pitch_Axis_Factor"]));
-            }
-            set {
-                this["Torque_Pitch_Axis_Factor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public int Torque_Stalling_Additional {
             get {

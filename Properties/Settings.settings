@@ -143,9 +143,6 @@
     <Setting Name="Torque_Tiller_Min" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">12</Value>
     </Setting>
-    <Setting Name="Torque_Pitch_Axis_Factor" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">12</Value>
-    </Setting>
     <Setting Name="Torque_Stalling_Additional" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
