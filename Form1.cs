@@ -86,6 +86,7 @@ namespace ACLSim
         static bool sendDataZ = false;
 
         private InactivityDebouncer<double> trimAileronAction;
+        private InactivityDebouncer<double> trimYawAction;
 
         static ModbusClient mbc;
         static ModbusClient mbcPitch;
@@ -429,15 +430,29 @@ namespace ACLSim
             SetAppSettings(true);
             StartDynamicTorques();
 
-
             trimAileronAction = new InactivityDebouncer<double>(
-                TimeSpan.FromMilliseconds(800),
-                onStart: delegate (double v) { HandleAileronTrimStart(); },
-                onIdle: delegate (double v) { HandleAileronTrimEnd(); },
+                TimeSpan.FromMilliseconds(900),
+                onStart: delegate (double v) { torqueRoll.SetManualOverride(true); },
+                onIdle: delegate (double v) {
+                    torqueRoll.SetManualOverride(false);
+                    torqueRoll.ResetHome();
+                },
                 equals: delegate (double a, double b) { return Math.Abs(a - b) < 50.0; }, // Threshold is 50
                 marshalTo: this, // optional; only needed if onIdle/onStart touch UI controls
                 onChange: delegate (double v) { axisRoll.MoveTo(v); } // only called when Δ > X
             );
+
+            trimYawAction = new InactivityDebouncer<double>(
+               TimeSpan.FromMilliseconds(900),
+               onStart: delegate (double v) { torqueYaw.SetManualOverride(true); },
+               onIdle: delegate (double v) {
+                   torqueYaw.SetManualOverride(false);
+                   torqueYaw.ResetHome();
+               },
+               equals: delegate (double a, double b) { return Math.Abs(a - b) < 50.0; }, // Threshold is 50
+               marshalTo: this, // optional; only needed if onIdle/onStart touch UI controls
+               onChange: delegate (double v) { axisYaw.MoveTo(v); } // only called when Δ > X
+           );
 
             if (Properties.Settings.Default.AutoConnect) 
             { 
@@ -746,13 +761,14 @@ namespace ACLSim
 
                         case DayaRefNames.TRIM_AILERON:
                             {
-                                double rollValue = Math.Round(item.Value * trimFactorAileron) * Direction_Axis_Roll;
+                                int rollValue = (int)(Math.Round(item.Value * trimFactorAileron) * Direction_Axis_Roll);
 
                                 if (rollValue != 0)
                                 {
                                     item.valueAdjusted = rollValue;
-                                    //axisRoll.MoveTo(rollValue);
                                     trimAileronAction.Signal(rollValue);
+                                    var axisPosition = int.Parse(connection.ReadDataRef(DayaRefNames.AILERON_CPTN).ToString());
+                                    await torqueRoll.ComputeTorqueFromTrimAsync(axisPosition, (double)item.Value);
                                 }
 
                                 break;
@@ -761,15 +777,13 @@ namespace ACLSim
 
                         case DayaRefNames.TRIM_RUDDER:
                             {
-                                double yawValue = Math.Round(item.Value * trimFactorRudder);
+                                double yawValue = Math.Round(item.Value * trimFactorRudder) * Direction_Axis_Yaw;
                                 if (yawValue != 0)
                                 {
-                                    torqueYaw.APIsOn();
-                                    item.valueAdjusted = yawValue * Direction_Axis_Yaw;
-                                    moveToZ(yawValue * Direction_Axis_Yaw);
-
-                                    sendDataZ = false;
-                                    torqueYaw.APIsOff();
+                                    item.valueAdjusted = yawValue;
+                                    trimYawAction.Signal(yawValue);
+                                    var axisPosition = int.Parse(connection.ReadDataRef(DayaRefNames.RUDDER_CAPT).ToString());
+                                    await torqueYaw.ComputeTorqueFromTrimAsync(axisPosition, (double)item.Value);
                                 }
                                 break;
                             }
@@ -982,7 +996,6 @@ namespace ACLSim
                         case DayaRefNames.AILERON_CPTN:
                             {
                                 item.valueAdjusted = lastRollMoved;
-
                                 if (isRollCMD == true)
                                 {
                                     int value = Convert.ToInt32(dataRef.value);
@@ -1229,16 +1242,6 @@ namespace ACLSim
             torqueYaw.StartDynamicTorque();
         }
 
-        private void HandleAileronTrimStart()
-        {
-            torqueRoll.APIsOn();
-        }
-
-        private void HandleAileronTrimEnd()
-        {
-            torqueRoll.ResetHome();
-            torqueRoll.APIsOff();
-        }
         private void chkAutoConnect_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.AutoConnect = chkAutoConnect.Checked;

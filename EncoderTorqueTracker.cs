@@ -14,8 +14,8 @@ namespace ACLSim
         private readonly int torqueMax;
         private readonly double countsToTorque; // torque increment per count
         private int? lastCount;                 // last raw encoder count (0..countsPerRev-1)
-        private long unwrapped;                 // unwrapped counts (can be negative / multi-rev)
-        private long? home;                     // unwrapped home position (set on first update)
+        private int unwrapped;                 // unwrapped counts (can be negative / multi-rev)
+        private int? home;                     // unwrapped home position (set on first update)
 
         /// <summary>
         /// Create a tracker for a cyclic encoder that reads 0..countsPerRev-1.
@@ -44,6 +44,14 @@ namespace ACLSim
             lastCount = Normalize(currentCount);
             unwrapped = lastCount.Value;
             home = unwrapped;
+        }
+
+        public int GetHome()
+        {
+            if (home != null)
+                return (int)home;
+
+            return 0;
         }
 
         /// <summary>

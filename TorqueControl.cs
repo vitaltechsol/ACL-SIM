@@ -44,6 +44,7 @@ namespace ACLSim
         private CancellationTokenSource _ctsTarget;
         private Task _loopTask;
         private volatile bool _resetHomeRequested;
+        private volatile int _resetHomeRequestedAddVal;
         private volatile bool _isManuallySet;
 
         // For change detection (optional)
@@ -343,7 +344,7 @@ namespace ACLSim
             if (this.enabled)
             {
                 if (_loopTask != null && !_loopTask.IsCompleted)
-                    throw new InvalidOperationException("Loop already running. Call StopAsync() first.");
+                    throw new InvalidOperationException("Loop already running. Call StopDynamicTorqueAsync() first.");
 
                 _cts = new CancellationTokenSource();
                 _loopTask = RunLoopAsync(MinTorque, MaxTorque, _cts.Token);
@@ -408,6 +409,12 @@ namespace ACLSim
             _resetHomeRequested = true;
         }
 
+
+        public void OffsetHome(int offset)
+        {
+            _resetHomeRequestedAddVal = offset;
+        }
+
         /// <summary>
         /// If you have a manual override UI, set this to true to suspend auto torque updates.
         /// </summary>
@@ -460,6 +467,13 @@ namespace ACLSim
 
                         }
                         continue; // next iteration
+                    }
+
+                    if (_resetHomeRequestedAddVal > 0)
+                    {
+                        var newHome = _tracker.GetHome() + _resetHomeRequestedAddVal;
+                        _tracker.SetHome(newHome);
+                        _resetHomeRequestedAddVal = 0;
                     }
 
                     int torque = _tracker.Update(raw);
@@ -573,6 +587,40 @@ namespace ACLSim
         //        Console.WriteLine($"MoveToPosition failed: {ex.Message}");
         //    }
         //}
+
+        /// <summary>
+        /// axisPos: 0..1024 (0 = full right, 512 = center, 1024 = full left)
+        /// trim: -1..+1 (-1 = full right trim, +1 = full left trim)
+        /// Returns torque in [minTorque, maxTorque].
+        /// </summary>
+        public async Task ComputeTorqueFromTrimAsync(int axisPos, double trim)
+        {
+            Console.WriteLine($"axisPos {axisPos} | trim: {trim}");
+
+            var trimMin = -10.0;
+            var trimMax = 10.0;
+            var minTorque = MinTorque + 6;
+
+            // Normalize axis to [-10, +10]
+            double axisNorm = ((axisPos - 512.0) / 512.0) * trimMax;
+
+            // Clamp trim to [-10, +10]
+            double trimClamped = Clamp(trim, trimMin, trimMax);
+
+            // Residual deflection after trim compensation
+            double residual = Math.Abs(axisNorm - trimClamped);
+            residual = Clamp(residual, 0.0, trimMax);
+
+            // Linear interpolation between min and max torque
+            int torque = (int)(minTorque + (MaxTorque - minTorque) * (residual / trimMax));
+
+            Console.WriteLine($"torque {torque}");
+            await SetTorqueAsync(torque);
+        }
+
+
+        private static double Clamp(double v, double lo, double hi)
+            => v < lo ? lo : (v > hi ? hi : v);
 
         public void HydraulicOff()
         {
