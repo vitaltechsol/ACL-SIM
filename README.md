@@ -7,12 +7,13 @@
 - Prosim-AR 737
 - Microsfot Flight Simulator 2020, 2024 or P3D v4+
 - [ACL software](https://github.com/vitaltechsol/ACL-SIM/releases)
+- [Software Manual](https://docs.google.com/document/d/1KazFxLndUraUICVV142zfowjpmU_UAafAoSC2X-yo0w/edit?usp=sharing)
 
 ## Hardware Required:
 - AC Servo Motors
 - Arduino Mega
 - RS485 Controller
-[Hardware installation](https://fabianb.medium.com/a-d862f927d0bf)
+[Hardware installation](https://docs.google.com/document/d/1BwuNVnbSR_nCwNKXKo0L1YqKoHi7jEu5gOJ-OT1txDU/edit?tab=t.0)
 
 
 ## Features 
