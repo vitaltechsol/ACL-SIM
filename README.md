@@ -13,7 +13,7 @@
 - AC Servo Motors
 - Arduino Mega
 - RS485 Controller
-[Hardware installation](https://docs.google.com/document/d/1BwuNVnbSR_nCwNKXKo0L1YqKoHi7jEu5gOJ-OT1txDU/edit?tab=t.0)
+- [Hardware installation](https://docs.google.com/document/d/1BwuNVnbSR_nCwNKXKo0L1YqKoHi7jEu5gOJ-OT1txDU/edit?tab=t.0)
 
 
 ## Features 
