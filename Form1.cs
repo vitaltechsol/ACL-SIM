@@ -1530,9 +1530,8 @@ namespace ACLSim
                 torquePitch.HydraulicOff();
                 torqueRoll.HydraulicOff();
                 torqueYaw.HydraulicOff();
-                errorh.DisplayInfo("Reset Pitch Centering Speed to 0");
+                errorh.DisplayInfo("Reset Centering Speeds to 0");
                 speedPitch.SelfCentering(0);
-                errorh.DisplayInfo("Reset Yaw Centering Speed to 0");
                 speedYaw.SelfCentering(0);
             }
 

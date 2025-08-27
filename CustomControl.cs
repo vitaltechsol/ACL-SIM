@@ -25,9 +25,9 @@ namespace ACLSim
         // 51 - Motor running top speed
         public void SelfCentering(int value)
         {
-            errorLog.DisplayInfo($"Set self-centering speed for (Servo {driverID}) to {value}");
-            if (prevSpeed != value)
+            if (prevSpeed != value && enabled)
             {
+                errorLog.DisplayInfo($"Set self-centering speed for (Servo {driverID}) to {value}");
                 SetValue(51, value, 0);
                 prevSpeed = value;
             }
@@ -56,7 +56,7 @@ namespace ACLSim
 
         public int GetValue(int pn)
         {
-            if (enabled)
+            if (enabled && mbc != null)
             {
                 try
                 {
@@ -75,7 +75,7 @@ namespace ACLSim
 
         public void SetValue(int pn, int value, int min)
         {
-            if (enabled)
+            if (enabled && mbc != null)
             { 
                 if (value < min)
                 {

@@ -48,7 +48,7 @@
       <Value Profile="(Default)">1000</Value>
     </Setting>
     <Setting Name="Enable_Yaw_ACL" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Driver_Yaw_ID" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
@@ -63,7 +63,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Enable_Roll_ACL" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Centering_Speed_Pitch" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">75</Value>
