@@ -127,20 +127,11 @@ namespace ACLSim
         static Form1()
         {
             // Initialize static mbc with settings
-            string port = getRS485Port(); // Make sure this is a static method or accessible
             string mbcPitchSetting = Properties.Settings.Default.RS485_Pitch;
             string mbcRollSetting = Properties.Settings.Default.RS485_Roll;
             string mbcYawSetting = Properties.Settings.Default.RS485_Yaw;
             string mbcTillerSetting = Properties.Settings.Default.RS485_Tiller;
 
-            mbc = new ModbusClient(port)
-            {
-                Baudrate = 115200,
-                StopBits = StopBits.One,
-                Parity = Parity.None,
-                ConnectionTimeout = 4000
-            };
-            
             if (mbcPitchSetting != "") {
                  mbcPitch = new ModbusClient()
                  {
@@ -158,9 +149,6 @@ namespace ACLSim
                 {
                     mbcPitch.SerialPort = mbcPitchSetting;
                 }
-            } else
-            {
-                mbcPitch = mbc;
             }
 
             if (mbcRollSetting != "")
@@ -181,10 +169,6 @@ namespace ACLSim
                 {
                     mbcRoll.SerialPort = mbcRollSetting;
                 }
-            }
-            else
-            {
-                mbcRoll = mbc;
             }
 
             if (mbcYawSetting != "")
@@ -207,10 +191,6 @@ namespace ACLSim
                     mbcYaw.SerialPort = mbcYawSetting;
                 }
             }
-            else
-            {
-                mbcYaw = mbc;
-            }
 
             if (mbcTillerSetting != "")
             {
@@ -232,10 +212,6 @@ namespace ACLSim
                     mbcTiller.SerialPort = mbcTillerSetting;
                 }
             }
-            else
-            {
-                mbcTiller = mbc;
-            }
         }
 
         public Form1()
@@ -255,7 +231,7 @@ namespace ACLSim
                 Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
                 Properties.Settings.Default.Enable_Yaw_ACL, 0);
 
-             torqueTiller = new TorqueControl(mbc,
+             torqueTiller = new TorqueControl(mbcTiller,
                 Convert.ToByte(Properties.Settings.Default.Driver_Tiller_ID),
                 Properties.Settings.Default.Enable_Tiller_ACL, Properties.Settings.Default.Torque_Tiller_Diff_Offset);
 
@@ -271,7 +247,7 @@ namespace ACLSim
                 Convert.ToByte(Properties.Settings.Default.Driver_Yaw_ID),
                 Properties.Settings.Default.Enable_Yaw_ACL);
 
-             speedTiller = new CustomControl(mbc,
+             speedTiller = new CustomControl(mbcTiller,
                 Convert.ToByte(Properties.Settings.Default.Driver_Tiller_ID),
                 Properties.Settings.Default.Enable_Tiller_ACL);
 
@@ -467,11 +443,6 @@ namespace ACLSim
                 return false;
             }
             return ip.Length > 6;
-        }
-
-        static string getRS485Port()
-        {
-            return "COM" + Properties.Settings.Default.RS485COM_Port;
         }
 
         static string getArduinoPort()

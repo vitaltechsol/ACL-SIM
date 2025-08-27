@@ -664,7 +664,7 @@ namespace ACLSim
             this.lblACLSIMVersion.Name = "lblACLSIMVersion";
             this.lblACLSIMVersion.Size = new System.Drawing.Size(37, 13);
             this.lblACLSIMVersion.TabIndex = 22;
-            this.lblACLSIMVersion.Text = "1.11.0";
+            this.lblACLSIMVersion.Text = "1.11.1";
             // 
             // rtxtLog
             // 
