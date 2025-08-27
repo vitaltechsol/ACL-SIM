@@ -35,7 +35,7 @@ namespace ACLSim
         int torqueFactorAirSpeed = 10;
         int trimFactorAileron = 1000;
         int trimFactorRudder = 1000;
-        int torqueStallingAdditional = 0;
+        int torqueStallingAdditional = 10;
         bool autoCenterOnStatart = false;
 
         int Centering_Speed_Pitch = 0;
@@ -858,10 +858,10 @@ namespace ACLSim
                                 errorh.DisplayInfo("Stalling warning: " + isStalling);
                                 if (isStalling)
                                 {
-                                    torquePitch.AdditionalTorque = torqueStallingAdditional;
+                                    torquePitch.AdditionalTorque2 = torqueStallingAdditional;
                                 } else
                                 {
-                                    torquePitch.AdditionalTorque = 0;
+                                    torquePitch.AdditionalTorque2 = 0;
                                 }
                                 
                                 break;

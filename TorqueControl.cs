@@ -24,6 +24,7 @@ namespace ACLSim
         public int HydOffTorque { get; set; }
 
         public int AdditionalTorque { get; set; } = 0;
+        public int AdditionalTorque2 { get; set; } = 0;
 
         public bool HasHydraulicPower { get; set; } = true;
 
@@ -475,7 +476,7 @@ namespace ACLSim
                     if (!_isManuallySet && raw != _prevEncoderValue)
                     {
                         // Console.WriteLine($"[{DateTime.Now:HH:mm:ss.fff}] {driverID} Addr {encoderPn} = {raw} -> torque {torque} - add {AdditionalTorque}");
-                        await SafeSetTorqueAsync(torque + AdditionalTorque).ConfigureAwait(false);
+                        await SafeSetTorqueAsync(torque + AdditionalTorque + AdditionalTorque2).ConfigureAwait(false);
                         _prevEncoderValue = raw;
                     }
                 }
