@@ -29,25 +29,12 @@ namespace ACLSim
         ErrorHandler errorh = new ErrorHandler();
         ProSimConnect connection = new ProSimConnect();
         Dictionary<String, DataRefTableItem> dataRefs = new Dictionary<string, DataRefTableItem>();
-        static int torqueRollMin = 18;
-        static int torqueRollMax = 30;
-        static int torqueRollHydOff = 65;
         static int tillerTorqueReduction = 0;
-
         int pitchTorqueFromPos;
         int yawTorqueFromPos;
         int torqueFactorAirSpeed = 10;
         int trimFactorAileron = 1000;
         int trimFactorRudder = 1000;
-        int torquePitchMin = 1;
-        int torquePitchMax = 70;
-        int torquePitchHydOff = 0;
-        int torqueYawHydOff = 40;
-        int torqueYawMin = 20;
-        int torqueYawMax = 0;
-        int torqueTillerMin = 0;
-        int torqueTillerMax = 20;
-        int torqueTillerHydOff = 5;
         int torqueStallingAdditional = 0;
         bool autoCenterOnStatart = false;
 
@@ -273,7 +260,7 @@ namespace ACLSim
              axisTiller = new AxisControl("Tiller_POS",
                 "Tiller",
                 Properties.Settings.Default.Direction_Axis_Tiller,
-                0,  // no speed changes
+                Properties.Settings.Default.Moving_Speed_Tiller,
                 Properties.Settings.Default.Enable_Tiller_ACL);
         }
 
@@ -353,11 +340,12 @@ namespace ACLSim
             // Add event to update the torque status
             torquePitch.OnUpdateStatusCCW += (sender1, e1) => UpdateTorquePitchLabelBack(torquePitch.StatusTextCCW);
             torquePitch.OnUpdateStatusCW += (sender1, e1) => UpdateTorquePitchLabelFwd(torquePitch.StatusTextCW);
-
             torqueRoll.OnUpdateStatusCCW += (sender1, e1) => UpdateTorqueRollLabelAft(torqueRoll.StatusTextCCW);
             torqueRoll.OnUpdateStatusCW += (sender1, e1) => UpdateTorqueRollLabelFwd(torqueRoll.StatusTextCW);
-
-            torqueYaw.OnUpdateStatusCW += (sender1, e1) => UpdateTorqueYawLabel(torqueYaw.StatusTextCW);
+            torqueYaw.OnUpdateStatusCCW += (sender1, e1) => UpdateTorqueYawLabelAft(torqueYaw.StatusTextCCW);
+            torqueYaw.OnUpdateStatusCW += (sender1, e1) => UpdateTorqueYawLabelFwd(torqueYaw.StatusTextCW);
+            torqueTiller.OnUpdateStatusCCW += (sender1, e1) => UpdateTorqueTillerLabelLeft(torqueTiller.StatusTextCCW);
+            torqueTiller.OnUpdateStatusCW += (sender1, e1) => UpdateTorqueTillerLabelRight(torqueTiller.StatusTextCW);
 
             // Register to receive connect and disconnect events
             connection.onConnect += connection_onConnect;
@@ -452,28 +440,25 @@ namespace ACLSim
 
         private void SetAppSettings(bool firstTime)
         {
+            var defProps = Properties.Settings.Default;
             hostnameInput.Text = Properties.Settings.Default.ProSimIP;
             chkAutoConnect.Checked = Properties.Settings.Default.AutoConnect;
             autoCenterOnStatart = Properties.Settings.Default.Auto_Center_On_Start;
             chkAutoCenter.Checked = autoCenterOnStatart;
 
             torqueFactorAirSpeed = Properties.Settings.Default.Torque_Factor_Air_Speed;
-            
-            torquePitch.MinTorque = Properties.Settings.Default.Torque_Pitch_Min;
-            torquePitch.MaxTorque = Properties.Settings.Default.Torque_Pitch_Max;
-            torquePitch.HydOffTorque = Properties.Settings.Default.Torque_Pitch_Hyd_Off;
 
-            torqueRoll.MinTorque = Properties.Settings.Default.Torque_Roll_Min;
-            torqueRoll.MaxTorque = Properties.Settings.Default.Torque_Roll_Max;
-            torqueRoll.HydOffTorque = Properties.Settings.Default.Torque_Roll_Hyd_Off;
+            torquePitch.SetMinMax(defProps.Torque_Pitch_Min, defProps.Torque_Pitch_Max);
+            torquePitch.HydOffTorque = defProps.Torque_Pitch_Hyd_Off;
 
-            torqueYaw.MinTorque = Properties.Settings.Default.Torque_Yaw_Min;
-            torqueYaw.MaxTorque = Properties.Settings.Default.Torque_Yaw_Max;
-            torqueYaw.HydOffTorque = Properties.Settings.Default.Torque_Yaw_Hyd_Off;
+            torqueRoll.SetMinMax(defProps.Torque_Roll_Min, defProps.Torque_Roll_Max);
+            torqueRoll.HydOffTorque = defProps.Torque_Roll_Hyd_Off;
 
-            torqueTillerMax = Properties.Settings.Default.Torque_Tiller_Max;
-            torqueTillerMin = Properties.Settings.Default.Torque_Tiller_Min;
-            torqueTillerHydOff = Properties.Settings.Default.Torque_Tiller_Hyd_Off;
+            torqueYaw.SetMinMax(defProps.Torque_Yaw_Min, defProps.Torque_Yaw_Max);
+            torqueYaw.HydOffTorque = defProps.Torque_Yaw_Hyd_Off;
+
+            torqueTiller.SetMinMax(defProps.Torque_Tiller_Min, defProps.Torque_Tiller_Max);
+            torqueTiller.HydOffTorque = defProps.Torque_Tiller_Hyd_Off;
 
             torqueStallingAdditional = Properties.Settings.Default.Torque_Stalling_Additional;
 
@@ -484,16 +469,14 @@ namespace ACLSim
             AP_Disconnet_Pitch_Threshold = Properties.Settings.Default.AP_Disconnet_Pitch_Threshold;
 
             apPositionRollFactor = Properties.Settings.Default.AP_Position_Roll_Factor;
-
-            torqueYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
-            speedYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
+            apPositionPitchFactor = Properties.Settings.Default.AP_Position_Pitch_Factor;
 
             torquePitch.enabled = Properties.Settings.Default.Enable_Pitch_ACL;
             speedPitch.enabled = Properties.Settings.Default.Enable_Pitch_ACL;
-
             torqueRoll.enabled = Properties.Settings.Default.Enable_Roll_ACL;
             speedRoll.enabled = Properties.Settings.Default.Enable_Roll_ACL;
-
+            torqueYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
+            speedYaw.enabled = Properties.Settings.Default.Enable_Yaw_ACL;
             torqueTiller.enabled = Properties.Settings.Default.Enable_Tiller_ACL;
             speedTiller.enabled = Properties.Settings.Default.Enable_Tiller_ACL;
 
@@ -511,21 +494,17 @@ namespace ACLSim
             Direction_Axis_Roll = Properties.Settings.Default.Direction_Axis_Roll;
             Direction_Axis_Yaw = Properties.Settings.Default.Direction_Axis_Yaw;
             Direction_Axis_Tiller = Properties.Settings.Default.Direction_Axis_Tiller;
+      
+            // Values from settings
+            speedPitch.SelfCentering(Centering_Speed_Pitch);
+            speedRoll.SelfCentering(Centering_Speed_Roll);
+            speedYaw.SelfCentering(Centering_Speed_Yaw);
+            speedTiller.SelfCentering(Centering_Speed_Tiller);
 
-
-            if (Properties.Settings.Default.AutoConnect && firstTime)
-            {
-                // Values from settings
-                speedPitch.SetSpeed(Centering_Speed_Pitch);
-                speedRoll.SetSpeed(Centering_Speed_Roll);
-                speedYaw.SetSpeed(Centering_Speed_Yaw);
-                speedTiller.SetSpeed(Centering_Speed_Tiller);
-
-                speedYaw.SetBounceGain(Dampening_Yaw);
-                speedPitch.SetBounceGain(Dampening_Pitch);
-                speedRoll.SetBounceGain(Dampening_Roll);
-                speedTiller.SetBounceGain(Dampening_Tiller);
-            }
+            speedYaw.SetBounceGain(Dampening_Yaw);
+            speedPitch.SetBounceGain(Dampening_Pitch);
+            speedRoll.SetBounceGain(Dampening_Roll);
+            speedTiller.SetBounceGain(Dampening_Tiller);
            
         }
   
@@ -803,7 +782,7 @@ namespace ACLSim
                             {
                                 if (axisTiller.IsEnabled() && item.Value > 0 && item.Value < 20) {
                                    
-                                    item.valueAdjusted =  Convert.ToInt32(((((double)torqueTillerMax - (double)torqueTillerMin) / 20) * item.Value));
+                                    item.valueAdjusted =  Convert.ToInt32(((((double)torqueTiller.MaxTorque - (double)torqueTiller.MinTorque) / 20) * item.Value));
 
                                     if (tillerTorqueReduction != item.valueAdjusted)
                                     {
@@ -943,6 +922,11 @@ namespace ACLSim
                                     {
                                         torqueRoll.HydraulicOff();
                                     }
+
+                                    if (!axisTiller.isCentering && !torqueTiller.isManuallySet)
+                                    {
+                                        torqueTiller.HydraulicOff();
+                                    }
                                 }
                                 else
                                 {
@@ -954,6 +938,10 @@ namespace ACLSim
                                     torqueRoll.HydraulicOn();
                                     torqueYaw.HydraulicOn();
                                     torqueTiller.HydraulicOn();
+                                    if (torqueTiller.enabled)
+                                    {
+                                        updateTillerTorque();
+                                    }
 
                                     await Task.Delay(2000);
                                     await speedPitch.SetSpeedAsync(Centering_Speed_Pitch);
@@ -1047,7 +1035,7 @@ namespace ACLSim
 
         private async void updateTillerTorque()
         {
-            int torqueTillerBase = isHydAvail ? torqueTillerMax : torqueTillerHydOff;
+            int torqueTillerBase = isHydAvail ? torqueTiller.MaxTorque : torqueTiller.HydOffTorque;
             await Task.Run(() => torqueTiller.SetTorque(torqueTillerBase - tillerTorqueReduction));
         }
 
@@ -1103,11 +1091,27 @@ namespace ACLSim
 
         }
 
-        private void UpdateTorqueYawLabel(int value)
+        private void UpdateTorqueYawLabelAft(int value)
+        {
+            Invoke(new MethodInvoker(delegate () { lblTorqueYawBack.Text = value.ToString(); }));
+        }
+
+        private void UpdateTorqueYawLabelFwd(int value)
         {
             Invoke(new MethodInvoker(delegate () { lblTorqueYawFwd.Text = value.ToString(); }));
-
         }
+
+
+        private void UpdateTorqueTillerLabelLeft(int value)
+        {
+            Invoke(new MethodInvoker(delegate () { lblTorqueTillerLeft.Text = value.ToString(); }));
+        }
+
+        private void UpdateTorqueTillerLabelRight(int value)
+        {
+            Invoke(new MethodInvoker(delegate () { lblTorqueTillerRight.Text = value.ToString(); }));
+        }
+
 
         // Disconnect the AP when the wheel/Column is moved.
         // Wait two seconds before this check can happen again to 
@@ -1180,8 +1184,8 @@ namespace ACLSim
                 { 
                      axisYaw.ChangeAxisSpeed(Int32.Parse(txbSpeedYaw.Text));
                 }
-                speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
-                speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
+                speedPitch.SelfCentering(Properties.Settings.Default.Centering_Speed_Pitch);
+                speedYaw.SelfCentering(Properties.Settings.Default.Centering_Speed_Yaw);
 
                 torquePitch.APIsOn();
                 torqueRoll.APIsOn();
@@ -1250,35 +1254,35 @@ namespace ACLSim
             torqueRoll.SetManualOverride(false);
             torqueYaw.SetManualOverride(false);
             torqueTiller.SetManualOverride(false);
-            torqueRoll.SetTorque(torqueRollMin);
-            torquePitch.SetTorque(torquePitchMin);
-            torqueYaw.SetTorque(torqueYawMin);
-            torqueTiller.SetTorque(torqueTillerMax);
+            torqueRoll.HydraulicOn();
+            torquePitch.HydraulicOn();
+            torqueYaw.HydraulicOn();
+            torqueTiller.HydraulicOn();
         }
 
         private void btnSpeedTest_Click(object sender, EventArgs e)
         {
             if (txbPitchSpeedTest.Text != "")
             {
-                speedPitch.SetSpeed(Int32.Parse(txbPitchSpeedTest.Text));
+                speedPitch.SelfCentering(Int32.Parse(txbPitchSpeedTest.Text));
                 Properties.Settings.Default.Centering_Speed_Pitch = Int32.Parse(txbPitchSpeedTest.Text);
             }
 
             if (txbRollSpeedTest.Text != "")
             {
-                speedRoll.SetSpeed(Int32.Parse(txbRollSpeedTest.Text));
+                speedRoll.SelfCentering(Int32.Parse(txbRollSpeedTest.Text));
                 Properties.Settings.Default.Centering_Speed_Roll = Int32.Parse(txbRollSpeedTest.Text);
             }
 
             if (txbYawSpeedTest.Text != "")
             {
-                speedYaw.SetSpeed(Int32.Parse(txbYawSpeedTest.Text));
+                speedYaw.SelfCentering(Int32.Parse(txbYawSpeedTest.Text));
                 Properties.Settings.Default.Centering_Speed_Yaw = Int32.Parse(txbYawSpeedTest.Text);
             }
 
             if (txbTillerSpeedTest.Text != "")
             {
-                speedTiller.SetSpeed(Int32.Parse(txbTillerSpeedTest.Text));
+                speedTiller.SelfCentering(Int32.Parse(txbTillerSpeedTest.Text));
                 Properties.Settings.Default.Centering_Speed_Tiller = Int32.Parse(txbTillerSpeedTest.Text);
             }
             Properties.Settings.Default.Save();
@@ -1432,8 +1436,8 @@ namespace ACLSim
             axisTiller.ChangeAxisSpeed(100);
 
             errorh.DisplayInfo("Moving Torque on");
-            speedPitch.SetSpeed(Properties.Settings.Default.Centering_Speed_Pitch);
-            speedYaw.SetSpeed(Properties.Settings.Default.Centering_Speed_Yaw);
+            speedPitch.SelfCentering(Properties.Settings.Default.Centering_Speed_Pitch);
+            speedYaw.SelfCentering(Properties.Settings.Default.Centering_Speed_Yaw);
             torquePitch.APIsOn();
             torqueRoll.APIsOn();
             torqueYaw.APIsOn();
@@ -1491,10 +1495,20 @@ namespace ACLSim
             axisTiller.isCentering = false;
 
             if (!isPitchCMD)
+            {
                 torquePitch.APIsOff();
+            }
+            else
+            {
+                torquePitch.APIsOn();
+            }
 
-            if (!isRollCMD)
+            if (!isRollCMD) {
                 torqueRoll.APIsOff();
+            } else
+            {
+                torqueRoll.APIsOn();
+            }
             
             torqueYaw.APIsOff();
             torqueTiller.APIsOff();
@@ -1517,9 +1531,9 @@ namespace ACLSim
                 torqueRoll.HydraulicOff();
                 torqueYaw.HydraulicOff();
                 errorh.DisplayInfo("Reset Pitch Centering Speed to 0");
-                speedPitch.SetSpeed(0);
+                speedPitch.SelfCentering(0);
                 errorh.DisplayInfo("Reset Yaw Centering Speed to 0");
-                speedYaw.SetSpeed(0);
+                speedYaw.SelfCentering(0);
             }
 
         }

@@ -102,6 +102,10 @@ namespace ACLSim
             this.label8 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.lblTorqueYawFwd = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.lblTorqueTillerLeft = new System.Windows.Forms.Label();
+            this.lblTorqueTillerRight = new System.Windows.Forms.Label();
+            this.lblTorqueYawBack = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataRefTableItemBindingSource)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -627,7 +631,7 @@ namespace ACLSim
             this.lblTorquePitchFwd.BackColor = System.Drawing.Color.Transparent;
             this.lblTorquePitchFwd.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorquePitchFwd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
-            this.lblTorquePitchFwd.Location = new System.Drawing.Point(379, 27);
+            this.lblTorquePitchFwd.Location = new System.Drawing.Point(378, 27);
             this.lblTorquePitchFwd.Name = "lblTorquePitchFwd";
             this.lblTorquePitchFwd.Size = new System.Drawing.Size(36, 39);
             this.lblTorquePitchFwd.TabIndex = 18;
@@ -639,7 +643,7 @@ namespace ACLSim
             this.lblTorquePitchBack.BackColor = System.Drawing.Color.Transparent;
             this.lblTorquePitchBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorquePitchBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(184)))));
-            this.lblTorquePitchBack.Location = new System.Drawing.Point(433, 27);
+            this.lblTorquePitchBack.Location = new System.Drawing.Point(445, 27);
             this.lblTorquePitchBack.Name = "lblTorquePitchBack";
             this.lblTorquePitchBack.Size = new System.Drawing.Size(36, 39);
             this.lblTorquePitchBack.TabIndex = 19;
@@ -745,7 +749,7 @@ namespace ACLSim
             this.lblTorqueRollAft.BackColor = System.Drawing.Color.Transparent;
             this.lblTorqueRollAft.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTorqueRollAft.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(184)))));
-            this.lblTorqueRollAft.Location = new System.Drawing.Point(574, 27);
+            this.lblTorqueRollAft.Location = new System.Drawing.Point(590, 27);
             this.lblTorqueRollAft.Name = "lblTorqueRollAft";
             this.lblTorqueRollAft.Size = new System.Drawing.Size(36, 39);
             this.lblTorqueRollAft.TabIndex = 30;
@@ -797,12 +801,63 @@ namespace ACLSim
             this.lblTorqueYawFwd.TabIndex = 32;
             this.lblTorqueYawFwd.Text = "0";
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.BackColor = System.Drawing.Color.Transparent;
+            this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(90)))), ((int)(((byte)(143)))), ((int)(((byte)(240)))));
+            this.label15.Location = new System.Drawing.Point(523, 148);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(29, 13);
+            this.label15.TabIndex = 36;
+            this.label15.Text = "Tiller";
+            // 
+            // lblTorqueTillerLeft
+            // 
+            this.lblTorqueTillerLeft.AutoSize = true;
+            this.lblTorqueTillerLeft.BackColor = System.Drawing.Color.Transparent;
+            this.lblTorqueTillerLeft.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorqueTillerLeft.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
+            this.lblTorqueTillerLeft.Location = new System.Drawing.Point(519, 109);
+            this.lblTorqueTillerLeft.Name = "lblTorqueTillerLeft";
+            this.lblTorqueTillerLeft.Size = new System.Drawing.Size(36, 39);
+            this.lblTorqueTillerLeft.TabIndex = 35;
+            this.lblTorqueTillerLeft.Text = "0";
+            // 
+            // lblTorqueTillerRight
+            // 
+            this.lblTorqueTillerRight.AutoSize = true;
+            this.lblTorqueTillerRight.BackColor = System.Drawing.Color.Transparent;
+            this.lblTorqueTillerRight.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorqueTillerRight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
+            this.lblTorqueTillerRight.Location = new System.Drawing.Point(590, 109);
+            this.lblTorqueTillerRight.Name = "lblTorqueTillerRight";
+            this.lblTorqueTillerRight.Size = new System.Drawing.Size(36, 39);
+            this.lblTorqueTillerRight.TabIndex = 37;
+            this.lblTorqueTillerRight.Text = "0";
+            // 
+            // lblTorqueYawBack
+            // 
+            this.lblTorqueYawBack.AutoSize = true;
+            this.lblTorqueYawBack.BackColor = System.Drawing.Color.Transparent;
+            this.lblTorqueYawBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTorqueYawBack.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(223)))), ((int)(((byte)(182)))));
+            this.lblTorqueYawBack.Location = new System.Drawing.Point(445, 109);
+            this.lblTorqueYawBack.Name = "lblTorqueYawBack";
+            this.lblTorqueYawBack.Size = new System.Drawing.Size(36, 39);
+            this.lblTorqueYawBack.TabIndex = 38;
+            this.lblTorqueYawBack.Text = "0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(673, 636);
+            this.Controls.Add(this.lblTorqueYawBack);
+            this.Controls.Add(this.lblTorqueTillerRight);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.lblTorqueTillerLeft);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.lblTorqueYawFwd);
             this.Controls.Add(this.label8);
@@ -918,6 +973,10 @@ namespace ACLSim
         private System.Windows.Forms.TextBox txbSpeedRoll;
         private System.Windows.Forms.Button btnSaveSpeed;
         private System.Windows.Forms.TextBox txbSpeedYaw;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label lblTorqueTillerLeft;
+        private System.Windows.Forms.Label lblTorqueTillerRight;
+        private System.Windows.Forms.Label lblTorqueYawBack;
     }
 }
 

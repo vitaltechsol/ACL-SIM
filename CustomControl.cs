@@ -23,9 +23,9 @@ namespace ACLSim
         }
 
         // 51 - Motor running top speed
-        public void SetSpeed(int value)
+        public void SelfCentering(int value)
         {
-            errorLog.DisplayInfo($"Set centering speed for (Servo {driverID}) to {value}");
+            errorLog.DisplayInfo($"Set self-centering speed for (Servo {driverID}) to {value}");
             if (prevSpeed != value)
             {
                 SetValue(51, value, 0);
@@ -35,7 +35,7 @@ namespace ACLSim
 
         public async Task SetSpeedAsync(int value)
         {
-            await Task.Run(() => SetSpeed(value));
+            await Task.Run(() => SelfCentering(value));
         }
 
         public int GetSpeed()

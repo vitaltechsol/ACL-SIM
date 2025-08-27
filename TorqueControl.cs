@@ -98,6 +98,15 @@ namespace ACLSim
 
         }
 
+        public void SetMinMax(int min, int max)
+        {
+            MinTorque = min;
+            MaxTorque = max;
+            if (_tracker != null) {
+                _tracker.SetMinMax(MinTorque, MaxTorque);
+            }
+        }
+
         public async Task SetTorqueAsync(int value)
         {
             if (lastValue != value)
@@ -229,21 +238,6 @@ namespace ACLSim
             return 0;
         }
 
-        public void MoveTo(int targetPosition, bool waitUntilReached = false, int tolerance = 50)
-        {
-            Debug.WriteLine($"Start MoveTo: {targetPosition}");
-            errorLog.DisplayInfo($" Start MoveTo: {targetPosition}");
-            // Split 32-bit target into two 16-bit registers
-            ushort high = (ushort)((targetPosition >> 16) & 0xFFFF);
-            ushort low = (ushort)(targetPosition & 0xFFFF);
-
-            //mbc.WriteMultipleRegisters(REG_TARGET_POS_HIGH, new int[] { high, low });
-            //mbc.WriteSingleRegister(REG_TARGET_POS_HIGH, high);
-            //mbc.WriteSingleRegister(REG_TARGET_POS_LOW, low);
-            //mbc.WriteSingleRegister(0x0010, 0x0000);
-            //mbc.WriteSingleRegister(0x0011, 0x0100);
-        }
-
         public void ReadAllValues()
         {
             if (!mbc.Connected)
@@ -347,7 +341,7 @@ namespace ACLSim
                     throw new InvalidOperationException("Loop already running. Call StopDynamicTorqueAsync() first.");
 
                 _cts = new CancellationTokenSource();
-                _loopTask = RunLoopAsync(MinTorque, MaxTorque, _cts.Token);
+                _loopTask = RunLoopAsync(_cts.Token);
             }
         }
 
@@ -424,7 +418,7 @@ namespace ACLSim
             _isManuallySet = isManual;
         }
 
-        private async Task RunLoopAsync(int minTorque, int maxTorque, CancellationToken token)
+        private async Task RunLoopAsync(CancellationToken token)
         {
             // Ensure connection
             if (!mbc.Connected)
@@ -433,7 +427,7 @@ namespace ACLSim
             mbc.UnitIdentifier = driverID;
 
             // Create tracker and set home from first read
-            _tracker = new EncoderTorqueTracker(10000, minTorque, maxTorque);
+            _tracker = new EncoderTorqueTracker(10000, MinTorque, MaxTorque);
 
             int firstRead = SafeRead(encoderPn);
             _tracker.SetHome(firstRead);
