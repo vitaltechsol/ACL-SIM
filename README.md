@@ -22,31 +22,33 @@
 | ----------- | ------------------------------------------------- | -------- |
 | Pitch Axis  |                                                   |          |
 |             | Self-centering                                    | Complete |
+|             | Load increases as the control moves away          | Complete |
 |             | Load increases when hydraulics are not available  | Complete |
 |             | Load increases with airspeed                      | Complete |
-|             | Load changes based on aft/fwrd position (v1)      | Complete |
 |             | Fwd Load increases when approaching a stall       | Complete |
 |             | Autopilot moves control column                    | Complete |
 |             | Autopilot disengage override by moving the control| Complete |
-|             | Clomun pitch stays fixed with hydraulics off      | Complete |
+|             | Column pitch stays fixed with hydraulics off      | Complete |
 |             | Center calibration when starting the sim          | Complete |
-|             | Accurate Load changes based on position           | Complete |
 | Roll Axis   |                                                   |          |
 |             | Self-centering                                    | Complete |
-|             | Load increased when hydraulics are not available  | Complete |
+|             | Load increases as the control moves away          | Complete |
+|             | Load increases when hydraulics are not available  | Complete |
 |             | Autopilot moves control wheel                     | Complete |
 |             | Autopilot disengage override by moving the control| Complete |
 |             | Trim Adjustment moves Control wheel               | Complete |
 |             | Center calibration when starting the sim          | Complete |
-|             | Accurate Load changes based on position           | Complete |
 | Rudder Axis |                                                   |          |
 |             | Self-centering                                    | Complete |
+|             | Load increases as the control moves away          | Complete |
 |             | Load increased when hydraulics are not available  | Complete |
-|             | Trim Adjustment moves rudders                     | Complete |
+|             | Trim adjustment moves rudders                     | Complete |
 |             | Center calibration when starting the sim          | Complete |
-|             | Accurate Load changes based on position           | Complete |
 | Tiller      |                                                   |          |
 |             | Self-centering                                    | Complete |
+|             | Load increases as the control moves away          | Complete |
 |             | Load increases when hydraulics are not available  | Complete |
-|             | Load decreases with higher ground speed           | Complete |
 |             | Center calibration when starting the sim          | Complete |
+|             | Center calibration when starting the sim          | Complete |
+
+
